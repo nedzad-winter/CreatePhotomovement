@@ -1,0 +1,19 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        " D ",
+        " G ",
+        "   "
+    ],
+    "key": {
+        "D": {
+            "item": "minecraft:daylight_detector"
+        },
+        "G": {
+            "item": "create:gearbox"
+        }
+    },
+    "result": {
+        "item": "createphotomovement:solar_generator"
+    }
+}

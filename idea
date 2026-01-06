@@ -1,0 +1,52 @@
+Ich will für minecraft create mod will ich ein addon erstellen 
+
+Name:
+Create: Photomovement
+
+Ordner:
+das addon soll in einem eigenem ordner erstellt 
+Die filestruktur soll so aufgebaut sein wie andere mods
+NeoForge soll als mod engine verwendet werden
+
+Modfeatures:
+Der Mod soll einen Block beinhalten der folgende eigenschaften hat
+- Bei Nacht soll die Rotationen stillgehalten werden
+- Bei Tageslicht soll Rotationen generiert werden
+-- 16 RPM
+-- 16 SU
+-- Energien soll nur generiert werden wenn die Sonne auf den Block scheint
+-- wenn ein voller block auf dem block liegt soll die rotation gestopt werden weil ja keine sonne mehr drauf scheint
+--- Transparente blöcke sollen die rotation nicht stoppen
+---- Schneeschichten, moos und teppiche sollen die rotation stopen
+- Die block eigenschaften attriebute wie stapel und blast resisstance sollen die gleichen sein wie beim light sensor
+
+- so wie beim create mod soll der block einen "shaft" haben der als ausgang und verbindungspunkt dient
+-- der shaft soll sozusagen durch den block gehen und auf zwei seiten parallel zu einander gehen
+-- der block "gearbox" kann dabei als inspiration verwendet werden nur mit zwei ausgängen als mit 4
+-- beide ausgänge sollen sich in die gleiche richtung drehen
+-- Shift + RMB mit einem Wrench soll die rotation umkehren
+-- RMB mit einem Wrench soll den Block drehen - gleiches Verhalten wie beim create mod
+
+- Aussehen
+-- der block soll eine mischung aus einem light sensor (classic minecraft) und einer geearbox (create) bestehen
+--- die textur vom solapanel soll auf der oberen seite angezeigt werden
+--- seitlich soll es so aufgebaut sein:
+---- die textur vom light sensor soll auf der seitlichen seite angezeigt werden dabei soll es so aussehen als ob das light sensor den oberen teil der gearbox belegt
+-- die textur und animation vom shaft soll auf zwei (parallel zu einander) seiten angezeigt werden
+-- Die unterseite soll aussehen wie die unterseite einer gearbox
+
+- Block plazierung
+-- wenn der block plaziert wird soll er so platziert werden dass das eine seite mit dem shaft zum spieler zeigt - damit wird automatisch die richtung bestimmt
+
+- Rotatins generierung 
+-- 16 RPM 
+-- 16 SU
+-- die SUs sollen addiert werden wenn mehrere light sensore miteinander verbunden sind
+
+Rezeptur:
+3x3 
+
+leer/light sensor/leer
+leer/gearbox/leer
+leer/leer/leer
+
