@@ -9,6 +9,8 @@ public class CreatePhotomovement {
 
     public CreatePhotomovement(IEventBus modEventBus) {
         AllBlocks.BLOCKS.register(modEventBus);
+        AllItems.ITEMS.register(modEventBus);
+        AllCreativeTabs.CREATIVE_MODE_TABS.register(modEventBus);
         AllBlockEntityTypes.BLOCK_ENTITY_TYPES.register(modEventBus);
     }
 }

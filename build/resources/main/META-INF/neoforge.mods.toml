@@ -1,11 +1,11 @@
 modLoader="javafml"
-loaderVersion="[2]"
+loaderVersion="[4,)"
 license="MIT"
 
 [[mods]]
 modId="createphotomovement"
 version="0.0.1"
-displayName="Create: Photomovement"
+displayName="Create Photomovement"
 authors="User"
 description='''
 A Create mod addon adding a solar powered rotation source.

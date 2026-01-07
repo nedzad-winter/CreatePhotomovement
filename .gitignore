@@ -1,0 +1,24 @@
+# Gradle
+gradle
+.gradle
+gradlew
+gradlew.bat
+
+# Build outputs
+build
+
+# Run directory (game saves, configs, etc.)
+run
+
+# IDE
+.vscode
+.idea
+*.iml
+
+# Log and error files
+*.txt
+*.log
+
+# OS files
+.DS_Store
+Thumbs.db

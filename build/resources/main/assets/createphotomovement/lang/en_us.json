@@ -1,3 +1,20 @@
 {
-    "block.createphotomovement.solar_generator": "Solar Generator"
+    "block.createphotomovement.solar_generator": "Solar Generator",
+    "block.createphotomovement.white_solar_generator": "White Solar Generator",
+    "block.createphotomovement.orange_solar_generator": "Orange Solar Generator",
+    "block.createphotomovement.magenta_solar_generator": "Magenta Solar Generator",
+    "block.createphotomovement.light_blue_solar_generator": "Light Blue Solar Generator",
+    "block.createphotomovement.yellow_solar_generator": "Yellow Solar Generator",
+    "block.createphotomovement.lime_solar_generator": "Lime Solar Generator",
+    "block.createphotomovement.pink_solar_generator": "Pink Solar Generator",
+    "block.createphotomovement.gray_solar_generator": "Gray Solar Generator",
+    "block.createphotomovement.light_gray_solar_generator": "Light Gray Solar Generator",
+    "block.createphotomovement.cyan_solar_generator": "Cyan Solar Generator",
+    "block.createphotomovement.purple_solar_generator": "Purple Solar Generator",
+    "block.createphotomovement.blue_solar_generator": "Blue Solar Generator",
+    "block.createphotomovement.brown_solar_generator": "Brown Solar Generator",
+    "block.createphotomovement.green_solar_generator": "Green Solar Generator",
+    "block.createphotomovement.red_solar_generator": "Red Solar Generator",
+    "block.createphotomovement.black_solar_generator": "Black Solar Generator",
+    "itemGroup.createphotomovement": "Create Photomovement"
 }

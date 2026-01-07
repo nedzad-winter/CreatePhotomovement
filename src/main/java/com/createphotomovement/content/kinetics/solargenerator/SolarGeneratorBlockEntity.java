@@ -3,7 +3,10 @@ package com.createphotomovement.content.kinetics.solargenerator;
 import com.createphotomovement.AllBlockEntityTypes;
 
 import com.simibubi.create.content.kinetics.base.GeneratingKineticBlockEntity;
+import com.simibubi.create.content.kinetics.base.RotatedPillarKineticBlock;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.core.Direction.Axis;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.world.level.LightLayer;
@@ -35,63 +38,55 @@ public class SolarGeneratorBlockEntity extends GeneratingKineticBlockEntity {
     }
 
     private boolean canGeneratePower() {
-        if (level == null || level.isClientSide)
+        if (level == null)
             return false;
-
-        // Check if it's daytime
-        if (!level.isDay())
-            return false;
-
-        // Check if skylight can reach the block
-        if (level.getBrightness(LightLayer.SKY, worldPosition.above()) < 15) {
-             // We can double check strict sky visibility if needed, but brightness is a good proxy.
-             // However, Create typically uses level.canSeeSky(pos.above())
-             if (!level.canSeeSky(worldPosition.above()))
-                 return false;
-        }
 
         BlockPos abovePos = worldPosition.above();
         BlockState aboveState = level.getBlockState(abovePos);
 
-        // Check for obstructions
-        // Full solid blocks block sunlight typically, but we want specific behavior
-        // The user specified:
-        // - Full block stops rotation
-        // - Transparent blocks don't stop
-        // - Snow, moss, carpets DO stop it
-
-        // Hard checks for specific blocking items
+        // 1. Hard check for blocks that physically cover the sensor but might let light
+        // through (like carpets)
         Block aboveBlock = aboveState.getBlock();
-        if (aboveBlock instanceof SnowLayerBlock) return false;
-        if (aboveBlock instanceof CarpetBlock) return false;
-        if (aboveBlock == Blocks.MOSS_CARPET) return false;
-        if (aboveBlock == Blocks.SNOW) return false; // Snow block
+        if (aboveBlock instanceof SnowLayerBlock || aboveBlock instanceof CarpetBlock
+                || aboveBlock == Blocks.MOSS_CARPET || aboveBlock == Blocks.SNOW)
+            return false;
 
-        // General opacity check
-        // If it blocks light, it stops power.
-        // isSolidRender is a decent proxy for "full block", but opacity is better for light mechanics.
-        if (aboveState.getLightBlock(level, abovePos) > 0)
+        // 2. Check if the block above blocks skylight
+        if (!aboveState.propagatesSkylightDown(level, abovePos))
+            return false;
+
+        // 3. Ensure sufficient sky light reaches the sensor
+        // This handles time of day (night/day) and weather automatically.
+        // We must subtract 'skyDarken' because getBrightness(SKY) returns the internal
+        // chunk light (0-15 static).
+        int internalLight = level.getBrightness(LightLayer.SKY, abovePos);
+        int effectiveLight = internalLight - level.getSkyDarken();
+
+        // Threshold: 12 (User requested)
+        if (effectiveLight < 12)
+            return false;
+
+        // 4. Ensure the generator is oriented correctly (Horizontal axis only)
+        // If Axis is Y, the shafts are Up/Down, so the panel (side) is vertical -> No
+        // power.
+        if (getBlockState().getValue(RotatedPillarKineticBlock.AXIS) == Axis.Y)
             return false;
 
         return true;
     }
-    
+
+    private boolean previouslyGenerating = false;
+
     @Override
     public void tick() {
         super.tick();
-        // Periodically check for condition updates if purely environmental
-        // But GeneratingKineticBlockEntity normally doesn't auto-update speed unless notified.
-        // We should check every tick or every few ticks if conditions changed.
-        
         if (!level.isClientSide) {
-             boolean shouldBeRunning = canGeneratePower();
-             float targetSpeed = shouldBeRunning ? (reversed ? -16f : 16f) : 0f;
-             
-             if (Math.abs(getGeneratedSpeed()) != Math.abs(targetSpeed) || (targetSpeed != 0 && speed == 0)) {
-                 updateGeneratedRotation();
-             } else if (targetSpeed != 0 && Math.signum(getGeneratedSpeed()) != Math.signum(targetSpeed)) {
-                 updateGeneratedRotation();
-             }
+            boolean canGenerate = canGeneratePower();
+            // Force update if generation state changes
+            if (canGenerate != previouslyGenerating) {
+                previouslyGenerating = canGenerate;
+                updateGeneratedRotation();
+            }
         }
     }
 
@@ -99,6 +94,10 @@ public class SolarGeneratorBlockEntity extends GeneratingKineticBlockEntity {
         reversed = !reversed;
         updateGeneratedRotation();
         notifyUpdate();
+    }
+
+    public boolean isReversed() {
+        return reversed;
     }
 
     @Override

@@ -1,0 +1,6 @@
+{
+    "parent": "createphotomovement:block/solar_generator",
+    "textures": {
+        "glass": "minecraft:block/red_stained_glass"
+    }
+}

@@ -13,13 +13,24 @@ repositories {
     maven { url = "https://maven.ithundxr.dev/snapshots" } // Registrate
     maven { url = "https://maven.blamejared.com" } // JEI
     maven { url = "https://maven.theillusivec4.top/" } // Curios
+    maven { url = "https://api.modrinth.com/maven" } // Modrinth
+    maven { url = "https://maven.architectury.dev/" } // Architectury
+    maven { url = "https://maven.saps.dev/minecraft" } // FTB Mods
+    maven { url = "https://maven.squiddev.cc" } // CC: Tweaked
+    maven { url = "https://cursemaven.com" } // CurseMaven
 }
 
 dependencies {
-    implementation "com.simibubi.create:create-${minecraft_version}:${create_version}:slim"
+    implementation("com.simibubi.create:create-${minecraft_version}:${create_version}:slim") {
+        exclude group: 'dev.ftb.mods'
+        exclude group: 'dev.architectury'
+        exclude group: 'maven.modrinth'
+        exclude group: 'cc.tweaked'
+    }
     implementation "net.createmod.ponder:ponder-neoforge:1.0.81+mc${minecraft_version}"
     implementation "dev.engine-room.flywheel:flywheel-neoforge-${minecraft_version}:${flywheel_version}"
     implementation "com.tterrag.registrate:Registrate:${registrate_version}"
+    implementation "curse.maven:construction-wands-revived-1395288:7356007"
 }
 
 neoForge {
