@@ -58,8 +58,12 @@ Simply combine any Solar Generator with a dye in a shapeless recipe to change it
 1. **Place the Solar Generator** with the glass panel facing upward (shaft must be horizontal)
 2. **Connect shafts** to either side to transfer rotation to your machines
 3. The generator **automatically activates** when it receives sufficient sunlight (light level of 12 or higher)
-4. Power generation **reduces during storms** and **stops at night**
-5. Make sure **nothing blocks the sky** above the generator
+4. **Weather affects power output:**
+   - **Clear weather:** Full power (16 RPM)
+   - **Rain:** Half power (8 RPM)
+   - **Thunderstorm:** No power generation
+5. **Stops at night** when light level drops below threshold
+6. Make sure **nothing blocks the sky** above the generator
 
 ## Requirements
 

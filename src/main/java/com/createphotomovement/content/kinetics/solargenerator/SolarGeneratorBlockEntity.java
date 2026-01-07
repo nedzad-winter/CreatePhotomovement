@@ -1,11 +1,8 @@
 package com.createphotomovement.content.kinetics.solargenerator;
 
-import com.createphotomovement.AllBlockEntityTypes;
-
 import com.simibubi.create.content.kinetics.base.GeneratingKineticBlockEntity;
 import com.simibubi.create.content.kinetics.base.RotatedPillarKineticBlock;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.Direction;
 import net.minecraft.core.Direction.Axis;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.core.HolderLookup;
@@ -20,6 +17,7 @@ import net.minecraft.world.level.block.state.BlockState;
 public class SolarGeneratorBlockEntity extends GeneratingKineticBlockEntity {
 
     private boolean reversed = false;
+    private float previousSpeed = 0;
 
     public SolarGeneratorBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -27,9 +25,27 @@ public class SolarGeneratorBlockEntity extends GeneratingKineticBlockEntity {
 
     @Override
     public float getGeneratedSpeed() {
+        float speed = calculateWeatherAdjustedSpeed();
+        return reversed ? -speed : speed;
+    }
+
+    private float calculateWeatherAdjustedSpeed() {
         if (!canGeneratePower())
             return 0;
-        return reversed ? -16f : 16f;
+
+        // Check weather conditions
+        if (level != null && level.isThundering()) {
+            // Thunder = no power
+            return 0;
+        }
+
+        if (level != null && level.isRaining()) {
+            // Rain = half power (8 RPM)
+            return 8f;
+        }
+
+        // Clear weather = full power (16 RPM)
+        return 16f;
     }
 
     @Override
@@ -42,20 +58,25 @@ public class SolarGeneratorBlockEntity extends GeneratingKineticBlockEntity {
             return false;
 
         BlockPos abovePos = worldPosition.above();
+
+        // 1. Check for direct sky access (like daylight detector)
+        if (!level.canSeeSky(abovePos))
+            return false;
+
         BlockState aboveState = level.getBlockState(abovePos);
 
-        // 1. Hard check for blocks that physically cover the sensor but might let light
+        // 2. Hard check for blocks that physically cover the sensor but might let light
         // through (like carpets)
         Block aboveBlock = aboveState.getBlock();
         if (aboveBlock instanceof SnowLayerBlock || aboveBlock instanceof CarpetBlock
                 || aboveBlock == Blocks.MOSS_CARPET || aboveBlock == Blocks.SNOW)
             return false;
 
-        // 2. Check if the block above blocks skylight
+        // 3. Check if the block above blocks skylight
         if (!aboveState.propagatesSkylightDown(level, abovePos))
             return false;
 
-        // 3. Ensure sufficient sky light reaches the sensor
+        // 4. Ensure sufficient sky light reaches the sensor
         // This handles time of day (night/day) and weather automatically.
         // We must subtract 'skyDarken' because getBrightness(SKY) returns the internal
         // chunk light (0-15 static).
@@ -66,7 +87,7 @@ public class SolarGeneratorBlockEntity extends GeneratingKineticBlockEntity {
         if (effectiveLight < 12)
             return false;
 
-        // 4. Ensure the generator is oriented correctly (Horizontal axis only)
+        // 5. Ensure the generator is oriented correctly (Horizontal axis only)
         // If Axis is Y, the shafts are Up/Down, so the panel (side) is vertical -> No
         // power.
         if (getBlockState().getValue(RotatedPillarKineticBlock.AXIS) == Axis.Y)
@@ -75,16 +96,14 @@ public class SolarGeneratorBlockEntity extends GeneratingKineticBlockEntity {
         return true;
     }
 
-    private boolean previouslyGenerating = false;
-
     @Override
     public void tick() {
         super.tick();
-        if (!level.isClientSide) {
-            boolean canGenerate = canGeneratePower();
-            // Force update if generation state changes
-            if (canGenerate != previouslyGenerating) {
-                previouslyGenerating = canGenerate;
+        if (level != null && !level.isClientSide) {
+            float currentSpeed = calculateWeatherAdjustedSpeed();
+            // Force update if speed changes (weather change or day/night)
+            if (currentSpeed != previousSpeed) {
+                previousSpeed = currentSpeed;
                 updateGeneratedRotation();
             }
         }
