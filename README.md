@@ -2,7 +2,7 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/Minecraft-1.21.1-green" alt="Minecraft 1.21.1">
-  <img src="https://img.shields.io/badge/NeoForge-21.1.206+-orange" alt="NeoForge">
+  <img src="https://img.shields.io/badge/NeoForge-21.1.206-orange" alt="NeoForge">
   <img src="https://img.shields.io/badge/Create-6.0.9-blue" alt="Create Mod">
   <img src="https://img.shields.io/badge/License-MIT-yellow" alt="MIT License">
 </p>
