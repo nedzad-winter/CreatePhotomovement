@@ -65,13 +65,6 @@ Simply combine any Solar Generator with a dye in a shapeless recipe to change it
 5. **Stops at night** when light level drops below threshold
 6. Make sure **nothing blocks the sky** above the generator
 
-## Requirements
-
-- Minecraft **1.21.1**
-- NeoForge **21.1.206+**
-- Create **6.0.10+**
-- Flywheel **1.0.6+**
-- Registrate **MC1.21-1.3.0+67**
 
 ## Installation
 
