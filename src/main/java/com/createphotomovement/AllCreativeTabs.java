@@ -18,6 +18,7 @@ public class AllCreativeTabs {
                                         .displayItems((parameters, output) -> {
                                                 // Original Solar Generator (clear glass)
                                                 output.accept(AllItems.SOLAR_GENERATOR.get());
+                                                output.accept(AllItems.HORIZONTAL_SOLAR_GENERATOR.get());
                                                 // Stained Glass Variants
                                                 output.accept(AllItems.WHITE_SOLAR_GENERATOR.get());
                                                 output.accept(AllItems.ORANGE_SOLAR_GENERATOR.get());

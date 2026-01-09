@@ -1,6 +1,7 @@
 package com.createphotomovement;
 
 import com.createphotomovement.content.kinetics.solargenerator.SolarGeneratorBlock;
+import com.createphotomovement.content.kinetics.solargenerator.HorizontalSolarGeneratorBlock;
 import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
@@ -16,6 +17,159 @@ public class AllBlocks {
                                         .strength(0.2F)
                                         .sound(SoundType.WOOD)
                                         .noOcclusion()));
+
+        public static final DeferredBlock<HorizontalSolarGeneratorBlock> HORIZONTAL_SOLAR_GENERATOR = BLOCKS.register(
+                        "horizontal_solar_generator",
+                        () -> new HorizontalSolarGeneratorBlock(BlockBehaviour.Properties.of()
+                                        .mapColor(MapColor.WOOD)
+                                        .strength(0.2F)
+                                        .sound(SoundType.WOOD)
+                                        .noOcclusion()));
+
+        // Horizontal Solar Generator Color Variants
+        public static final DeferredBlock<HorizontalSolarGeneratorBlock> WHITE_HORIZONTAL_SOLAR_GENERATOR = BLOCKS
+                        .register(
+                                        "white_horizontal_solar_generator",
+                                        () -> new HorizontalSolarGeneratorBlock(BlockBehaviour.Properties.of()
+                                                        .mapColor(MapColor.SNOW)
+                                                        .strength(0.2F)
+                                                        .sound(SoundType.WOOD)
+                                                        .noOcclusion()));
+
+        public static final DeferredBlock<HorizontalSolarGeneratorBlock> ORANGE_HORIZONTAL_SOLAR_GENERATOR = BLOCKS
+                        .register(
+                                        "orange_horizontal_solar_generator",
+                                        () -> new HorizontalSolarGeneratorBlock(BlockBehaviour.Properties.of()
+                                                        .mapColor(MapColor.COLOR_ORANGE)
+                                                        .strength(0.2F)
+                                                        .sound(SoundType.WOOD)
+                                                        .noOcclusion()));
+
+        public static final DeferredBlock<HorizontalSolarGeneratorBlock> MAGENTA_HORIZONTAL_SOLAR_GENERATOR = BLOCKS
+                        .register(
+                                        "magenta_horizontal_solar_generator",
+                                        () -> new HorizontalSolarGeneratorBlock(BlockBehaviour.Properties.of()
+                                                        .mapColor(MapColor.COLOR_MAGENTA)
+                                                        .strength(0.2F)
+                                                        .sound(SoundType.WOOD)
+                                                        .noOcclusion()));
+
+        public static final DeferredBlock<HorizontalSolarGeneratorBlock> LIGHT_BLUE_HORIZONTAL_SOLAR_GENERATOR = BLOCKS
+                        .register(
+                                        "light_blue_horizontal_solar_generator",
+                                        () -> new HorizontalSolarGeneratorBlock(BlockBehaviour.Properties.of()
+                                                        .mapColor(MapColor.COLOR_LIGHT_BLUE)
+                                                        .strength(0.2F)
+                                                        .sound(SoundType.WOOD)
+                                                        .noOcclusion()));
+
+        public static final DeferredBlock<HorizontalSolarGeneratorBlock> YELLOW_HORIZONTAL_SOLAR_GENERATOR = BLOCKS
+                        .register(
+                                        "yellow_horizontal_solar_generator",
+                                        () -> new HorizontalSolarGeneratorBlock(BlockBehaviour.Properties.of()
+                                                        .mapColor(MapColor.COLOR_YELLOW)
+                                                        .strength(0.2F)
+                                                        .sound(SoundType.WOOD)
+                                                        .noOcclusion()));
+
+        public static final DeferredBlock<HorizontalSolarGeneratorBlock> LIME_HORIZONTAL_SOLAR_GENERATOR = BLOCKS
+                        .register(
+                                        "lime_horizontal_solar_generator",
+                                        () -> new HorizontalSolarGeneratorBlock(BlockBehaviour.Properties.of()
+                                                        .mapColor(MapColor.COLOR_LIGHT_GREEN)
+                                                        .strength(0.2F)
+                                                        .sound(SoundType.WOOD)
+                                                        .noOcclusion()));
+
+        public static final DeferredBlock<HorizontalSolarGeneratorBlock> PINK_HORIZONTAL_SOLAR_GENERATOR = BLOCKS
+                        .register(
+                                        "pink_horizontal_solar_generator",
+                                        () -> new HorizontalSolarGeneratorBlock(BlockBehaviour.Properties.of()
+                                                        .mapColor(MapColor.COLOR_PINK)
+                                                        .strength(0.2F)
+                                                        .sound(SoundType.WOOD)
+                                                        .noOcclusion()));
+
+        public static final DeferredBlock<HorizontalSolarGeneratorBlock> GRAY_HORIZONTAL_SOLAR_GENERATOR = BLOCKS
+                        .register(
+                                        "gray_horizontal_solar_generator",
+                                        () -> new HorizontalSolarGeneratorBlock(BlockBehaviour.Properties.of()
+                                                        .mapColor(MapColor.COLOR_GRAY)
+                                                        .strength(0.2F)
+                                                        .sound(SoundType.WOOD)
+                                                        .noOcclusion()));
+
+        public static final DeferredBlock<HorizontalSolarGeneratorBlock> LIGHT_GRAY_HORIZONTAL_SOLAR_GENERATOR = BLOCKS
+                        .register(
+                                        "light_gray_horizontal_solar_generator",
+                                        () -> new HorizontalSolarGeneratorBlock(BlockBehaviour.Properties.of()
+                                                        .mapColor(MapColor.COLOR_LIGHT_GRAY)
+                                                        .strength(0.2F)
+                                                        .sound(SoundType.WOOD)
+                                                        .noOcclusion()));
+
+        public static final DeferredBlock<HorizontalSolarGeneratorBlock> CYAN_HORIZONTAL_SOLAR_GENERATOR = BLOCKS
+                        .register(
+                                        "cyan_horizontal_solar_generator",
+                                        () -> new HorizontalSolarGeneratorBlock(BlockBehaviour.Properties.of()
+                                                        .mapColor(MapColor.COLOR_CYAN)
+                                                        .strength(0.2F)
+                                                        .sound(SoundType.WOOD)
+                                                        .noOcclusion()));
+
+        public static final DeferredBlock<HorizontalSolarGeneratorBlock> PURPLE_HORIZONTAL_SOLAR_GENERATOR = BLOCKS
+                        .register(
+                                        "purple_horizontal_solar_generator",
+                                        () -> new HorizontalSolarGeneratorBlock(BlockBehaviour.Properties.of()
+                                                        .mapColor(MapColor.COLOR_PURPLE)
+                                                        .strength(0.2F)
+                                                        .sound(SoundType.WOOD)
+                                                        .noOcclusion()));
+
+        public static final DeferredBlock<HorizontalSolarGeneratorBlock> BLUE_HORIZONTAL_SOLAR_GENERATOR = BLOCKS
+                        .register(
+                                        "blue_horizontal_solar_generator",
+                                        () -> new HorizontalSolarGeneratorBlock(BlockBehaviour.Properties.of()
+                                                        .mapColor(MapColor.COLOR_BLUE)
+                                                        .strength(0.2F)
+                                                        .sound(SoundType.WOOD)
+                                                        .noOcclusion()));
+
+        public static final DeferredBlock<HorizontalSolarGeneratorBlock> BROWN_HORIZONTAL_SOLAR_GENERATOR = BLOCKS
+                        .register(
+                                        "brown_horizontal_solar_generator",
+                                        () -> new HorizontalSolarGeneratorBlock(BlockBehaviour.Properties.of()
+                                                        .mapColor(MapColor.COLOR_BROWN)
+                                                        .strength(0.2F)
+                                                        .sound(SoundType.WOOD)
+                                                        .noOcclusion()));
+
+        public static final DeferredBlock<HorizontalSolarGeneratorBlock> GREEN_HORIZONTAL_SOLAR_GENERATOR = BLOCKS
+                        .register(
+                                        "green_horizontal_solar_generator",
+                                        () -> new HorizontalSolarGeneratorBlock(BlockBehaviour.Properties.of()
+                                                        .mapColor(MapColor.COLOR_GREEN)
+                                                        .strength(0.2F)
+                                                        .sound(SoundType.WOOD)
+                                                        .noOcclusion()));
+
+        public static final DeferredBlock<HorizontalSolarGeneratorBlock> RED_HORIZONTAL_SOLAR_GENERATOR = BLOCKS
+                        .register(
+                                        "red_horizontal_solar_generator",
+                                        () -> new HorizontalSolarGeneratorBlock(BlockBehaviour.Properties.of()
+                                                        .mapColor(MapColor.COLOR_RED)
+                                                        .strength(0.2F)
+                                                        .sound(SoundType.WOOD)
+                                                        .noOcclusion()));
+
+        public static final DeferredBlock<HorizontalSolarGeneratorBlock> BLACK_HORIZONTAL_SOLAR_GENERATOR = BLOCKS
+                        .register(
+                                        "black_horizontal_solar_generator",
+                                        () -> new HorizontalSolarGeneratorBlock(BlockBehaviour.Properties.of()
+                                                        .mapColor(MapColor.COLOR_BLACK)
+                                                        .strength(0.2F)
+                                                        .sound(SoundType.WOOD)
+                                                        .noOcclusion()));
 
         // Stained Glass Variants
         public static final DeferredBlock<SolarGeneratorBlock> WHITE_SOLAR_GENERATOR = BLOCKS.register(

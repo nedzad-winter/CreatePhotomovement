@@ -1,0 +1,17 @@
+HGS:
+ - Blockes placed on top of the block should not stop the generation since they are not
+blocking the solar panel from receiving light
+
+- Instead check if a block placed within 10 blocks of the solar panel is placed 
+(ignoring transparent blocks) and if it is, stop the generation
+
+- the crafting recipe for the colored horizontal solar generator must be created
+
+- tags for the horizontal solar generator must be created
+
+SG:
+
+General:
+- restructure the crafting recipe for better maintenance and organization
+-- change naming convention to be more consistent
+
