@@ -1,6 +1,7 @@
 package com.createphotomovement;
 
 import com.createphotomovement.content.kinetics.solargenerator.SolarGeneratorRenderer;
+import com.createphotomovement.content.kinetics.solargenerator.HorizontalSolarGeneratorRenderer;
 import com.createphotomovement.ponder.PhotomovementPonderPlugin;
 
 import net.createmod.ponder.foundation.PonderIndex;
@@ -22,5 +23,7 @@ public class CreatePhotomovementClient {
     @SubscribeEvent
     public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerBlockEntityRenderer(AllBlockEntityTypes.SOLAR_GENERATOR.get(), SolarGeneratorRenderer::new);
+        event.registerBlockEntityRenderer(AllBlockEntityTypes.HORIZONTAL_SOLAR_GENERATOR.get(),
+                HorizontalSolarGeneratorRenderer::new);
     }
 }

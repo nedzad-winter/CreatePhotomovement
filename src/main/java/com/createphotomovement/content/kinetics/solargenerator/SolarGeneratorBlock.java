@@ -20,12 +20,16 @@ import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 import java.util.Map;
 import java.util.HashMap;
@@ -101,22 +105,9 @@ public class SolarGeneratorBlock extends RotatedPillarKineticBlock
                 // Get the current axis to preserve orientation
                 Direction.Axis currentAxis = state.getValue(AXIS);
 
-                // Get block entity data to preserve (like reversed state)
-                boolean wasReversed = false;
-                if (level.getBlockEntity(pos) instanceof SolarGeneratorBlockEntity be) {
-                    wasReversed = be.isReversed();
-                }
-
                 // Replace with the colored variant, preserving axis
                 BlockState newState = targetBlock.defaultBlockState().setValue(AXIS, currentAxis);
                 level.setBlock(pos, newState, 3);
-
-                // Restore block entity state
-                if (level.getBlockEntity(pos) instanceof SolarGeneratorBlockEntity be) {
-                    if (wasReversed) {
-                        be.toggleReversed();
-                    }
-                }
 
                 // Play dye sound
                 level.playSound(null, pos, SoundEvents.DYE_USE, SoundSource.BLOCKS, 1.0F, 1.0F);
@@ -134,16 +125,29 @@ public class SolarGeneratorBlock extends RotatedPillarKineticBlock
     }
 
     @Override
-    public InteractionResult onSneakWrenched(BlockState state, UseOnContext context) {
-        if (context.getLevel().isClientSide)
+    public net.minecraft.core.Direction.Axis getRotationAxis(BlockState state) {
+        return state.getValue(AXIS);
+    }
+
+    @Override
+    public InteractionResult onWrenched(BlockState state, UseOnContext context) {
+        Level level = context.getLevel();
+        BlockPos pos = context.getClickedPos();
+
+        if (level.isClientSide)
             return InteractionResult.SUCCESS;
 
-        withBlockEntityDo(context.getLevel(), context.getClickedPos(), SolarGeneratorBlockEntity::toggleReversed);
+        // Only cycle between horizontal axes: X <-> Z (keeps solar panel facing up)
+        Direction.Axis currentAxis = state.getValue(AXIS);
+        Direction.Axis newAxis = currentAxis == Direction.Axis.X ? Direction.Axis.Z : Direction.Axis.X;
+
+        level.setBlock(pos, state.setValue(AXIS, newAxis), 3);
+        level.playSound(null, pos, SoundEvents.ITEM_FRAME_ROTATE_ITEM, SoundSource.BLOCKS, 1.0F, 1.0F);
         return InteractionResult.SUCCESS;
     }
 
     @Override
-    public net.minecraft.core.Direction.Axis getRotationAxis(BlockState state) {
-        return state.getValue(AXIS);
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        return Shapes.block();
     }
 }

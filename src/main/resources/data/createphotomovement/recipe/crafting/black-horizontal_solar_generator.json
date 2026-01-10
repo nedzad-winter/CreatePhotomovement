@@ -1,0 +1,17 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "category": "misc",
+    "group": "horizontal_solar_generator_dyeing",
+    "ingredients": [
+        {
+            "tag": "createphotomovement:horizontal_solar_generators"
+        },
+        {
+            "item": "minecraft:black_dye"
+        }
+    ],
+    "result": {
+        "count": 1,
+        "id": "createphotomovement:black_horizontal_solar_generator"
+    }
+}
