@@ -19,7 +19,24 @@ public class AllCreativeTabs {
                                                 // Original Solar Generator (clear glass)
                                                 output.accept(AllItems.SOLAR_GENERATOR.get());
                                                 output.accept(AllItems.HORIZONTAL_SOLAR_GENERATOR.get());
-                                                // Stained Glass Variants
+                                                // Horizontal Solar Generator Color Variants
+                                                output.accept(AllItems.WHITE_HORIZONTAL_SOLAR_GENERATOR.get());
+                                                output.accept(AllItems.ORANGE_HORIZONTAL_SOLAR_GENERATOR.get());
+                                                output.accept(AllItems.MAGENTA_HORIZONTAL_SOLAR_GENERATOR.get());
+                                                output.accept(AllItems.LIGHT_BLUE_HORIZONTAL_SOLAR_GENERATOR.get());
+                                                output.accept(AllItems.YELLOW_HORIZONTAL_SOLAR_GENERATOR.get());
+                                                output.accept(AllItems.LIME_HORIZONTAL_SOLAR_GENERATOR.get());
+                                                output.accept(AllItems.PINK_HORIZONTAL_SOLAR_GENERATOR.get());
+                                                output.accept(AllItems.GRAY_HORIZONTAL_SOLAR_GENERATOR.get());
+                                                output.accept(AllItems.LIGHT_GRAY_HORIZONTAL_SOLAR_GENERATOR.get());
+                                                output.accept(AllItems.CYAN_HORIZONTAL_SOLAR_GENERATOR.get());
+                                                output.accept(AllItems.PURPLE_HORIZONTAL_SOLAR_GENERATOR.get());
+                                                output.accept(AllItems.BLUE_HORIZONTAL_SOLAR_GENERATOR.get());
+                                                output.accept(AllItems.BROWN_HORIZONTAL_SOLAR_GENERATOR.get());
+                                                output.accept(AllItems.GREEN_HORIZONTAL_SOLAR_GENERATOR.get());
+                                                output.accept(AllItems.RED_HORIZONTAL_SOLAR_GENERATOR.get());
+                                                output.accept(AllItems.BLACK_HORIZONTAL_SOLAR_GENERATOR.get());
+                                                // Stained Glass Variants (Vertical Solar Generator)
                                                 output.accept(AllItems.WHITE_SOLAR_GENERATOR.get());
                                                 output.accept(AllItems.ORANGE_SOLAR_GENERATOR.get());
                                                 output.accept(AllItems.MAGENTA_SOLAR_GENERATOR.get());

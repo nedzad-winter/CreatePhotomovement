@@ -30,9 +30,14 @@ public class HorizontalSolarGeneratorBlockEntity extends GeneratingKineticBlockE
     @Override
     public void onLoad() {
         super.onLoad();
-        // Immediate update on placement/chunk load
+        // Force recalculation and network update on chunk load
         if (level != null && !level.isClientSide) {
+            // Reset firstTick to ensure we update on next tick
+            firstTick = true;
+            // Force immediate stress recalculation
             updateStressCapacity();
+            // Always force network update on load to sync with kinetic network
+            updateGeneratedRotation();
         }
     }
 
@@ -101,30 +106,47 @@ public class HorizontalSolarGeneratorBlockEntity extends GeneratingKineticBlockE
 
         BlockState state = getBlockState();
         Direction facing = state.getValue(HorizontalSolarGeneratorBlock.HORIZONTAL_FACING);
-        long time = level.getDayTime() % 24000;
 
         // Base config capacity
         float base = PMConfigs.server().stressCapacity.get();
-        float peak = 4 * base;
         float min = 8;
         float newCapacity = min;
 
-        // Clamp time to 0-12000 for curve calculation.
-        long daylightTime = Math.min(time, 12000);
-        float ratio = (float) daylightTime / 12000.0f; // 0.0 to 1.0
-        ratio = Mth.clamp(ratio, 0f, 1f);
+        // Check if the block is 2 to 10 blocks away we set the RPM to the minimum
+        boolean distantObstruction = false;
+        for (int i = 2; i <= 10; i++) {
+            BlockPos checkPos = worldPosition.relative(facing, i);
+            BlockState checkState = level.getBlockState(checkPos);
+            // only for solid blocks
+            if (checkState.getLightBlock(level, checkPos) > 0) {
+                distantObstruction = true;
+                break;
+            }
+        }
 
-        if (facing == Direction.EAST) {
-            // Starts high, goes low
-            float factor = (1 - ratio) * (1 - ratio);
-            newCapacity = min + (peak - min) * factor;
-        } else if (facing == Direction.WEST) {
-            // Starts low, goes high
-            float factor = ratio * ratio;
-            newCapacity = min + (peak - min) * factor;
-        } else {
-            // North/South - Default to min
+        if (distantObstruction) {
             newCapacity = min;
+        } else {
+            long time = level.getDayTime() % 24000;
+            float peak = 4 * base;
+
+            // Clamp time to 0-12000 for curve calculation.
+            long daylightTime = Math.min(time, 12000);
+            float ratio = (float) daylightTime / 12000.0f; // 0.0 to 1.0
+            ratio = Mth.clamp(ratio, 0f, 1f);
+
+            if (facing == Direction.EAST) {
+                // Starts high, goes low
+                float factor = (1 - ratio) * (1 - ratio);
+                newCapacity = min + (peak - min) * factor;
+            } else if (facing == Direction.WEST) {
+                // Starts low, goes high
+                float factor = ratio * ratio;
+                newCapacity = min + (peak - min) * factor;
+            } else {
+                // North/South - Default to min
+                newCapacity = min;
+            }
         }
 
         // Round to nearest integer to avoid floating point numbers
@@ -141,32 +163,26 @@ public class HorizontalSolarGeneratorBlockEntity extends GeneratingKineticBlockE
         if (level == null)
             return false;
 
+        BlockState state = getBlockState();
+        Direction facing = state.getValue(HorizontalSolarGeneratorBlock.HORIZONTAL_FACING);
+        BlockPos frontPos = worldPosition.relative(facing);
+
         // Check if skylight can reach the block
         // Using light threshold of 12
-        int skyLight = level.getBrightness(LightLayer.SKY, worldPosition.above());
+        int skyLight = level.getBrightness(LightLayer.SKY, frontPos);
         int currentSkyLight = skyLight - level.getSkyDarken();
         if (currentSkyLight < 12) {
             return false;
         }
 
-        BlockPos abovePos = worldPosition.above();
-        BlockState aboveState = level.getBlockState(abovePos);
+        BlockState frontState = level.getBlockState(frontPos);
 
-        // Check for obstructions
-        Block aboveBlock = aboveState.getBlock();
-        if (aboveBlock instanceof SnowLayerBlock)
+        // if the block right next to the solar face the generator does not produce
+        // anything
+        // only for solid blocks
+        if (frontState.getLightBlock(level, frontPos) > 0) {
             return false;
-        if (aboveBlock instanceof CarpetBlock)
-            return false;
-        if (aboveBlock == Blocks.MOSS_CARPET)
-            return false;
-        if (aboveBlock == Blocks.SNOW)
-            return false; // Snow block
-
-        // General opacity check
-        // If it blocks light, it stops power.
-        if (aboveState.getLightBlock(level, abovePos) > 0)
-            return false;
+        }
 
         return true;
     }

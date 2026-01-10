@@ -2,6 +2,7 @@ package com.createphotomovement.content.kinetics.solargenerator;
 
 import com.createphotomovement.AllBlockEntityTypes;
 import com.createphotomovement.AllBlocks;
+import com.simibubi.create.content.equipment.wrench.IWrenchable;
 import com.simibubi.create.content.kinetics.base.HorizontalKineticBlock;
 import com.simibubi.create.foundation.block.IBE;
 
@@ -16,18 +17,22 @@ import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.DyeItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.shapes.CollisionContext;
+import net.minecraft.world.phys.shapes.Shapes;
+import net.minecraft.world.phys.shapes.VoxelShape;
 
 import java.util.Map;
 import java.util.HashMap;
 
 public class HorizontalSolarGeneratorBlock extends HorizontalKineticBlock
-        implements IBE<HorizontalSolarGeneratorBlockEntity> {
+        implements IBE<HorizontalSolarGeneratorBlockEntity>, IWrenchable {
 
     // Map dye colors to their corresponding horizontal solar generator blocks
     private static final Map<DyeColor, java.util.function.Supplier<Block>> COLOR_TO_BLOCK = new HashMap<>();
@@ -77,7 +82,13 @@ public class HorizontalSolarGeneratorBlock extends HorizontalKineticBlock
 
     @Override
     public BlockState getStateForPlacement(BlockPlaceContext context) {
-        return defaultBlockState().setValue(HORIZONTAL_FACING, context.getHorizontalDirection());
+        // Panel faces the player by default
+        // When shift is held, panel faces away from player
+        Direction facing = context.getHorizontalDirection().getOpposite();
+        if (context.getPlayer() != null && context.getPlayer().isShiftKeyDown()) {
+            facing = context.getHorizontalDirection();
+        }
+        return defaultBlockState().setValue(HORIZONTAL_FACING, facing);
     }
 
     @Override
@@ -131,5 +142,10 @@ public class HorizontalSolarGeneratorBlock extends HorizontalKineticBlock
             level.getBlockEntity(pos, AllBlockEntityTypes.HORIZONTAL_SOLAR_GENERATOR.get())
                     .ifPresent(HorizontalSolarGeneratorBlockEntity::forceUpdate);
         }
+    }
+
+    @Override
+    public VoxelShape getShape(BlockState state, BlockGetter level, BlockPos pos, CollisionContext context) {
+        return Shapes.block();
     }
 }

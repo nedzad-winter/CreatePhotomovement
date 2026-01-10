@@ -14,6 +14,73 @@ public class AllItems {
                         "horizontal_solar_generator",
                         AllBlocks.HORIZONTAL_SOLAR_GENERATOR);
 
+        // Horizontal Solar Generator Color Variants
+        public static final DeferredItem<BlockItem> WHITE_HORIZONTAL_SOLAR_GENERATOR = ITEMS.registerSimpleBlockItem(
+                        "white_horizontal_solar_generator",
+                        AllBlocks.WHITE_HORIZONTAL_SOLAR_GENERATOR);
+
+        public static final DeferredItem<BlockItem> ORANGE_HORIZONTAL_SOLAR_GENERATOR = ITEMS.registerSimpleBlockItem(
+                        "orange_horizontal_solar_generator",
+                        AllBlocks.ORANGE_HORIZONTAL_SOLAR_GENERATOR);
+
+        public static final DeferredItem<BlockItem> MAGENTA_HORIZONTAL_SOLAR_GENERATOR = ITEMS.registerSimpleBlockItem(
+                        "magenta_horizontal_solar_generator",
+                        AllBlocks.MAGENTA_HORIZONTAL_SOLAR_GENERATOR);
+
+        public static final DeferredItem<BlockItem> LIGHT_BLUE_HORIZONTAL_SOLAR_GENERATOR = ITEMS
+                        .registerSimpleBlockItem(
+                                        "light_blue_horizontal_solar_generator",
+                                        AllBlocks.LIGHT_BLUE_HORIZONTAL_SOLAR_GENERATOR);
+
+        public static final DeferredItem<BlockItem> YELLOW_HORIZONTAL_SOLAR_GENERATOR = ITEMS.registerSimpleBlockItem(
+                        "yellow_horizontal_solar_generator",
+                        AllBlocks.YELLOW_HORIZONTAL_SOLAR_GENERATOR);
+
+        public static final DeferredItem<BlockItem> LIME_HORIZONTAL_SOLAR_GENERATOR = ITEMS.registerSimpleBlockItem(
+                        "lime_horizontal_solar_generator",
+                        AllBlocks.LIME_HORIZONTAL_SOLAR_GENERATOR);
+
+        public static final DeferredItem<BlockItem> PINK_HORIZONTAL_SOLAR_GENERATOR = ITEMS.registerSimpleBlockItem(
+                        "pink_horizontal_solar_generator",
+                        AllBlocks.PINK_HORIZONTAL_SOLAR_GENERATOR);
+
+        public static final DeferredItem<BlockItem> GRAY_HORIZONTAL_SOLAR_GENERATOR = ITEMS.registerSimpleBlockItem(
+                        "gray_horizontal_solar_generator",
+                        AllBlocks.GRAY_HORIZONTAL_SOLAR_GENERATOR);
+
+        public static final DeferredItem<BlockItem> LIGHT_GRAY_HORIZONTAL_SOLAR_GENERATOR = ITEMS
+                        .registerSimpleBlockItem(
+                                        "light_gray_horizontal_solar_generator",
+                                        AllBlocks.LIGHT_GRAY_HORIZONTAL_SOLAR_GENERATOR);
+
+        public static final DeferredItem<BlockItem> CYAN_HORIZONTAL_SOLAR_GENERATOR = ITEMS.registerSimpleBlockItem(
+                        "cyan_horizontal_solar_generator",
+                        AllBlocks.CYAN_HORIZONTAL_SOLAR_GENERATOR);
+
+        public static final DeferredItem<BlockItem> PURPLE_HORIZONTAL_SOLAR_GENERATOR = ITEMS.registerSimpleBlockItem(
+                        "purple_horizontal_solar_generator",
+                        AllBlocks.PURPLE_HORIZONTAL_SOLAR_GENERATOR);
+
+        public static final DeferredItem<BlockItem> BLUE_HORIZONTAL_SOLAR_GENERATOR = ITEMS.registerSimpleBlockItem(
+                        "blue_horizontal_solar_generator",
+                        AllBlocks.BLUE_HORIZONTAL_SOLAR_GENERATOR);
+
+        public static final DeferredItem<BlockItem> BROWN_HORIZONTAL_SOLAR_GENERATOR = ITEMS.registerSimpleBlockItem(
+                        "brown_horizontal_solar_generator",
+                        AllBlocks.BROWN_HORIZONTAL_SOLAR_GENERATOR);
+
+        public static final DeferredItem<BlockItem> GREEN_HORIZONTAL_SOLAR_GENERATOR = ITEMS.registerSimpleBlockItem(
+                        "green_horizontal_solar_generator",
+                        AllBlocks.GREEN_HORIZONTAL_SOLAR_GENERATOR);
+
+        public static final DeferredItem<BlockItem> RED_HORIZONTAL_SOLAR_GENERATOR = ITEMS.registerSimpleBlockItem(
+                        "red_horizontal_solar_generator",
+                        AllBlocks.RED_HORIZONTAL_SOLAR_GENERATOR);
+
+        public static final DeferredItem<BlockItem> BLACK_HORIZONTAL_SOLAR_GENERATOR = ITEMS.registerSimpleBlockItem(
+                        "black_horizontal_solar_generator",
+                        AllBlocks.BLACK_HORIZONTAL_SOLAR_GENERATOR);
+
         // Stained Glass Variants
         public static final DeferredItem<BlockItem> WHITE_SOLAR_GENERATOR = ITEMS.registerSimpleBlockItem(
                         "white_solar_generator",

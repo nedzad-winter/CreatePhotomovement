@@ -1,0 +1,13 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "category": "misc",
+    "ingredients": [
+        {
+            "item": "createphotomovement:lime_horizontal_solar_generator"
+        }
+    ],
+    "result": {
+        "count": 1,
+        "id": "createphotomovement:lime_solar_generator"
+    }
+}
