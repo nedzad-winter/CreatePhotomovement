@@ -1,75 +1,15 @@
 plugins {
-    id 'java-library'
-    id 'net.neoforged.moddev' version '2.0.107'
+    id 'net.neoforged.moddev' version '2.0.107' apply false
+    id 'net.neoforged.moddev.legacyforge' version '2.0.107' apply false
 }
 
-group = 'com.createphotomovement'
-version = mod_version
-
-repositories {
-    mavenLocal()
-    mavenCentral()
-    maven { url = "https://maven.createmod.net" } // Create, Ponder, Flywheel
-    maven { url = "https://maven.ithundxr.dev/snapshots" } // Registrate
-    maven { url = "https://maven.blamejared.com" } // JEI
-    maven { url = "https://maven.theillusivec4.top/" } // Curios
-    maven { url = "https://api.modrinth.com/maven" } // Modrinth
-    maven { url = "https://maven.architectury.dev/" } // Architectury
-    maven { url = "https://maven.saps.dev/minecraft" } // FTB Mods
-    maven { url = "https://maven.squiddev.cc" } // CC: Tweaked
-    maven { url = "https://cursemaven.com" } // CurseMaven
-}
-
-dependencies {
-    implementation("com.simibubi.create:create-${minecraft_version}:${create_version}:slim") {
-        exclude group: 'dev.ftb.mods'
-        exclude group: 'dev.architectury'
-        exclude group: 'maven.modrinth'
-        exclude group: 'cc.tweaked'
+subprojects {
+    apply plugin: 'java'
+    
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven { url = "https://maven.createmod.net" }
+        maven { url = "https://maven.neoforged.net/releases" }
     }
-    implementation "net.createmod.ponder:ponder-neoforge:1.0.81+mc${minecraft_version}"
-    implementation "dev.engine-room.flywheel:flywheel-neoforge-${minecraft_version}:${flywheel_version}"
-    implementation "com.tterrag.registrate:Registrate:${registrate_version}"
-    implementation "curse.maven:construction-wands-revived-1395288:7356007"
-}
-
-neoForge {
-    version = neo_version
-
-    mods {
-        "${mod_id}" {
-            sourceSet sourceSets.main
-        }
-    }
-
-    runs {
-        configureEach {
-            systemProperty 'forge.logging.markers', 'REGISTRIES'
-            systemProperty 'forge.logging.console.level', 'debug'
-        }
-
-        client {
-            client()
-            programArguments.addAll '--width', '1600', '--height', '900'
-        }
-
-        server {
-            server()
-            programArgument '--nogui'
-        }
-
-        data {
-            data()
-            programArguments.addAll '--mod', mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
-        }
-    }
-}
-
-java {
-    toolchain.languageVersion = JavaLanguageVersion.of(21)
-    withSourcesJar()
-}
-
-tasks.withType(JavaCompile).configureEach {
-    options.encoding = 'UTF-8'
 }

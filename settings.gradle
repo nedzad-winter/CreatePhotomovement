@@ -6,3 +6,7 @@ pluginManagement {
 }
 
 rootProject.name = 'create-photomovement'
+
+include 'neoforge:1201'
+include 'neoforge:1211'
+include 'forge:1201'
