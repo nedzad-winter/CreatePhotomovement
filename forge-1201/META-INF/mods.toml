@@ -1,0 +1,32 @@
+modLoader = "javafml"
+loaderVersion = "[47,)"
+license = "MIT"
+issueTrackerURL = "https://github.com/example/createphotomovement/issues"
+
+[[mods]]
+modId = "createphotomovement"
+version = "0.1.0"
+displayName = "Create Photomovement"
+authors = "User"
+description = '''A Create mod addon adding a solar powered rotation source.'''
+
+[[dependencies.createphotomovement]]
+modId = "forge"
+mandatory = true
+versionRange = "[47,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.createphotomovement]]
+modId = "minecraft"
+mandatory = true
+versionRange = "[1.20.1,1.21)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.createphotomovement]]
+modId = "create"
+mandatory = true
+versionRange = "[6.0,)"
+ordering = "AFTER"
+side = "BOTH"
