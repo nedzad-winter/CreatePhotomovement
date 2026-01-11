@@ -1,0 +1,7 @@
+{
+    "parent": "createphotomovement:block/solar_generator",
+    "textures": {
+        "glass": "minecraft:block/yellow_stained_glass"
+    },
+    "render_type": "minecraft:translucent"
+}

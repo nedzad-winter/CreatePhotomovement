@@ -4,9 +4,9 @@ license="MIT"
 
 [[mods]]
 modId="createphotomovement"
-version="0.0.1"
+version="0.1.0"
 displayName="Create Photomovement"
-authors="User"
+authors="Nedzad Winter"
 description='''
 A Create mod addon adding a solar powered rotation source.
 '''

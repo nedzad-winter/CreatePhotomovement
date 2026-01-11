@@ -1,18 +1,26 @@
 modLoader = "javafml"
 loaderVersion = "[47,)"
-license = "MIT"
+license = "${mod_license}"
 issueTrackerURL = "https://github.com/example/createphotomovement/issues"
 
 [[mods]]
-modId = "createphotomovement"
-version = "0.1.0"
-displayName = "Create Photomovement"
-authors = "Nedzad Winter"
-description = '''A Create mod addon adding a solar powered rotation source.'''
+modId = "${mod_id}"
+version = "${mod_version}"
+displayName = "${mod_name}"
+authors = "${mod_authors}"
+description = '''${mod_description}'''
 
+# Works with both Forge and NeoForge for 1.20.1
 [[dependencies.createphotomovement]]
 modId = "forge"
-mandatory = true
+mandatory = false
+versionRange = "[47,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.createphotomovement]]
+modId = "neoforge"
+mandatory = false
 versionRange = "[47,)"
 ordering = "NONE"
 side = "BOTH"
