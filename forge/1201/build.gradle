@@ -78,6 +78,10 @@ dependencies {
 
     // Registrate (registration helper)
     modImplementation("com.tterrag.registrate:Registrate:${registrate_version}")
+
+    // MixinExtras (required by Create's mixins)
+    compileOnly("io.github.llamalad7:mixinextras-common:0.3.5")
+    modRuntimeOnly("io.github.llamalad7:mixinextras-forge:0.3.5")
 }
 
 jar {
