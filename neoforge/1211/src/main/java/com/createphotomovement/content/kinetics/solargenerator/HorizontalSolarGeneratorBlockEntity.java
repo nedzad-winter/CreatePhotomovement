@@ -58,7 +58,13 @@ public class HorizontalSolarGeneratorBlockEntity extends GeneratingKineticBlockE
         if (!canGeneratePower()) {
             return 0;
         }
-        return PMConfigs.server().generationSpeed.get();
+        float speed = PMConfigs.server().generationSpeed.get();
+        // Reduce speed by half during rain
+        if (level != null && level.isRainingAt(
+                worldPosition.relative(getBlockState().getValue(HorizontalSolarGeneratorBlock.HORIZONTAL_FACING)))) {
+            speed = speed / 2;
+        }
+        return speed;
     }
 
     @Override
@@ -94,7 +100,8 @@ public class HorizontalSolarGeneratorBlockEntity extends GeneratingKineticBlockE
     }
 
     private void updateStressCapacity() {
-        // First check strict generation conditions (Light level > 12, no obstructions)
+        // First check strict generation conditions (Light level 12 or higher, no
+        // obstructions)
         if (!canGeneratePower()) {
             if (currentStressCapacity != 0) {
                 currentStressCapacity = 0;
