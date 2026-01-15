@@ -32,7 +32,12 @@ public class SolarGeneratorBlockEntity extends GeneratingKineticBlockEntity {
     public float getGeneratedSpeed() {
         if (!canGeneratePower())
             return 0;
-        return PMConfigs.server().generationSpeed.get();
+        float speed = PMConfigs.server().generationSpeed.get();
+        // Reduce speed by half during rain
+        if (level != null && level.isRainingAt(worldPosition.above())) {
+            speed = speed / 2;
+        }
+        return speed;
     }
 
     @Override
