@@ -1,0 +1,102 @@
+plugins {
+    id 'fabric-loom' version '1.10-SNAPSHOT'
+    id 'maven-publish'
+}
+
+version = mod_version
+group = 'com.createphotomovement'
+base.archivesName = "createphotomovement-fabric-${minecraft_version}"
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    maven { url = "https://mvn.devos.one/snapshots/" } // Create, Registrate, Milk Lib
+    maven { url = "https://mvn.devos.one/releases/" } // Porting Lib
+    maven { url = "https://maven.createmod.net/" } // Flywheel, Ponder
+    maven { url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven" } // Forge Config API Port
+    maven { url = "https://maven.jamieswhiteshirt.com/libs-release" } // Reach Entity Attributes
+    maven { url = "https://maven.blamejared.com" } // JEI
+    maven { url = "https://api.modrinth.com/maven" } // LazyDFU
+}
+
+loom {
+    runs {
+        client {
+            client()
+            setConfigName("Fabric Client")
+            ideConfigGenerated(true)
+            runDir("run")
+            programArgs("--width", "1600", "--height", "1024")
+        }
+        server {
+            server()
+            setConfigName("Fabric Server")
+            ideConfigGenerated(true)
+            runDir("run/server")
+        }
+    }
+}
+
+dependencies {
+    // Minecraft and mappings
+    minecraft "com.mojang:minecraft:${minecraft_version}"
+    mappings loom.officialMojangMappings()
+    
+    // Fabric Loader and API
+    modImplementation "net.fabricmc:fabric-loader:${fabric_loader_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_api_version}"
+    
+    // Create Fabric (Official Repo)
+    modImplementation("com.simibubi.create:create-fabric:${create_version}")
+
+    // Forge Config API Port
+    modApi "fuzs.forgeconfigapiport:forgeconfigapiport-fabric:${forge_config_api_port_version}"
+    
+    // Development Utilities
+    modRuntimeOnly "maven.modrinth:lazydfu:0.1.3"
+    
+    // JEI for testing
+    modRuntimeOnly "mezz.jei:jei-1.20.1-fabric:15.20.0.106"
+}
+
+configurations.all {
+    resolutionStrategy {
+        force "net.fabricmc:fabric-loader:${fabric_loader_version}"
+    }
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+    withSourcesJar()
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.release = 17
+}
+
+processResources {
+    inputs.property "version", mod_version
+    
+    filesMatching("fabric.mod.json") {
+        expand "version": mod_version
+    }
+}
+
+jar {
+    from("LICENSE") {
+        rename { "${it}_${project.archivesBaseName}" }
+    }
+    manifest {
+        attributes([
+            "Specification-Title": mod_name,
+            "Specification-Vendor": mod_authors,
+            "Specification-Version": "1",
+            "Implementation-Title": project.name,
+            "Implementation-Version": project.jar.archiveVersion,
+            "Implementation-Vendor": mod_authors,
+            "Implementation-Timestamp": new Date().format("yyyy-MM-dd'T'HH:mm:ssZ")
+        ])
+    }
+}
