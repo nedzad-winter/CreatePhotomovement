@@ -1,0 +1,15 @@
+{
+    "variants": {
+        "axis=x": {
+            "model": "createphotomovement:block/solar_generator",
+            "y": 90
+        },
+        "axis=y": {
+            "model": "createphotomovement:block/solar_generator",
+            "x": 90
+        },
+        "axis=z": {
+            "model": "createphotomovement:block/solar_generator"
+        }
+    }
+}
