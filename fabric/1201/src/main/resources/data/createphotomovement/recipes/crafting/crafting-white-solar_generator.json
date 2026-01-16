@@ -1,0 +1,30 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "category": "misc",
+    "key": {
+        "G": {
+            "item": "minecraft:white_stained_glass"
+        },
+        "S": {
+            "item": "minecraft:polished_deepslate_slab"
+        },
+        "R": {
+            "item": "minecraft:redstone"
+        },
+        "H": {
+            "item": "create:shaft"
+        },
+        "A": {
+            "item": "create:andesite_casing"
+        }
+    },
+    "pattern": [
+        "GGG",
+        "SRS",
+        "HAH"
+    ],
+    "result": {
+        "count": 1,
+        "item": "createphotomovement:white_solar_generator"
+    }
+}

@@ -1,0 +1,13 @@
+{
+    "type": "minecraft:crafting_shapeless",
+    "category": "misc",
+    "ingredients": [
+        {
+            "item": "createphotomovement:cyan_horizontal_solar_generator"
+        }
+    ],
+    "result": {
+        "count": 1,
+        "item": "createphotomovement:cyan_solar_generator"
+    }
+}

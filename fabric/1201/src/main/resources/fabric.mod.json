@@ -1,0 +1,36 @@
+{
+    "schemaVersion": 1,
+    "id": "createphotomovement",
+    "version": "${version}",
+    "name": "Create Photomovement",
+    "description": "A Create mod addon adding a solar powered rotation source.",
+    "authors": [
+        "User"
+    ],
+    "contact": {
+        "sources": "https://github.com/example/createphotomovement"
+    },
+    "license": "MIT",
+    "icon": "assets/createphotomovement/icon.png",
+    "environment": "*",
+    "entrypoints": {
+        "main": [
+            "com.createphotomovement.CreatePhotomovement"
+        ],
+        "client": [
+            "com.createphotomovement.CreatePhotomovementClient"
+        ]
+    },
+    "mixins": [],
+    "depends": {
+        "fabricloader": ">=0.15.0",
+        "fabric-api": "*",
+        "minecraft": "~1.20.1",
+        "create": ">=6.0.0"
+    },
+    "suggests": {
+        "jei": "*",
+        "rei": "*",
+        "emi": "*"
+    }
+}
