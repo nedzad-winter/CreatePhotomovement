@@ -166,7 +166,7 @@ public class HorizontalSolarGeneratorBlockEntity extends GeneratingKineticBlockE
         }
     }
 
-    private boolean canGeneratePower() {
+    protected boolean canGeneratePower() {
         if (level == null)
             return false;
 

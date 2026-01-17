@@ -45,7 +45,7 @@ public class SolarGeneratorBlockEntity extends GeneratingKineticBlockEntity {
         return PMConfigs.server().stressCapacity.get();
     }
 
-    private boolean canGeneratePower() {
+    protected boolean canGeneratePower() {
         if (level == null)
             return false;
 
