@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.1.3] - 2026-01-16
+
+### Added
+- **Fabric 1.20.1 Support**: Officially ported mod to Fabric 1.20.1 (migrated to MojMap)
+- Spanish (es_es) translation (Community contribution: albertosaurio65)
+
+### Fixed
+- **Solar Generator Logic**:
+  - Fixed sky access detection to correctly check for obstructions at any height
+  - Fixed generator not starting immediately upon placement
+- **Visuals**:
+  - Fixed transparency rendering for colored Solar Generators (stained glass)
+- **Recipes**:
+  - Fixed JEI display issues for Solar Generator recipes (Fabric)
+
 ## [0.1.1] - 2026-01-12
 
 ### Fixed

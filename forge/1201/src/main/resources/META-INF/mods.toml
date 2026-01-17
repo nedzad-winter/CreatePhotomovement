@@ -10,9 +10,17 @@ displayName = "${mod_name}"
 authors = "${mod_authors}"
 description = '''${mod_description}'''
 
+# Works with both Forge and NeoForge for 1.20.1
 [[dependencies.createphotomovement]]
 modId = "forge"
-mandatory = true
+mandatory = false
+versionRange = "[47,)"
+ordering = "NONE"
+side = "BOTH"
+
+[[dependencies.createphotomovement]]
+modId = "neoforge"
+mandatory = false
 versionRange = "[47,)"
 ordering = "NONE"
 side = "BOTH"

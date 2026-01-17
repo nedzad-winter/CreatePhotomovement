@@ -1,0 +1,22 @@
+{
+    "replace": false,
+    "values": [
+        "createphotomovement:adv_solar_generator",
+        "createphotomovement:white_adv_solar_generator",
+        "createphotomovement:orange_adv_solar_generator",
+        "createphotomovement:magenta_adv_solar_generator",
+        "createphotomovement:light_blue_adv_solar_generator",
+        "createphotomovement:yellow_adv_solar_generator",
+        "createphotomovement:lime_adv_solar_generator",
+        "createphotomovement:pink_adv_solar_generator",
+        "createphotomovement:gray_adv_solar_generator",
+        "createphotomovement:light_gray_adv_solar_generator",
+        "createphotomovement:cyan_adv_solar_generator",
+        "createphotomovement:purple_adv_solar_generator",
+        "createphotomovement:blue_adv_solar_generator",
+        "createphotomovement:brown_adv_solar_generator",
+        "createphotomovement:green_adv_solar_generator",
+        "createphotomovement:red_adv_solar_generator",
+        "createphotomovement:black_adv_solar_generator"
+    ]
+}

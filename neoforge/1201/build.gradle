@@ -87,6 +87,11 @@ dependencies {
     // MixinExtras (required by Create)
     implementation(jarJar("io.github.llamalad7:mixinextras-forge:0.4.1"))
     compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.4.1"))
+
+    // JEI (Just Enough Items)
+    //modCompileOnly("mezz.jei:jei-1.20.1-common-api:15.19.0")
+    //modCompileOnly("mezz.jei:jei-1.20.1-forge-api:15.19.0")
+    //modRuntimeOnly("mezz.jei:jei-1.20.1-forge:15.19.0")
 }
 
 jar {

@@ -10,6 +10,8 @@ import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
+import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
+import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 
 @Mod.EventBusSubscriber(modid = CreatePhotomovement.MOD_ID, bus = Mod.EventBusSubscriber.Bus.MOD, value = Dist.CLIENT)
 public class CreatePhotomovementClient {
@@ -21,9 +23,14 @@ public class CreatePhotomovementClient {
     }
 
     @SubscribeEvent
+    @SuppressWarnings("unchecked")
     public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerBlockEntityRenderer(AllBlockEntityTypes.SOLAR_GENERATOR.get(), SolarGeneratorRenderer::new);
         event.registerBlockEntityRenderer(AllBlockEntityTypes.HORIZONTAL_SOLAR_GENERATOR.get(),
                 HorizontalSolarGeneratorRenderer::new);
+        event.registerBlockEntityRenderer(AllBlockEntityTypes.ADV_SOLAR_GENERATOR.get(),
+                context -> (BlockEntityRenderer) new SolarGeneratorRenderer(context));
+        event.registerBlockEntityRenderer(AllBlockEntityTypes.HORZ_ADV_SOLAR_GENERATOR.get(),
+                context -> (BlockEntityRenderer) new HorizontalSolarGeneratorRenderer(context));
     }
 }
