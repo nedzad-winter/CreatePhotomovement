@@ -14,6 +14,14 @@ public class AllItems {
                         "horizontal_solar_generator",
                         AllBlocks.HORIZONTAL_SOLAR_GENERATOR);
 
+        public static final DeferredItem<BlockItem> ADV_SOLAR_GENERATOR = ITEMS.registerSimpleBlockItem(
+                        "adv_solar_generator",
+                        AllBlocks.ADV_SOLAR_GENERATOR);
+
+        public static final DeferredItem<BlockItem> HORZ_ADV_SOLAR_GENERATOR = ITEMS.registerSimpleBlockItem(
+                        "horz_adv_solar_generator",
+                        AllBlocks.HORZ_ADV_SOLAR_GENERATOR);
+
         // Horizontal Solar Generator Color Variants
         public static final DeferredItem<BlockItem> WHITE_HORIZONTAL_SOLAR_GENERATOR = ITEMS.registerSimpleBlockItem(
                         "white_horizontal_solar_generator",
@@ -145,4 +153,134 @@ public class AllItems {
         public static final DeferredItem<BlockItem> BLACK_SOLAR_GENERATOR = ITEMS.registerSimpleBlockItem(
                         "black_solar_generator",
                         AllBlocks.BLACK_SOLAR_GENERATOR);
+
+        // Advanced Solar Generator Color Variants
+        public static final DeferredItem<BlockItem> WHITE_ADV_SOLAR_GENERATOR = ITEMS.registerSimpleBlockItem(
+                        "white_adv_solar_generator",
+                        AllBlocks.WHITE_ADV_SOLAR_GENERATOR);
+
+        public static final DeferredItem<BlockItem> ORANGE_ADV_SOLAR_GENERATOR = ITEMS.registerSimpleBlockItem(
+                        "orange_adv_solar_generator",
+                        AllBlocks.ORANGE_ADV_SOLAR_GENERATOR);
+
+        public static final DeferredItem<BlockItem> MAGENTA_ADV_SOLAR_GENERATOR = ITEMS.registerSimpleBlockItem(
+                        "magenta_adv_solar_generator",
+                        AllBlocks.MAGENTA_ADV_SOLAR_GENERATOR);
+
+        public static final DeferredItem<BlockItem> LIGHT_BLUE_ADV_SOLAR_GENERATOR = ITEMS.registerSimpleBlockItem(
+                        "light_blue_adv_solar_generator",
+                        AllBlocks.LIGHT_BLUE_ADV_SOLAR_GENERATOR);
+
+        public static final DeferredItem<BlockItem> YELLOW_ADV_SOLAR_GENERATOR = ITEMS.registerSimpleBlockItem(
+                        "yellow_adv_solar_generator",
+                        AllBlocks.YELLOW_ADV_SOLAR_GENERATOR);
+
+        public static final DeferredItem<BlockItem> LIME_ADV_SOLAR_GENERATOR = ITEMS.registerSimpleBlockItem(
+                        "lime_adv_solar_generator",
+                        AllBlocks.LIME_ADV_SOLAR_GENERATOR);
+
+        public static final DeferredItem<BlockItem> PINK_ADV_SOLAR_GENERATOR = ITEMS.registerSimpleBlockItem(
+                        "pink_adv_solar_generator",
+                        AllBlocks.PINK_ADV_SOLAR_GENERATOR);
+
+        public static final DeferredItem<BlockItem> GRAY_ADV_SOLAR_GENERATOR = ITEMS.registerSimpleBlockItem(
+                        "gray_adv_solar_generator",
+                        AllBlocks.GRAY_ADV_SOLAR_GENERATOR);
+
+        public static final DeferredItem<BlockItem> LIGHT_GRAY_ADV_SOLAR_GENERATOR = ITEMS.registerSimpleBlockItem(
+                        "light_gray_adv_solar_generator",
+                        AllBlocks.LIGHT_GRAY_ADV_SOLAR_GENERATOR);
+
+        public static final DeferredItem<BlockItem> CYAN_ADV_SOLAR_GENERATOR = ITEMS.registerSimpleBlockItem(
+                        "cyan_adv_solar_generator",
+                        AllBlocks.CYAN_ADV_SOLAR_GENERATOR);
+
+        public static final DeferredItem<BlockItem> PURPLE_ADV_SOLAR_GENERATOR = ITEMS.registerSimpleBlockItem(
+                        "purple_adv_solar_generator",
+                        AllBlocks.PURPLE_ADV_SOLAR_GENERATOR);
+
+        public static final DeferredItem<BlockItem> BLUE_ADV_SOLAR_GENERATOR = ITEMS.registerSimpleBlockItem(
+                        "blue_adv_solar_generator",
+                        AllBlocks.BLUE_ADV_SOLAR_GENERATOR);
+
+        public static final DeferredItem<BlockItem> BROWN_ADV_SOLAR_GENERATOR = ITEMS.registerSimpleBlockItem(
+                        "brown_adv_solar_generator",
+                        AllBlocks.BROWN_ADV_SOLAR_GENERATOR);
+
+        public static final DeferredItem<BlockItem> GREEN_ADV_SOLAR_GENERATOR = ITEMS.registerSimpleBlockItem(
+                        "green_adv_solar_generator",
+                        AllBlocks.GREEN_ADV_SOLAR_GENERATOR);
+
+        public static final DeferredItem<BlockItem> RED_ADV_SOLAR_GENERATOR = ITEMS.registerSimpleBlockItem(
+                        "red_adv_solar_generator",
+                        AllBlocks.RED_ADV_SOLAR_GENERATOR);
+
+        public static final DeferredItem<BlockItem> BLACK_ADV_SOLAR_GENERATOR = ITEMS.registerSimpleBlockItem(
+                        "black_adv_solar_generator",
+                        AllBlocks.BLACK_ADV_SOLAR_GENERATOR);
+
+        // Horizontal Advanced Solar Generator Color Variants
+        public static final DeferredItem<BlockItem> WHITE_HORZ_ADV_SOLAR_GENERATOR = ITEMS.registerSimpleBlockItem(
+                        "white_horz_adv_solar_generator",
+                        AllBlocks.WHITE_HORZ_ADV_SOLAR_GENERATOR);
+
+        public static final DeferredItem<BlockItem> ORANGE_HORZ_ADV_SOLAR_GENERATOR = ITEMS.registerSimpleBlockItem(
+                        "orange_horz_adv_solar_generator",
+                        AllBlocks.ORANGE_HORZ_ADV_SOLAR_GENERATOR);
+
+        public static final DeferredItem<BlockItem> MAGENTA_HORZ_ADV_SOLAR_GENERATOR = ITEMS.registerSimpleBlockItem(
+                        "magenta_horz_adv_solar_generator",
+                        AllBlocks.MAGENTA_HORZ_ADV_SOLAR_GENERATOR);
+
+        public static final DeferredItem<BlockItem> LIGHT_BLUE_HORZ_ADV_SOLAR_GENERATOR = ITEMS.registerSimpleBlockItem(
+                        "light_blue_horz_adv_solar_generator",
+                        AllBlocks.LIGHT_BLUE_HORZ_ADV_SOLAR_GENERATOR);
+
+        public static final DeferredItem<BlockItem> YELLOW_HORZ_ADV_SOLAR_GENERATOR = ITEMS.registerSimpleBlockItem(
+                        "yellow_horz_adv_solar_generator",
+                        AllBlocks.YELLOW_HORZ_ADV_SOLAR_GENERATOR);
+
+        public static final DeferredItem<BlockItem> LIME_HORZ_ADV_SOLAR_GENERATOR = ITEMS.registerSimpleBlockItem(
+                        "lime_horz_adv_solar_generator",
+                        AllBlocks.LIME_HORZ_ADV_SOLAR_GENERATOR);
+
+        public static final DeferredItem<BlockItem> PINK_HORZ_ADV_SOLAR_GENERATOR = ITEMS.registerSimpleBlockItem(
+                        "pink_horz_adv_solar_generator",
+                        AllBlocks.PINK_HORZ_ADV_SOLAR_GENERATOR);
+
+        public static final DeferredItem<BlockItem> GRAY_HORZ_ADV_SOLAR_GENERATOR = ITEMS.registerSimpleBlockItem(
+                        "gray_horz_adv_solar_generator",
+                        AllBlocks.GRAY_HORZ_ADV_SOLAR_GENERATOR);
+
+        public static final DeferredItem<BlockItem> LIGHT_GRAY_HORZ_ADV_SOLAR_GENERATOR = ITEMS.registerSimpleBlockItem(
+                        "light_gray_horz_adv_solar_generator",
+                        AllBlocks.LIGHT_GRAY_HORZ_ADV_SOLAR_GENERATOR);
+
+        public static final DeferredItem<BlockItem> CYAN_HORZ_ADV_SOLAR_GENERATOR = ITEMS.registerSimpleBlockItem(
+                        "cyan_horz_adv_solar_generator",
+                        AllBlocks.CYAN_HORZ_ADV_SOLAR_GENERATOR);
+
+        public static final DeferredItem<BlockItem> PURPLE_HORZ_ADV_SOLAR_GENERATOR = ITEMS.registerSimpleBlockItem(
+                        "purple_horz_adv_solar_generator",
+                        AllBlocks.PURPLE_HORZ_ADV_SOLAR_GENERATOR);
+
+        public static final DeferredItem<BlockItem> BLUE_HORZ_ADV_SOLAR_GENERATOR = ITEMS.registerSimpleBlockItem(
+                        "blue_horz_adv_solar_generator",
+                        AllBlocks.BLUE_HORZ_ADV_SOLAR_GENERATOR);
+
+        public static final DeferredItem<BlockItem> BROWN_HORZ_ADV_SOLAR_GENERATOR = ITEMS.registerSimpleBlockItem(
+                        "brown_horz_adv_solar_generator",
+                        AllBlocks.BROWN_HORZ_ADV_SOLAR_GENERATOR);
+
+        public static final DeferredItem<BlockItem> GREEN_HORZ_ADV_SOLAR_GENERATOR = ITEMS.registerSimpleBlockItem(
+                        "green_horz_adv_solar_generator",
+                        AllBlocks.GREEN_HORZ_ADV_SOLAR_GENERATOR);
+
+        public static final DeferredItem<BlockItem> RED_HORZ_ADV_SOLAR_GENERATOR = ITEMS.registerSimpleBlockItem(
+                        "red_horz_adv_solar_generator",
+                        AllBlocks.RED_HORZ_ADV_SOLAR_GENERATOR);
+
+        public static final DeferredItem<BlockItem> BLACK_HORZ_ADV_SOLAR_GENERATOR = ITEMS.registerSimpleBlockItem(
+                        "black_horz_adv_solar_generator",
+                        AllBlocks.BLACK_HORZ_ADV_SOLAR_GENERATOR);
 }

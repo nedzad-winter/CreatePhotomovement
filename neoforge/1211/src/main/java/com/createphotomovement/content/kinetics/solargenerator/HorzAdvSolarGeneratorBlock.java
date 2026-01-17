@@ -1,0 +1,104 @@
+package com.createphotomovement.content.kinetics.solargenerator;
+
+import com.createphotomovement.AllBlockEntityTypes;
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.DyeItem;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
+
+public class HorzAdvSolarGeneratorBlock extends HorizontalSolarGeneratorBlock {
+
+        // Map dye colors to their corresponding horizontal advanced solar generator
+        // blocks
+        private static final java.util.Map<net.minecraft.world.item.DyeColor, java.util.function.Supplier<net.minecraft.world.level.block.Block>> COLOR_TO_BLOCK = new java.util.HashMap<>();
+
+        static {
+                COLOR_TO_BLOCK.put(net.minecraft.world.item.DyeColor.WHITE,
+                                () -> com.createphotomovement.AllBlocks.WHITE_HORZ_ADV_SOLAR_GENERATOR.get());
+                COLOR_TO_BLOCK.put(net.minecraft.world.item.DyeColor.ORANGE,
+                                () -> com.createphotomovement.AllBlocks.ORANGE_HORZ_ADV_SOLAR_GENERATOR.get());
+                COLOR_TO_BLOCK.put(net.minecraft.world.item.DyeColor.MAGENTA,
+                                () -> com.createphotomovement.AllBlocks.MAGENTA_HORZ_ADV_SOLAR_GENERATOR.get());
+                COLOR_TO_BLOCK.put(net.minecraft.world.item.DyeColor.LIGHT_BLUE,
+                                () -> com.createphotomovement.AllBlocks.LIGHT_BLUE_HORZ_ADV_SOLAR_GENERATOR.get());
+                COLOR_TO_BLOCK.put(net.minecraft.world.item.DyeColor.YELLOW,
+                                () -> com.createphotomovement.AllBlocks.YELLOW_HORZ_ADV_SOLAR_GENERATOR.get());
+                COLOR_TO_BLOCK.put(net.minecraft.world.item.DyeColor.LIME,
+                                () -> com.createphotomovement.AllBlocks.LIME_HORZ_ADV_SOLAR_GENERATOR.get());
+                COLOR_TO_BLOCK.put(net.minecraft.world.item.DyeColor.PINK,
+                                () -> com.createphotomovement.AllBlocks.PINK_HORZ_ADV_SOLAR_GENERATOR.get());
+                COLOR_TO_BLOCK.put(net.minecraft.world.item.DyeColor.GRAY,
+                                () -> com.createphotomovement.AllBlocks.GRAY_HORZ_ADV_SOLAR_GENERATOR.get());
+                COLOR_TO_BLOCK.put(net.minecraft.world.item.DyeColor.LIGHT_GRAY,
+                                () -> com.createphotomovement.AllBlocks.LIGHT_GRAY_HORZ_ADV_SOLAR_GENERATOR.get());
+                COLOR_TO_BLOCK.put(net.minecraft.world.item.DyeColor.CYAN,
+                                () -> com.createphotomovement.AllBlocks.CYAN_HORZ_ADV_SOLAR_GENERATOR.get());
+                COLOR_TO_BLOCK.put(net.minecraft.world.item.DyeColor.PURPLE,
+                                () -> com.createphotomovement.AllBlocks.PURPLE_HORZ_ADV_SOLAR_GENERATOR.get());
+                COLOR_TO_BLOCK.put(net.minecraft.world.item.DyeColor.BLUE,
+                                () -> com.createphotomovement.AllBlocks.BLUE_HORZ_ADV_SOLAR_GENERATOR.get());
+                COLOR_TO_BLOCK.put(net.minecraft.world.item.DyeColor.BROWN,
+                                () -> com.createphotomovement.AllBlocks.BROWN_HORZ_ADV_SOLAR_GENERATOR.get());
+                COLOR_TO_BLOCK.put(net.minecraft.world.item.DyeColor.GREEN,
+                                () -> com.createphotomovement.AllBlocks.GREEN_HORZ_ADV_SOLAR_GENERATOR.get());
+                COLOR_TO_BLOCK.put(net.minecraft.world.item.DyeColor.RED,
+                                () -> com.createphotomovement.AllBlocks.RED_HORZ_ADV_SOLAR_GENERATOR.get());
+                COLOR_TO_BLOCK.put(net.minecraft.world.item.DyeColor.BLACK,
+                                () -> com.createphotomovement.AllBlocks.BLACK_HORZ_ADV_SOLAR_GENERATOR.get());
+        }
+
+        public HorzAdvSolarGeneratorBlock(Properties properties) {
+                super(properties);
+        }
+
+        @Override
+        public BlockEntityType<? extends HorizontalSolarGeneratorBlockEntity> getBlockEntityType() {
+                return AllBlockEntityTypes.HORZ_ADV_SOLAR_GENERATOR.get();
+        }
+
+        @Override
+        protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level, BlockPos pos,
+                        Player player, InteractionHand hand, BlockHitResult hitResult) {
+
+                // Check if the player is holding a dye
+                if (stack.getItem() instanceof DyeItem dyeItem) {
+                        net.minecraft.world.item.DyeColor color = dyeItem.getDyeColor();
+                        net.minecraft.world.level.block.Block targetBlock = COLOR_TO_BLOCK.get(color).get();
+
+                        // Don't change if already this color
+                        if (state.getBlock() == targetBlock) {
+                                return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+                        }
+
+                        if (!level.isClientSide) {
+                                // Get the current facing to preserve orientation
+                                net.minecraft.core.Direction currentFacing = state.getValue(HORIZONTAL_FACING);
+
+                                // Replace with the colored variant, preserving facing
+                                BlockState newState = targetBlock.defaultBlockState().setValue(HORIZONTAL_FACING,
+                                                currentFacing);
+                                level.setBlock(pos, newState, 3);
+
+                                // Play dye sound
+                                level.playSound(null, pos, net.minecraft.sounds.SoundEvents.DYE_USE,
+                                                net.minecraft.sounds.SoundSource.BLOCKS, 1.0F, 1.0F);
+
+                                // Consume dye if not in creative mode
+                                if (!player.isCreative()) {
+                                        stack.shrink(1);
+                                }
+                        }
+
+                        return ItemInteractionResult.sidedSuccess(level.isClientSide);
+                }
+
+                return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        }
+
+}

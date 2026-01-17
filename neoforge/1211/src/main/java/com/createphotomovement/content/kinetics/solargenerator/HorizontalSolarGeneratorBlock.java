@@ -139,8 +139,7 @@ public class HorizontalSolarGeneratorBlock extends HorizontalKineticBlock
         super.onPlace(state, level, pos, oldState, movedByPiston);
         // Trigger immediate update after placement or state change (rotation)
         if (!level.isClientSide && state.getBlock() == this) {
-            level.getBlockEntity(pos, AllBlockEntityTypes.HORIZONTAL_SOLAR_GENERATOR.get())
-                    .ifPresent(HorizontalSolarGeneratorBlockEntity::forceUpdate);
+            withBlockEntityDo(level, pos, HorizontalSolarGeneratorBlockEntity::forceUpdate);
         }
     }
 

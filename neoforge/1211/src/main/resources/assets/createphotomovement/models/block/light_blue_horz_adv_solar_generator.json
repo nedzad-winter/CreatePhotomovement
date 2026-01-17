@@ -1,0 +1,8 @@
+﻿{
+    "parent": "createphotomovement:block/horz_adv_solar_generator",
+    "render_type": "minecraft:translucent",
+    "textures": {
+        "particle": "create:block/brass_casing",
+        "glass": "minecraft:block/light_blue_stained_glass"
+    }
+}
