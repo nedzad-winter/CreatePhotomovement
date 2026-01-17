@@ -1,15 +1,16 @@
 ﻿{
-  "type": "minecraft:crafting_shapeless",
-  "ingredients": [
-    {
-      "item": "createphotomovement:horz_adv_solar_generator"
-    },
-    {
-      "item": "minecraft:brown_dye"
+    "type": "minecraft:crafting_shapeless",
+    "category": "misc",
+    "ingredients": [
+        {
+            "tag": "createphotomovement:horz_adv_solar_generators"
+        },
+        {
+            "item": "minecraft:brown_dye"
+        }
+    ],
+    "result": {
+        "count": 1,
+        "id": "createphotomovement:brown_horz_adv_solar_generator"
     }
-  ],
-  "result": {
-    "count": 1,
-    "id": "createphotomovement:brown_horz_adv_solar_generator"
-  }
 }

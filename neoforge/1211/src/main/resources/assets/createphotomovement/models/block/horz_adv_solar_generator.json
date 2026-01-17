@@ -1,7 +1,7 @@
 {
     "credit": "Made with Blockbench, adapted for Horizontal Solar Generator",
     "parent": "block/block",
-    "render_type": "minecraft:cutout",
+    "render_type": "minecraft:translucent",
     "textures": {
         "particle": "create:block/brass_casing",
         "sensor_top": "createphotomovement:block/adv_solar_generator_top",
