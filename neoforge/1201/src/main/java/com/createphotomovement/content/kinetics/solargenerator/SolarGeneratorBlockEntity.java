@@ -49,6 +49,11 @@ public class SolarGeneratorBlockEntity extends GeneratingKineticBlockEntity {
         if (level == null)
             return false;
 
+        // Strict sky visibility check: The block directly above must be able to see the
+        // sky
+        if (!level.canSeeSky(worldPosition.above()))
+            return false;
+
         int skyLight = level.getBrightness(LightLayer.SKY, worldPosition.above());
         int currentSkyLight = skyLight - level.getSkyDarken();
         if (currentSkyLight < 12) {

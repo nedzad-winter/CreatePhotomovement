@@ -2,6 +2,7 @@ pluginManagement {
     repositories {
         gradlePluginPortal()
         maven { url = 'https://maven.neoforged.net/releases' }
+        maven { url = 'https://maven.fabricmc.net/' }
     }
 }
 
@@ -10,3 +11,5 @@ rootProject.name = 'create-photomovement'
 include 'neoforge:1201'
 include 'neoforge:1211'
 include 'forge:1201'
+
+

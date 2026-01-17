@@ -1,8 +1,8 @@
-﻿{
+{
     "type":  "minecraft:crafting_shapeless",
     "ingredients":  [
                         {
-                            "item":  "createphotomovement:adv_solar_generator"
+                            "tag": "createphotomovement:adv_solar_generators"
                         },
                         {
                             "item":  "minecraft:magenta_dye"
@@ -13,3 +13,4 @@
                    "item":  "createphotomovement:magenta_adv_solar_generator"
                }
 }
+
