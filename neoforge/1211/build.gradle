@@ -5,6 +5,7 @@ plugins {
 
 group = 'com.createphotomovement'
 version = mod_version
+base.archivesName = "createphotomovement-neoforge-${minecraft_version}"
 
 repositories {
     mavenLocal()

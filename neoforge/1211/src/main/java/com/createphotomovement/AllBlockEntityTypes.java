@@ -1,5 +1,7 @@
 package com.createphotomovement;
 
+import com.createphotomovement.content.kinetics.solargenerator.AdvSolarGeneratorBlockEntity;
+import com.createphotomovement.content.kinetics.solargenerator.HorzAdvSolarGeneratorBlockEntity;
 import com.createphotomovement.content.kinetics.solargenerator.SolarGeneratorBlockEntity;
 import com.createphotomovement.content.kinetics.solargenerator.HorizontalSolarGeneratorBlockEntity;
 import net.minecraft.core.registries.Registries;
@@ -60,4 +62,53 @@ public class AllBlockEntityTypes {
                                                         AllBlocks.GREEN_SOLAR_GENERATOR.get(),
                                                         AllBlocks.RED_SOLAR_GENERATOR.get(),
                                                         AllBlocks.BLACK_SOLAR_GENERATOR.get()).build(null));
+
+        public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<AdvSolarGeneratorBlockEntity>> ADV_SOLAR_GENERATOR = BLOCK_ENTITY_TYPES
+                        .register("adv_solar_generator",
+                                        () -> BlockEntityType.Builder.of(
+                                                        (pos, state) -> new AdvSolarGeneratorBlockEntity(
+                                                                        AllBlockEntityTypes.ADV_SOLAR_GENERATOR.get(),
+                                                                        pos, state),
+                                                        AllBlocks.ADV_SOLAR_GENERATOR.get(),
+                                                        AllBlocks.WHITE_ADV_SOLAR_GENERATOR.get(),
+                                                        AllBlocks.ORANGE_ADV_SOLAR_GENERATOR.get(),
+                                                        AllBlocks.MAGENTA_ADV_SOLAR_GENERATOR.get(),
+                                                        AllBlocks.LIGHT_BLUE_ADV_SOLAR_GENERATOR.get(),
+                                                        AllBlocks.YELLOW_ADV_SOLAR_GENERATOR.get(),
+                                                        AllBlocks.LIME_ADV_SOLAR_GENERATOR.get(),
+                                                        AllBlocks.PINK_ADV_SOLAR_GENERATOR.get(),
+                                                        AllBlocks.GRAY_ADV_SOLAR_GENERATOR.get(),
+                                                        AllBlocks.LIGHT_GRAY_ADV_SOLAR_GENERATOR.get(),
+                                                        AllBlocks.CYAN_ADV_SOLAR_GENERATOR.get(),
+                                                        AllBlocks.PURPLE_ADV_SOLAR_GENERATOR.get(),
+                                                        AllBlocks.BLUE_ADV_SOLAR_GENERATOR.get(),
+                                                        AllBlocks.BROWN_ADV_SOLAR_GENERATOR.get(),
+                                                        AllBlocks.GREEN_ADV_SOLAR_GENERATOR.get(),
+                                                        AllBlocks.RED_ADV_SOLAR_GENERATOR.get(),
+                                                        AllBlocks.BLACK_ADV_SOLAR_GENERATOR.get()).build(null));
+
+        public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<HorzAdvSolarGeneratorBlockEntity>> HORZ_ADV_SOLAR_GENERATOR = BLOCK_ENTITY_TYPES
+                        .register("horz_adv_solar_generator",
+                                        () -> BlockEntityType.Builder.of(
+                                                        (pos, state) -> new HorzAdvSolarGeneratorBlockEntity(
+                                                                        AllBlockEntityTypes.HORZ_ADV_SOLAR_GENERATOR
+                                                                                        .get(),
+                                                                        pos, state),
+                                                        AllBlocks.HORZ_ADV_SOLAR_GENERATOR.get(),
+                                                        AllBlocks.WHITE_HORZ_ADV_SOLAR_GENERATOR.get(),
+                                                        AllBlocks.ORANGE_HORZ_ADV_SOLAR_GENERATOR.get(),
+                                                        AllBlocks.MAGENTA_HORZ_ADV_SOLAR_GENERATOR.get(),
+                                                        AllBlocks.LIGHT_BLUE_HORZ_ADV_SOLAR_GENERATOR.get(),
+                                                        AllBlocks.YELLOW_HORZ_ADV_SOLAR_GENERATOR.get(),
+                                                        AllBlocks.LIME_HORZ_ADV_SOLAR_GENERATOR.get(),
+                                                        AllBlocks.PINK_HORZ_ADV_SOLAR_GENERATOR.get(),
+                                                        AllBlocks.GRAY_HORZ_ADV_SOLAR_GENERATOR.get(),
+                                                        AllBlocks.LIGHT_GRAY_HORZ_ADV_SOLAR_GENERATOR.get(),
+                                                        AllBlocks.CYAN_HORZ_ADV_SOLAR_GENERATOR.get(),
+                                                        AllBlocks.PURPLE_HORZ_ADV_SOLAR_GENERATOR.get(),
+                                                        AllBlocks.BLUE_HORZ_ADV_SOLAR_GENERATOR.get(),
+                                                        AllBlocks.BROWN_HORZ_ADV_SOLAR_GENERATOR.get(),
+                                                        AllBlocks.GREEN_HORZ_ADV_SOLAR_GENERATOR.get(),
+                                                        AllBlocks.RED_HORZ_ADV_SOLAR_GENERATOR.get(),
+                                                        AllBlocks.BLACK_HORZ_ADV_SOLAR_GENERATOR.get()).build(null));
 }
