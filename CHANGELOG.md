@@ -4,7 +4,7 @@
 
 ### Added
 - **Fabric 1.20.1 Support**: Officially ported mod to Fabric 1.20.1 (migrated to MojMap)
-- Spanish (es_es) translation (Community contribution)
+- Spanish (es_es) translation (Community contribution: albertosaurio65)
 
 ### Fixed
 - **Solar Generator Logic**:
