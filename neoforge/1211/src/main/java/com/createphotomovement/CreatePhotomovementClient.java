@@ -25,5 +25,8 @@ public class CreatePhotomovementClient {
         event.registerBlockEntityRenderer(AllBlockEntityTypes.SOLAR_GENERATOR.get(), SolarGeneratorRenderer::new);
         event.registerBlockEntityRenderer(AllBlockEntityTypes.HORIZONTAL_SOLAR_GENERATOR.get(),
                 HorizontalSolarGeneratorRenderer::new);
+        event.registerBlockEntityRenderer(AllBlockEntityTypes.ADV_SOLAR_GENERATOR.get(), SolarGeneratorRenderer::new);
+        event.registerBlockEntityRenderer(AllBlockEntityTypes.HORZ_ADV_SOLAR_GENERATOR.get(),
+                HorizontalSolarGeneratorRenderer::new);
     }
 }

@@ -45,7 +45,7 @@ public class SolarGeneratorBlockEntity extends GeneratingKineticBlockEntity {
         return PMConfigs.server().stressCapacity.get();
     }
 
-    private boolean canGeneratePower() {
+    protected boolean canGeneratePower() {
         if (level == null)
             return false;
 
@@ -56,6 +56,11 @@ public class SolarGeneratorBlockEntity extends GeneratingKineticBlockEntity {
         }
 
         BlockPos abovePos = worldPosition.above();
+
+        if (!level.canSeeSky(abovePos)) {
+            return false;
+        }
+
         BlockState aboveState = level.getBlockState(abovePos);
 
         Block aboveBlock = aboveState.getBlock();
