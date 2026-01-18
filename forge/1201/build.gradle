@@ -12,6 +12,7 @@ base.archivesName = "createphotomovement-forge-${minecraft_version}"
 java.toolchain.languageVersion = JavaLanguageVersion.of(17)
 
 legacyForge {
+    // Compatible with both Forge and NeoForge 1.20.1
     version = "${minecraft_version}-${forge_version}"
 
     mods {
@@ -29,6 +30,7 @@ legacyForge {
         client {
             client()
             gameDirectory = project.file('run')
+            programArguments.addAll '--width', '1600', '--height', '900'
         }
 
         server {
@@ -52,6 +54,7 @@ legacyForge {
 repositories {
     mavenLocal()
     mavenCentral()
+    maven { url = "https://maven.neoforged.net/releases" } // NeoForge
     maven { url = "https://maven.createmod.net" } // Create, Ponder, Flywheel
     maven { url = "https://maven.ithundxr.dev/mirror" } // Registrate
     maven { url = "https://maven.blamejared.com" } // JEI
@@ -61,6 +64,7 @@ repositories {
     maven { url = "https://maven.saps.dev/minecraft" } // FTB Mods
     maven { url = "https://maven.squiddev.cc" } // CC: Tweaked
     maven { url = "https://cursemaven.com" } // CurseMaven
+    maven { url = "https://modmaven.dev" } // JEI
 }
 
 dependencies {
@@ -72,16 +76,24 @@ dependencies {
     // Flywheel (rendering library for Create)
     modCompileOnly("dev.engine-room.flywheel:flywheel-forge-api-${minecraft_version}:${flywheel_version}")
     modRuntimeOnly("dev.engine-room.flywheel:flywheel-forge-${minecraft_version}:${flywheel_version}")
+    
+    // Vanillin (Flywheel dependency)
+    modRuntimeOnly("dev.engine-room.vanillin:vanillin-forge-${minecraft_version}:1.0.0")
 
     // Ponder (Create's tutorial system)
     modImplementation("net.createmod.ponder:Ponder-Forge-${minecraft_version}:${ponder_version}")
 
     // Registrate (registration helper)
     modImplementation("com.tterrag.registrate:Registrate:${registrate_version}")
+    
+    // MixinExtras (required by Create)
+    implementation(jarJar("io.github.llamalad7:mixinextras-forge:0.4.1"))
+    compileOnly(annotationProcessor("io.github.llamalad7:mixinextras-common:0.4.1"))
 
-    // MixinExtras (required by Create's mixins)
-    compileOnly("io.github.llamalad7:mixinextras-common:0.3.5")
-    modRuntimeOnly("io.github.llamalad7:mixinextras-forge:0.3.5")
+    // JEI (Just Enough Items)
+    modCompileOnly("mezz.jei:jei-1.20.1-common-api:15.20.0.105")
+    modCompileOnly("mezz.jei:jei-1.20.1-forge-api:15.20.0.105")
+    modRuntimeOnly("mezz.jei:jei-1.20.1-forge:15.20.0.105")
 }
 
 jar {

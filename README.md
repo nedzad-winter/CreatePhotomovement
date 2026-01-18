@@ -1,9 +1,9 @@
 # Create Photomovement
 
 <p align="center">
-  <img src="https://img.shields.io/badge/Minecraft-1.21.1-green" alt="Minecraft 1.21.1">
-  <img src="https://img.shields.io/badge/NeoForge-21.1.206-orange" alt="NeoForge">
-  <img src="https://img.shields.io/badge/Create-6.0.9-blue" alt="Create Mod">
+  <img src="https://img.shields.io/badge/Minecraft-1.20.1%20|%201.21.1-green" alt="Minecraft Versions">
+  <img src="https://img.shields.io/badge/Forge%20|%20NeoForge%20|%20Fabric-orange" alt="Mod Loaders">
+  <img src="https://img.shields.io/badge/Create-6.0+-blue" alt="Create Mod">
   <img src="https://img.shields.io/badge/License-MIT-yellow" alt="MIT License">
 </p>
 
@@ -30,20 +30,60 @@ A directional variant that tracks the sun's position.
   - **Block touching face**: Stops generation (0 RPM)
   - **Block within 2-10 blocks**: Reduced output
 - **Weather**: Speed is halved during rain
-- **Dyeing**: Can be dyed any of the 16 colors
+
+### Advanced Solar Generator (NEW in 0.2.0!)
+A powerful upgrade with brass casing for 2x power output.
+
+- **Generation**: 32 RPM and 32 SU (double the basic version!)
+- **Requirement**: Same as basic Solar Generator
+- **Weather**: Speed is halved to 16 RPM during rain
+- **Crafting**: Upgrade your basic generator with brass components
+
+###  Horizontal Advanced Solar Generator (NEW in 0.2.0!)
+The horizontal version of the advanced generator.
+
+- **Generation**: 32 RPM base with dynamic stress capacity
+- **Dynamic Output**: Same sun-tracking behavior as the basic horizontal
+- **Weather**: Speed is halved during rain
 
 ### Color Variants
-- **17 Options**: Clear glass + 16 Minecraft dye colors
-- **Customization**: Right-click placed blocks with dye or craft with dye
+- **68 Blocks Total**: 4 generator types × 17 colors each
+- **17 Color Options**: Clear glass + 16 Minecraft dye colors
+- **Easy Customization**: 
+  - Right-click placed blocks with dye
+  - Craft any generator with dye
+  - Re-dye colored blocks to change color
+- **Conversion Recipes**: Convert between horizontal and vertical variants
 
-## How It Works
+## 🔧 How It Works
 
-1. **Place the Generator** with the photovoltaic cells facing the sky.
+1. **Place the Generator** with the photovoltaic cells facing the sky (or desired direction for horizontal).
 2. **Connect shafts** to transfer rotation to your machines.
 3. The generator **automatically activates** when it receives sufficient sunlight (light level of 12 or higher).
 4. **Stops at night** or when obstructed.
-5. Make sure **nothing blocks the sky** above the generator.
+5. Make sure **nothing blocks the sky** above/in front of the generator.
 
+##  Supported Platforms
+
+| Platform | Minecraft | Status |
+|----------|-----------|--------|
+| NeoForge | 1.21.1 | ✅ |
+| NeoForge | 1.20.1 | ✅ |
+| Forge | 1.20.1 | ✅ |
+| Fabric | 1.20.1 | ✅ |
+
+## Requirements
+
+- **Create Mod** 6.0+ (version depends on Minecraft version)
+- **Flywheel** (included with Create)
+
+## Translations
+
+- English (en_us) ✅
+- German (de_de) ✅
+- Spanish (es_es) ✅
+
+Want to help translate? Submit a PR with your language file!
 
 ## License
 
@@ -60,10 +100,11 @@ Contributions are welcome! Feel free to:
 
 - **Create Mod Team** - For the amazing Create mod and its API
 - **Flywheel** - For the rendering engine
-- Inspired by solar panels from various tech mods and the real world.
+- **albertosaurio65** - Spanish translation
+- Inspired by solar panels from various tech mods and the real world
 
 ---
 
 <p align="center">
-  <i>Harness the power of the sun for your mechanical dreams!</i>
+  <i>Harness the power of the sun for your mechanical dreams! </i>
 </p>

@@ -1,0 +1,13 @@
+﻿{
+    "type": "minecraft:crafting_shapeless",
+    "category": "misc",
+    "ingredients": [
+        {
+            "item": "createphotomovement:pink_adv_solar_generator"
+        }
+    ],
+    "result": {
+        "count": 1,
+        "id": "createphotomovement:pink_horz_adv_solar_generator"
+    }
+}

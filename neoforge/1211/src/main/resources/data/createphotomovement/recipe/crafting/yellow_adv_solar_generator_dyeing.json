@@ -1,15 +1,16 @@
 ﻿{
-  "type": "minecraft:crafting_shapeless",
-  "ingredients": [
-    {
-      "item": "createphotomovement:adv_solar_generator"
-    },
-    {
-      "item": "minecraft:yellow_dye"
+    "type": "minecraft:crafting_shapeless",
+    "category": "misc",
+    "ingredients": [
+        {
+            "tag": "createphotomovement:adv_solar_generators"
+        },
+        {
+            "item": "minecraft:yellow_dye"
+        }
+    ],
+    "result": {
+        "count": 1,
+        "id": "createphotomovement:yellow_adv_solar_generator"
     }
-  ],
-  "result": {
-    "count": 1,
-    "id": "createphotomovement:yellow_adv_solar_generator"
-  }
 }

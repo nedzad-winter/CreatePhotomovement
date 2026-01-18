@@ -18,9 +18,32 @@ public class AllCreativeTabs {
                         .title(Component.translatable("itemGroup.createphotomovement"))
                         .icon(() -> AllItems.SOLAR_GENERATOR.getDefaultInstance())
                         .displayItems((displayContext, entries) -> {
-                            // Original Solar Generator (clear glass)
+                            // Basic Solar Generators
                             entries.accept(AllItems.SOLAR_GENERATOR);
                             entries.accept(AllItems.HORIZONTAL_SOLAR_GENERATOR);
+
+                            // Advanced Solar Generators (base)
+                            entries.accept(AllItems.ADV_SOLAR_GENERATOR);
+                            entries.accept(AllItems.HORZ_ADV_SOLAR_GENERATOR);
+
+                            // Solar Generator Color Variants
+                            entries.accept(AllItems.WHITE_SOLAR_GENERATOR);
+                            entries.accept(AllItems.ORANGE_SOLAR_GENERATOR);
+                            entries.accept(AllItems.MAGENTA_SOLAR_GENERATOR);
+                            entries.accept(AllItems.LIGHT_BLUE_SOLAR_GENERATOR);
+                            entries.accept(AllItems.YELLOW_SOLAR_GENERATOR);
+                            entries.accept(AllItems.LIME_SOLAR_GENERATOR);
+                            entries.accept(AllItems.PINK_SOLAR_GENERATOR);
+                            entries.accept(AllItems.GRAY_SOLAR_GENERATOR);
+                            entries.accept(AllItems.LIGHT_GRAY_SOLAR_GENERATOR);
+                            entries.accept(AllItems.CYAN_SOLAR_GENERATOR);
+                            entries.accept(AllItems.PURPLE_SOLAR_GENERATOR);
+                            entries.accept(AllItems.BLUE_SOLAR_GENERATOR);
+                            entries.accept(AllItems.BROWN_SOLAR_GENERATOR);
+                            entries.accept(AllItems.GREEN_SOLAR_GENERATOR);
+                            entries.accept(AllItems.RED_SOLAR_GENERATOR);
+                            entries.accept(AllItems.BLACK_SOLAR_GENERATOR);
+
                             // Horizontal Solar Generator Color Variants
                             entries.accept(AllItems.WHITE_HORIZONTAL_SOLAR_GENERATOR);
                             entries.accept(AllItems.ORANGE_HORIZONTAL_SOLAR_GENERATOR);
@@ -38,23 +61,42 @@ public class AllCreativeTabs {
                             entries.accept(AllItems.GREEN_HORIZONTAL_SOLAR_GENERATOR);
                             entries.accept(AllItems.RED_HORIZONTAL_SOLAR_GENERATOR);
                             entries.accept(AllItems.BLACK_HORIZONTAL_SOLAR_GENERATOR);
-                            // Stained Glass Variants (Vertical Solar Generator)
-                            entries.accept(AllItems.WHITE_SOLAR_GENERATOR);
-                            entries.accept(AllItems.ORANGE_SOLAR_GENERATOR);
-                            entries.accept(AllItems.MAGENTA_SOLAR_GENERATOR);
-                            entries.accept(AllItems.LIGHT_BLUE_SOLAR_GENERATOR);
-                            entries.accept(AllItems.YELLOW_SOLAR_GENERATOR);
-                            entries.accept(AllItems.LIME_SOLAR_GENERATOR);
-                            entries.accept(AllItems.PINK_SOLAR_GENERATOR);
-                            entries.accept(AllItems.GRAY_SOLAR_GENERATOR);
-                            entries.accept(AllItems.LIGHT_GRAY_SOLAR_GENERATOR);
-                            entries.accept(AllItems.CYAN_SOLAR_GENERATOR);
-                            entries.accept(AllItems.PURPLE_SOLAR_GENERATOR);
-                            entries.accept(AllItems.BLUE_SOLAR_GENERATOR);
-                            entries.accept(AllItems.BROWN_SOLAR_GENERATOR);
-                            entries.accept(AllItems.GREEN_SOLAR_GENERATOR);
-                            entries.accept(AllItems.RED_SOLAR_GENERATOR);
-                            entries.accept(AllItems.BLACK_SOLAR_GENERATOR);
+
+                            // Advanced Solar Generator Color Variants
+                            entries.accept(AllItems.WHITE_ADV_SOLAR_GENERATOR);
+                            entries.accept(AllItems.ORANGE_ADV_SOLAR_GENERATOR);
+                            entries.accept(AllItems.MAGENTA_ADV_SOLAR_GENERATOR);
+                            entries.accept(AllItems.LIGHT_BLUE_ADV_SOLAR_GENERATOR);
+                            entries.accept(AllItems.YELLOW_ADV_SOLAR_GENERATOR);
+                            entries.accept(AllItems.LIME_ADV_SOLAR_GENERATOR);
+                            entries.accept(AllItems.PINK_ADV_SOLAR_GENERATOR);
+                            entries.accept(AllItems.GRAY_ADV_SOLAR_GENERATOR);
+                            entries.accept(AllItems.LIGHT_GRAY_ADV_SOLAR_GENERATOR);
+                            entries.accept(AllItems.CYAN_ADV_SOLAR_GENERATOR);
+                            entries.accept(AllItems.PURPLE_ADV_SOLAR_GENERATOR);
+                            entries.accept(AllItems.BLUE_ADV_SOLAR_GENERATOR);
+                            entries.accept(AllItems.BROWN_ADV_SOLAR_GENERATOR);
+                            entries.accept(AllItems.GREEN_ADV_SOLAR_GENERATOR);
+                            entries.accept(AllItems.RED_ADV_SOLAR_GENERATOR);
+                            entries.accept(AllItems.BLACK_ADV_SOLAR_GENERATOR);
+
+                            // Horizontal Advanced Solar Generator Color Variants
+                            entries.accept(AllItems.WHITE_HORZ_ADV_SOLAR_GENERATOR);
+                            entries.accept(AllItems.ORANGE_HORZ_ADV_SOLAR_GENERATOR);
+                            entries.accept(AllItems.MAGENTA_HORZ_ADV_SOLAR_GENERATOR);
+                            entries.accept(AllItems.LIGHT_BLUE_HORZ_ADV_SOLAR_GENERATOR);
+                            entries.accept(AllItems.YELLOW_HORZ_ADV_SOLAR_GENERATOR);
+                            entries.accept(AllItems.LIME_HORZ_ADV_SOLAR_GENERATOR);
+                            entries.accept(AllItems.PINK_HORZ_ADV_SOLAR_GENERATOR);
+                            entries.accept(AllItems.GRAY_HORZ_ADV_SOLAR_GENERATOR);
+                            entries.accept(AllItems.LIGHT_GRAY_HORZ_ADV_SOLAR_GENERATOR);
+                            entries.accept(AllItems.CYAN_HORZ_ADV_SOLAR_GENERATOR);
+                            entries.accept(AllItems.PURPLE_HORZ_ADV_SOLAR_GENERATOR);
+                            entries.accept(AllItems.BLUE_HORZ_ADV_SOLAR_GENERATOR);
+                            entries.accept(AllItems.BROWN_HORZ_ADV_SOLAR_GENERATOR);
+                            entries.accept(AllItems.GREEN_HORZ_ADV_SOLAR_GENERATOR);
+                            entries.accept(AllItems.RED_HORZ_ADV_SOLAR_GENERATOR);
+                            entries.accept(AllItems.BLACK_HORZ_ADV_SOLAR_GENERATOR);
                         }).build());
     }
 }

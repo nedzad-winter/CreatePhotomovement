@@ -1,5 +1,46 @@
 # Changelog
 
+## [0.2.0] - 2026-01-18
+
+### Added
+- **Advanced Solar Generator**: New brass-casing solar generator with 2x power output
+- **Horizontal Advanced Solar Generator**: Horizontal variant of the advanced solar generator
+- **34 new color variants**: 16 colors for Advanced and 16 for Horizontal Advanced generators
+- **Conversion recipes**: Convert between vertical and horizontal advanced generators (preserving color)
+- **Dyeing recipes**: Dye any advanced generator to any of the 16 colors
+- **In-world dyeing**: Right-click with dye to change color without crafting
+
+### Changed
+- All generator types now use item tags for dyeing recipes (allows re-dyeing colored blocks)
+- Improved recipe organization with consistent naming conventions
+
+### Technical
+- Added `adv_solar_generators` and `horz_adv_solar_generators` item/block tags
+- All mod versions updated to 0.2.0
+
+### Supported Platforms
+- NeoForge 1.21.1
+- NeoForge 1.20.1
+- Forge 1.20.1
+- Fabric 1.20.1
+
+---
+
+## [0.1.3] - 2026-01-16
+
+### Added
+- **Fabric 1.20.1 Support**: Officially ported mod to Fabric 1.20.1 (migrated to MojMap)
+- Spanish (es_es) translation (Community contribution: albertosaurio65)
+
+### Fixed
+- **Solar Generator Logic**:
+  - Fixed sky access detection to correctly check for obstructions at any height
+  - Fixed generator not starting immediately upon placement
+- **Visuals**:
+  - Fixed transparency rendering for colored Solar Generators (stained glass)
+- **Recipes**:
+  - Fixed JEI display issues for Solar Generator recipes (Fabric)
+
 ## [0.1.1] - 2026-01-12
 
 ### Fixed
