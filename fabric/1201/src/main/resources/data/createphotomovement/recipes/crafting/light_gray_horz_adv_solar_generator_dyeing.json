@@ -1,0 +1,16 @@
+{
+    "type":  "minecraft:crafting_shapeless",
+    "ingredients":  [
+                        {
+                            "tag": "createphotomovement:horz_adv_solar_generators"
+                        },
+                        {
+                            "item":  "minecraft:light_gray_dye"
+                        }
+                    ],
+    "result":  {
+                   "count":  1,
+                   "item":  "createphotomovement:light_gray_horz_adv_solar_generator"
+               }
+}
+

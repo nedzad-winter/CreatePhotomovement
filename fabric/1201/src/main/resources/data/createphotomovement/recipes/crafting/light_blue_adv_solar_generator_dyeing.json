@@ -1,0 +1,16 @@
+{
+    "type":  "minecraft:crafting_shapeless",
+    "ingredients":  [
+                        {
+                            "tag": "createphotomovement:adv_solar_generators"
+                        },
+                        {
+                            "item":  "minecraft:light_blue_dye"
+                        }
+                    ],
+    "result":  {
+                   "count":  1,
+                   "item":  "createphotomovement:light_blue_adv_solar_generator"
+               }
+}
+

@@ -28,12 +28,19 @@ public class CreatePhotomovementClient implements ClientModInitializer {
         BlockEntityRenderers.register(AllBlockEntityTypes.SOLAR_GENERATOR, SolarGeneratorRenderer::new);
         BlockEntityRenderers.register(AllBlockEntityTypes.HORIZONTAL_SOLAR_GENERATOR,
                 HorizontalSolarGeneratorRenderer::new);
+        // Advanced generators use the same renderers (cast through generics)
+        BlockEntityRenderers.register(AllBlockEntityTypes.ADV_SOLAR_GENERATOR,
+                context -> new SolarGeneratorRenderer(context));
+        BlockEntityRenderers.register(AllBlockEntityTypes.HORZ_ADV_SOLAR_GENERATOR,
+                context -> new HorizontalSolarGeneratorRenderer(context));
     }
 
     private static void registerRenderTypes() {
         // Default solar generators use cutout (clear glass)
         BlockRenderLayerMap.INSTANCE.putBlock(AllBlocks.SOLAR_GENERATOR, RenderType.cutout());
         BlockRenderLayerMap.INSTANCE.putBlock(AllBlocks.HORIZONTAL_SOLAR_GENERATOR, RenderType.cutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(AllBlocks.ADV_SOLAR_GENERATOR, RenderType.cutout());
+        BlockRenderLayerMap.INSTANCE.putBlock(AllBlocks.HORZ_ADV_SOLAR_GENERATOR, RenderType.cutout());
 
         // Colored solar generators use translucent (stained glass)
         BlockRenderLayerMap.INSTANCE.putBlock(AllBlocks.WHITE_SOLAR_GENERATOR, RenderType.translucent());
@@ -72,5 +79,41 @@ public class CreatePhotomovementClient implements ClientModInitializer {
         BlockRenderLayerMap.INSTANCE.putBlock(AllBlocks.GREEN_HORIZONTAL_SOLAR_GENERATOR, RenderType.translucent());
         BlockRenderLayerMap.INSTANCE.putBlock(AllBlocks.RED_HORIZONTAL_SOLAR_GENERATOR, RenderType.translucent());
         BlockRenderLayerMap.INSTANCE.putBlock(AllBlocks.BLACK_HORIZONTAL_SOLAR_GENERATOR, RenderType.translucent());
+
+        // Advanced solar generators use cutout (clear glass)
+        BlockRenderLayerMap.INSTANCE.putBlock(AllBlocks.WHITE_ADV_SOLAR_GENERATOR, RenderType.translucent());
+        BlockRenderLayerMap.INSTANCE.putBlock(AllBlocks.ORANGE_ADV_SOLAR_GENERATOR, RenderType.translucent());
+        BlockRenderLayerMap.INSTANCE.putBlock(AllBlocks.MAGENTA_ADV_SOLAR_GENERATOR, RenderType.translucent());
+        BlockRenderLayerMap.INSTANCE.putBlock(AllBlocks.LIGHT_BLUE_ADV_SOLAR_GENERATOR, RenderType.translucent());
+        BlockRenderLayerMap.INSTANCE.putBlock(AllBlocks.YELLOW_ADV_SOLAR_GENERATOR, RenderType.translucent());
+        BlockRenderLayerMap.INSTANCE.putBlock(AllBlocks.LIME_ADV_SOLAR_GENERATOR, RenderType.translucent());
+        BlockRenderLayerMap.INSTANCE.putBlock(AllBlocks.PINK_ADV_SOLAR_GENERATOR, RenderType.translucent());
+        BlockRenderLayerMap.INSTANCE.putBlock(AllBlocks.GRAY_ADV_SOLAR_GENERATOR, RenderType.translucent());
+        BlockRenderLayerMap.INSTANCE.putBlock(AllBlocks.LIGHT_GRAY_ADV_SOLAR_GENERATOR, RenderType.translucent());
+        BlockRenderLayerMap.INSTANCE.putBlock(AllBlocks.CYAN_ADV_SOLAR_GENERATOR, RenderType.translucent());
+        BlockRenderLayerMap.INSTANCE.putBlock(AllBlocks.PURPLE_ADV_SOLAR_GENERATOR, RenderType.translucent());
+        BlockRenderLayerMap.INSTANCE.putBlock(AllBlocks.BLUE_ADV_SOLAR_GENERATOR, RenderType.translucent());
+        BlockRenderLayerMap.INSTANCE.putBlock(AllBlocks.BROWN_ADV_SOLAR_GENERATOR, RenderType.translucent());
+        BlockRenderLayerMap.INSTANCE.putBlock(AllBlocks.GREEN_ADV_SOLAR_GENERATOR, RenderType.translucent());
+        BlockRenderLayerMap.INSTANCE.putBlock(AllBlocks.RED_ADV_SOLAR_GENERATOR, RenderType.translucent());
+        BlockRenderLayerMap.INSTANCE.putBlock(AllBlocks.BLACK_ADV_SOLAR_GENERATOR, RenderType.translucent());
+
+        // Horizontal advanced solar generators use translucent
+        BlockRenderLayerMap.INSTANCE.putBlock(AllBlocks.WHITE_HORZ_ADV_SOLAR_GENERATOR, RenderType.translucent());
+        BlockRenderLayerMap.INSTANCE.putBlock(AllBlocks.ORANGE_HORZ_ADV_SOLAR_GENERATOR, RenderType.translucent());
+        BlockRenderLayerMap.INSTANCE.putBlock(AllBlocks.MAGENTA_HORZ_ADV_SOLAR_GENERATOR, RenderType.translucent());
+        BlockRenderLayerMap.INSTANCE.putBlock(AllBlocks.LIGHT_BLUE_HORZ_ADV_SOLAR_GENERATOR, RenderType.translucent());
+        BlockRenderLayerMap.INSTANCE.putBlock(AllBlocks.YELLOW_HORZ_ADV_SOLAR_GENERATOR, RenderType.translucent());
+        BlockRenderLayerMap.INSTANCE.putBlock(AllBlocks.LIME_HORZ_ADV_SOLAR_GENERATOR, RenderType.translucent());
+        BlockRenderLayerMap.INSTANCE.putBlock(AllBlocks.PINK_HORZ_ADV_SOLAR_GENERATOR, RenderType.translucent());
+        BlockRenderLayerMap.INSTANCE.putBlock(AllBlocks.GRAY_HORZ_ADV_SOLAR_GENERATOR, RenderType.translucent());
+        BlockRenderLayerMap.INSTANCE.putBlock(AllBlocks.LIGHT_GRAY_HORZ_ADV_SOLAR_GENERATOR, RenderType.translucent());
+        BlockRenderLayerMap.INSTANCE.putBlock(AllBlocks.CYAN_HORZ_ADV_SOLAR_GENERATOR, RenderType.translucent());
+        BlockRenderLayerMap.INSTANCE.putBlock(AllBlocks.PURPLE_HORZ_ADV_SOLAR_GENERATOR, RenderType.translucent());
+        BlockRenderLayerMap.INSTANCE.putBlock(AllBlocks.BLUE_HORZ_ADV_SOLAR_GENERATOR, RenderType.translucent());
+        BlockRenderLayerMap.INSTANCE.putBlock(AllBlocks.BROWN_HORZ_ADV_SOLAR_GENERATOR, RenderType.translucent());
+        BlockRenderLayerMap.INSTANCE.putBlock(AllBlocks.GREEN_HORZ_ADV_SOLAR_GENERATOR, RenderType.translucent());
+        BlockRenderLayerMap.INSTANCE.putBlock(AllBlocks.RED_HORZ_ADV_SOLAR_GENERATOR, RenderType.translucent());
+        BlockRenderLayerMap.INSTANCE.putBlock(AllBlocks.BLACK_HORZ_ADV_SOLAR_GENERATOR, RenderType.translucent());
     }
 }
