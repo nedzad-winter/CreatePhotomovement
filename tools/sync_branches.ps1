@@ -1,15 +1,8 @@
-# Sync current branch changes to all other development branches
+# Sync current branch changes to all other local branches
 # Usage: .\sync_branches.ps1
 
 $ErrorActionPreference = "Stop"
 $RootDir = Resolve-Path "$PSScriptRoot/.."
-
-# All development branches
-$AllBranches = @(
-    "dev-1.20.1",
-    "dev-1.21.1",
-    "main"
-)
 
 Push-Location $RootDir
 
@@ -26,17 +19,17 @@ try {
         exit 1
     }
     
-    # Get branches to sync to (exclude current branch)
-    $TargetBranches = $AllBranches | Where-Object { $_ -ne $CurrentBranch }
+    # Get all local branches (exclude current branch)
+    $AllBranches = git branch --format="%(refname:short)" | Where-Object { $_.Trim() -ne "" -and $_.Trim() -ne $CurrentBranch }
     
-    if ($TargetBranches.Count -eq 0) {
-        Write-Host "No target branches to sync to." -ForegroundColor Yellow
+    if ($AllBranches.Count -eq 0) {
+        Write-Host "No other local branches to sync to." -ForegroundColor Yellow
         exit 0
     }
     
     Write-Host ""
     Write-Host "Will merge '$CurrentBranch' into:" -ForegroundColor Green
-    $TargetBranches | ForEach-Object { Write-Host "  - $_" -ForegroundColor Gray }
+    $AllBranches | ForEach-Object { Write-Host "  - $_" -ForegroundColor Gray }
     Write-Host ""
     
     # Confirm
@@ -47,45 +40,49 @@ try {
     }
     
     $FailedBranches = @()
+    $SuccessBranches = @()
     
-    foreach ($Branch in $TargetBranches) {
+    foreach ($Branch in $AllBranches) {
+        $Branch = $Branch.Trim()
+        if (-not $Branch) { continue }
+        
         Write-Host ""
         Write-Host "Merging into $Branch..." -ForegroundColor Green
         
-        # Check if branch exists
-        $BranchExists = git show-ref --verify --quiet "refs/heads/$Branch" 2>$null
-        if ($LASTEXITCODE -ne 0) {
-            Write-Host "  Branch '$Branch' does not exist locally, skipping." -ForegroundColor Yellow
-            continue
-        }
-        
         # Checkout target branch
-        git checkout $Branch
+        git checkout $Branch 2>$null
         if ($LASTEXITCODE -ne 0) {
             Write-Host "  Failed to checkout $Branch" -ForegroundColor Red
             $FailedBranches += $Branch
-            git checkout $CurrentBranch
+            git checkout $CurrentBranch 2>$null
             continue
         }
         
         # Merge current branch
-        git merge $CurrentBranch --no-edit
+        git merge $CurrentBranch --no-edit 2>$null
         if ($LASTEXITCODE -ne 0) {
             Write-Host "  Merge conflict in $Branch! Aborting merge..." -ForegroundColor Red
-            git merge --abort
+            git merge --abort 2>$null
             $FailedBranches += $Branch
-            git checkout $CurrentBranch
+            git checkout $CurrentBranch 2>$null
             continue
         }
         
         Write-Host "  Successfully merged into $Branch" -ForegroundColor Gray
+        $SuccessBranches += $Branch
     }
     
     # Return to original branch
-    git checkout $CurrentBranch
+    git checkout $CurrentBranch 2>$null
     
     Write-Host ""
     Write-Host "Sync complete!" -ForegroundColor Cyan
+    
+    if ($SuccessBranches.Count -gt 0) {
+        Write-Host ""
+        Write-Host "Successfully merged into:" -ForegroundColor Green
+        $SuccessBranches | ForEach-Object { Write-Host "  - $_" -ForegroundColor Green }
+    }
     
     if ($FailedBranches.Count -gt 0) {
         Write-Host ""

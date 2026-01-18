@@ -1,19 +1,12 @@
 #!/bin/bash
 
-# Sync current branch changes to all other development branches
+# Sync current branch changes to all other local branches
 # Usage: ./sync_branches.sh
 
 set -e
 
 SCRIPT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )"
 ROOT_DIR="$(dirname "$SCRIPT_DIR")"
-
-# All development branches
-ALL_BRANCHES=(
-    "dev-1.20.1"
-    "dev-1.21.1"
-    "main"
-)
 
 cd "$ROOT_DIR"
 
@@ -28,22 +21,17 @@ if [[ -n $(git status --porcelain) ]]; then
     exit 1
 fi
 
-# Get branches to sync to (exclude current branch)
-TARGET_BRANCHES=()
-for branch in "${ALL_BRANCHES[@]}"; do
-    if [[ "$branch" != "$CURRENT_BRANCH" ]]; then
-        TARGET_BRANCHES+=("$branch")
-    fi
-done
+# Get all local branches (exclude current branch)
+mapfile -t ALL_BRANCHES < <(git branch --format="%(refname:short)" | grep -v "^${CURRENT_BRANCH}$")
 
-if [[ ${#TARGET_BRANCHES[@]} -eq 0 ]]; then
-    echo "No target branches to sync to."
+if [[ ${#ALL_BRANCHES[@]} -eq 0 ]]; then
+    echo "No other local branches to sync to."
     exit 0
 fi
 
 echo ""
 echo "Will merge '$CURRENT_BRANCH' into:"
-for branch in "${TARGET_BRANCHES[@]}"; do
+for branch in "${ALL_BRANCHES[@]}"; do
     echo "  - $branch"
 done
 echo ""
@@ -56,42 +44,48 @@ if [[ "$confirm" != "y" && "$confirm" != "Y" ]]; then
 fi
 
 FAILED_BRANCHES=()
+SUCCESS_BRANCHES=()
 
-for branch in "${TARGET_BRANCHES[@]}"; do
+for branch in "${ALL_BRANCHES[@]}"; do
+    [[ -z "$branch" ]] && continue
+    
     echo ""
     echo "Merging into $branch..."
     
-    # Check if branch exists
-    if ! git show-ref --verify --quiet "refs/heads/$branch" 2>/dev/null; then
-        echo "  Branch '$branch' does not exist locally, skipping."
-        continue
-    fi
-    
     # Checkout target branch
-    if ! git checkout "$branch"; then
+    if ! git checkout "$branch" 2>/dev/null; then
         echo "  Failed to checkout $branch"
         FAILED_BRANCHES+=("$branch")
-        git checkout "$CURRENT_BRANCH"
+        git checkout "$CURRENT_BRANCH" 2>/dev/null
         continue
     fi
     
     # Merge current branch
-    if ! git merge "$CURRENT_BRANCH" --no-edit; then
+    if ! git merge "$CURRENT_BRANCH" --no-edit 2>/dev/null; then
         echo "  Merge conflict in $branch! Aborting merge..."
-        git merge --abort
+        git merge --abort 2>/dev/null
         FAILED_BRANCHES+=("$branch")
-        git checkout "$CURRENT_BRANCH"
+        git checkout "$CURRENT_BRANCH" 2>/dev/null
         continue
     fi
     
     echo "  Successfully merged into $branch"
+    SUCCESS_BRANCHES+=("$branch")
 done
 
 # Return to original branch
-git checkout "$CURRENT_BRANCH"
+git checkout "$CURRENT_BRANCH" 2>/dev/null
 
 echo ""
 echo "Sync complete!"
+
+if [[ ${#SUCCESS_BRANCHES[@]} -gt 0 ]]; then
+    echo ""
+    echo "Successfully merged into:"
+    for branch in "${SUCCESS_BRANCHES[@]}"; do
+        echo "  - $branch"
+    done
+fi
 
 if [[ ${#FAILED_BRANCHES[@]} -gt 0 ]]; then
     echo ""
