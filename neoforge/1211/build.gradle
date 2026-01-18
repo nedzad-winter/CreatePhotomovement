@@ -74,3 +74,25 @@ java {
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
 }
+
+// Process resources to expand gradle properties
+processResources {
+    def resourceTargets = [
+        'META-INF/neoforge.mods.toml',
+        'pack.mcmeta'
+    ]
+    def replaceProperties = [
+        mod_id: mod_id,
+        mod_version: mod_version,
+        mod_name: mod_name,
+        mod_license: mod_license,
+        mod_authors: mod_authors,
+        mod_description: mod_description,
+        minecraft_version: minecraft_version,
+        neo_version: neo_version
+    ]
+    inputs.properties replaceProperties
+    filesMatching(resourceTargets) {
+        expand replaceProperties
+    }
+}

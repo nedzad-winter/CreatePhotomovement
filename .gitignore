@@ -25,4 +25,6 @@ Thumbs.db
 port_advanced_generators.ps1
 Current-Dev-Status.md
 
-Current-Dev-Status.md
+# Publish script (contains API tokens)
+tools/publish_mod.ps1
+tools/upload_history.json
