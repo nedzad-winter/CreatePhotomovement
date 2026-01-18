@@ -1,20 +1,90 @@
 {
+    "credit": "Made with Blockbench, adapted for Horizontal Solar Generator",
     "parent": "block/block",
-    "render_type": "minecraft:translucent",
+    "render_type": "minecraft:cutout",
     "textures": {
-        "particle": "createphotomovement:block/solar_generator_top",
-        "sensor_top": "createphotomovement:block/solar_generator_top",
-        "casing": "create:block/andesite_casing",
+        "particle": "create:block/brass_casing",
+        "sensor_top": "createphotomovement:block/adv_solar_generator_top",
+        "casing": "create:block/brass_casing",
         "gearbox": "create:block/gearbox",
         "glass": "minecraft:block/glass"
     },
     "elements": [
         {
-            "name": "Bottom",
+            "name": "Bottom_Rim_North",
             "from": [
                 0,
                 0,
                 0
+            ],
+            "to": [
+                16,
+                2,
+                1
+            ],
+            "faces": {
+                "north": {
+                    "uv": [
+                        0,
+                        14,
+                        16,
+                        16
+                    ],
+                    "texture": "#casing"
+                },
+                "east": {
+                    "uv": [
+                        15,
+                        14,
+                        16,
+                        16
+                    ],
+                    "texture": "#casing"
+                },
+                "south": {
+                    "uv": [
+                        0,
+                        14,
+                        16,
+                        16
+                    ],
+                    "texture": "#casing"
+                },
+                "west": {
+                    "uv": [
+                        0,
+                        14,
+                        1,
+                        16
+                    ],
+                    "texture": "#casing"
+                },
+                "up": {
+                    "uv": [
+                        0,
+                        0,
+                        16,
+                        1
+                    ],
+                    "texture": "#casing"
+                },
+                "down": {
+                    "uv": [
+                        0,
+                        0,
+                        16,
+                        1
+                    ],
+                    "texture": "#casing"
+                }
+            }
+        },
+        {
+            "name": "Bottom_Rim_South",
+            "from": [
+                0,
+                0,
+                15
             ],
             "to": [
                 16,
@@ -35,7 +105,7 @@
                     "uv": [
                         0,
                         14,
-                        16,
+                        1,
                         16
                     ],
                     "texture": "#casing"
@@ -51,7 +121,7 @@
                 },
                 "west": {
                     "uv": [
-                        0,
+                        15,
                         14,
                         16,
                         16
@@ -61,7 +131,7 @@
                 "up": {
                     "uv": [
                         0,
-                        0,
+                        15,
                         16,
                         16
                     ],
@@ -70,7 +140,7 @@
                 "down": {
                     "uv": [
                         0,
-                        0,
+                        15,
                         16,
                         16
                     ],
@@ -79,7 +149,180 @@
             }
         },
         {
+            "name": "Bottom_Rim_West",
+            "from": [
+                0,
+                0,
+                1
+            ],
+            "to": [
+                1,
+                2,
+                15
+            ],
+            "faces": {
+                "north": {
+                    "uv": [
+                        15,
+                        14,
+                        16,
+                        16
+                    ],
+                    "texture": "#casing"
+                },
+                "east": {
+                    "uv": [
+                        1,
+                        14,
+                        15,
+                        16
+                    ],
+                    "texture": "#casing"
+                },
+                "south": {
+                    "uv": [
+                        0,
+                        14,
+                        1,
+                        16
+                    ],
+                    "texture": "#casing"
+                },
+                "west": {
+                    "uv": [
+                        1,
+                        14,
+                        15,
+                        16
+                    ],
+                    "texture": "#casing"
+                },
+                "up": {
+                    "uv": [
+                        0,
+                        1,
+                        1,
+                        15
+                    ],
+                    "texture": "#casing"
+                },
+                "down": {
+                    "uv": [
+                        0,
+                        1,
+                        1,
+                        15
+                    ],
+                    "texture": "#casing"
+                }
+            }
+        },
+        {
+            "name": "Bottom_Rim_East",
+            "from": [
+                15,
+                0,
+                1
+            ],
+            "to": [
+                16,
+                2,
+                15
+            ],
+            "faces": {
+                "north": {
+                    "uv": [
+                        0,
+                        14,
+                        1,
+                        16
+                    ],
+                    "texture": "#casing"
+                },
+                "east": {
+                    "uv": [
+                        1,
+                        14,
+                        15,
+                        16
+                    ],
+                    "texture": "#casing"
+                },
+                "south": {
+                    "uv": [
+                        15,
+                        14,
+                        16,
+                        16
+                    ],
+                    "texture": "#casing"
+                },
+                "west": {
+                    "uv": [
+                        1,
+                        14,
+                        15,
+                        16
+                    ],
+                    "texture": "#casing"
+                },
+                "up": {
+                    "uv": [
+                        15,
+                        1,
+                        16,
+                        15
+                    ],
+                    "texture": "#casing"
+                },
+                "down": {
+                    "uv": [
+                        15,
+                        1,
+                        16,
+                        15
+                    ],
+                    "texture": "#casing"
+                }
+            }
+        },
+        {
+            "name": "Bottom_Recessed",
+            "comment": "Gearbox face recessed 1 pixel INSIDE the rim (at y=1)",
+            "from": [
+                1,
+                1,
+                1
+            ],
+            "to": [
+                15,
+                2,
+                15
+            ],
+            "faces": {
+                "up": {
+                    "uv": [
+                        1,
+                        1,
+                        15,
+                        15
+                    ],
+                    "texture": "#casing"
+                },
+                "down": {
+                    "uv": [
+                        1,
+                        1,
+                        15,
+                        15
+                    ],
+                    "texture": "#gearbox"
+                }
+            }
+        },
+        {
             "name": "Core",
+            "comment": "Middle section with casing sides",
             "from": [
                 0.95,
                 2,
@@ -98,7 +341,7 @@
                         15,
                         14
                     ],
-                    "texture": "#gearbox"
+                    "texture": "#casing"
                 },
                 "east": {
                     "uv": [
@@ -116,7 +359,7 @@
                         15,
                         14
                     ],
-                    "texture": "#gearbox"
+                    "texture": "#casing"
                 },
                 "west": {
                     "uv": [
@@ -282,18 +525,18 @@
             "faces": {
                 "north": {
                     "uv": [
+                        15,
                         0,
-                        0,
-                        1,
+                        16,
                         2
                     ],
                     "texture": "#casing"
                 },
                 "east": {
                     "uv": [
+                        1,
                         0,
-                        0,
-                        14,
+                        15,
                         2
                     ],
                     "texture": "#casing"
@@ -309,9 +552,9 @@
                 },
                 "west": {
                     "uv": [
+                        1,
                         0,
-                        0,
-                        14,
+                        15,
                         2
                     ],
                     "texture": "#casing"
@@ -360,9 +603,9 @@
                 },
                 "east": {
                     "uv": [
-                        2,
+                        1,
                         0,
-                        16,
+                        15,
                         2
                     ],
                     "texture": "#casing"
@@ -378,9 +621,9 @@
                 },
                 "west": {
                     "uv": [
-                        2,
+                        1,
                         0,
-                        16,
+                        15,
                         2
                     ],
                     "texture": "#casing"
@@ -407,6 +650,7 @@
         },
         {
             "name": "Top_Recessed",
+            "comment": "Solar panel recessed 1 pixel INSIDE the rim (at y=15)",
             "from": [
                 1,
                 14,
@@ -414,7 +658,7 @@
             ],
             "to": [
                 15,
-                15,
+                14.99,
                 15
             ],
             "faces": {
@@ -440,6 +684,7 @@
         },
         {
             "name": "Top_Glass",
+            "comment": "Glass layer over solar panel",
             "from": [
                 1,
                 15,
