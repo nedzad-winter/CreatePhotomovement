@@ -1,10 +1,7 @@
 # Sync current branch changes to all other local branches
 # Usage: .\sync_branches.ps1
-
 $RootDir = Resolve-Path "$PSScriptRoot/.."
-
 Push-Location $RootDir
-
 try {
     # Get current branch
     $CurrentBranch = git rev-parse --abbrev-ref HEAD
