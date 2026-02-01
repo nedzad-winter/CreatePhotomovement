@@ -2,9 +2,9 @@
     "credit": "Solar variant of Create windmill bearing",
     "textures": {
         "particle": "create:block/windmill_bearing_side",
-        "bearing_side": "create:block/windmill_bearing_side",
-        "bearing_top": "create:block/gearbox_top",
         "gearbox": "create:block/gearbox",
+        "bearing_side": "create:block/windmill_bearing_side",
+        "bearing_top": "create:block/bearing_top",
         "redstone": "minecraft:block/redstone_block"
     },
     "elements": [
@@ -282,8 +282,76 @@
             }
         },
         {
+            "name": "Top",
+            "from": [
+                0,
+                12,
+                0
+            ],
+            "to": [
+                16,
+                16,
+                16
+            ],
+            "faces": {
+                "north": {
+                    "uv": [
+                        0,
+                        0,
+                        16,
+                        4
+                    ],
+                    "texture": "#bearing_side"
+                },
+                "east": {
+                    "uv": [
+                        0,
+                        0,
+                        16,
+                        4
+                    ],
+                    "texture": "#bearing_side"
+                },
+                "south": {
+                    "uv": [
+                        0,
+                        0,
+                        16,
+                        4
+                    ],
+                    "texture": "#bearing_side"
+                },
+                "west": {
+                    "uv": [
+                        0,
+                        0,
+                        16,
+                        4
+                    ],
+                    "texture": "#bearing_side"
+                },
+                "up": {
+                    "uv": [
+                        0,
+                        0,
+                        16,
+                        16
+                    ],
+                    "texture": "#bearing_top"
+                },
+                "down": {
+                    "uv": [
+                        0,
+                        0,
+                        16,
+                        16
+                    ],
+                    "texture": "#bearing_top"
+                }
+            }
+        },
+        {
             "name": "Redstone_Bottom_West",
-            "comment": "1px redstone strip on west edge of bottom face",
             "from": [
                 0,
                 -0.01,
@@ -308,7 +376,6 @@
         },
         {
             "name": "Redstone_Bottom_East",
-            "comment": "1px redstone strip on east edge of bottom face",
             "from": [
                 15,
                 -0.01,
@@ -333,7 +400,6 @@
         },
         {
             "name": "Redstone_Bottom_North",
-            "comment": "1px redstone strip on north edge of bottom face",
             "from": [
                 1,
                 -0.01,
@@ -358,7 +424,6 @@
         },
         {
             "name": "Redstone_Bottom_South",
-            "comment": "1px redstone strip on south edge of bottom face",
             "from": [
                 1,
                 -0.01,
@@ -383,7 +448,6 @@
         },
         {
             "name": "Redstone_Side_West_Left",
-            "comment": "1px redstone strip on left edge (south) of west side face",
             "from": [
                 -0.01,
                 0,
@@ -408,7 +472,6 @@
         },
         {
             "name": "Redstone_Side_West_Right",
-            "comment": "1px redstone strip on right edge (north) of west side face",
             "from": [
                 -0.01,
                 0,
@@ -433,7 +496,6 @@
         },
         {
             "name": "Redstone_Side_West_Bottom",
-            "comment": "1px redstone strip on bottom edge of west side face",
             "from": [
                 -0.01,
                 0,
@@ -458,7 +520,6 @@
         },
         {
             "name": "Redstone_Side_East_Left",
-            "comment": "1px redstone strip on left edge (north) of east side face",
             "from": [
                 16,
                 0,
@@ -483,7 +544,6 @@
         },
         {
             "name": "Redstone_Side_East_Right",
-            "comment": "1px redstone strip on right edge (south) of east side face",
             "from": [
                 16,
                 0,
@@ -508,7 +568,6 @@
         },
         {
             "name": "Redstone_Side_East_Bottom",
-            "comment": "1px redstone strip on bottom edge of east side face",
             "from": [
                 16,
                 0,
@@ -533,7 +592,6 @@
         },
         {
             "name": "Redstone_Side_North_Left",
-            "comment": "1px redstone strip on left edge (west) of north side face",
             "from": [
                 0,
                 0,
@@ -558,7 +616,6 @@
         },
         {
             "name": "Redstone_Side_North_Right",
-            "comment": "1px redstone strip on right edge (east) of north side face",
             "from": [
                 15,
                 0,
@@ -583,7 +640,6 @@
         },
         {
             "name": "Redstone_Side_North_Bottom",
-            "comment": "1px redstone strip on bottom edge of north side face",
             "from": [
                 1,
                 0,
@@ -608,7 +664,6 @@
         },
         {
             "name": "Redstone_Side_South_Left",
-            "comment": "1px redstone strip on left edge (east) of south side face",
             "from": [
                 15,
                 0,
@@ -633,7 +688,6 @@
         },
         {
             "name": "Redstone_Side_South_Right",
-            "comment": "1px redstone strip on right edge (west) of south side face",
             "from": [
                 0,
                 0,
@@ -658,7 +712,6 @@
         },
         {
             "name": "Redstone_Side_South_Bottom",
-            "comment": "1px redstone strip on bottom edge of south side face",
             "from": [
                 1,
                 0,

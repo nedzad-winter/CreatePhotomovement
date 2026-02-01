@@ -239,4 +239,29 @@ public class SolarWindmillBearingBlockEntity extends WindmillBearingBlockEntity 
     public float getCurrentSolarMultiplier() {
         return getSolarMultiplier();
     }
+
+    @Override
+    public boolean addToGoggleTooltip(List<net.minecraft.network.chat.Component> tooltip, boolean isPlayerSneaking) {
+        boolean added = super.addToGoggleTooltip(tooltip, isPlayerSneaking);
+
+        // Show generator stats even when not running (no sails attached)
+        // This matches the behavior of showing "0su" when no contraption
+        if (!running && !added) {
+            com.simibubi.create.foundation.utility.CreateLang.translate("gui.goggles.generator_stats")
+                    .forGoggles(tooltip);
+            com.simibubi.create.foundation.utility.CreateLang.translate("tooltip.capacityProvided")
+                    .style(net.minecraft.ChatFormatting.GRAY)
+                    .forGoggles(tooltip);
+            com.simibubi.create.foundation.utility.CreateLang.number(0)
+                    .translate("generic.unit.stress")
+                    .style(net.minecraft.ChatFormatting.AQUA)
+                    .space()
+                    .add(com.simibubi.create.foundation.utility.CreateLang.translate("gui.goggles.at_current_speed")
+                            .style(net.minecraft.ChatFormatting.DARK_GRAY))
+                    .forGoggles(tooltip, 1);
+            return true;
+        }
+
+        return added;
+    }
 }

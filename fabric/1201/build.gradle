@@ -26,7 +26,7 @@ loom {
             setConfigName("Fabric Client")
             ideConfigGenerated(true)
             runDir("run")
-            programArgs("--width", "1600", "--height", "1024")
+            programArgs("--width", "1600", "--height", "1024", "--quickPlaySingleplayer", "CPM Testwork")
         }
         server {
             server()

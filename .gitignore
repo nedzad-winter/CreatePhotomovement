@@ -26,6 +26,7 @@ port_advanced_generators.ps1
 Current-Dev-Status.md
 _Create
 _minecraft-assets-master
+tools/*
 
 # Publish script (contains API tokens)
 tools/publish_mod.ps1
