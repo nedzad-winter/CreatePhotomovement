@@ -1,0 +1,27 @@
+{
+    "variants": {
+        "facing=north": {
+            "model": "createphotomovement:block/solar_windmill_bearing",
+            "y": 180
+        },
+        "facing=south": {
+            "model": "createphotomovement:block/solar_windmill_bearing"
+        },
+        "facing=east": {
+            "model": "createphotomovement:block/solar_windmill_bearing",
+            "y": 270
+        },
+        "facing=west": {
+            "model": "createphotomovement:block/solar_windmill_bearing",
+            "y": 90
+        },
+        "facing=up": {
+            "model": "createphotomovement:block/solar_windmill_bearing",
+            "x": 270
+        },
+        "facing=down": {
+            "model": "createphotomovement:block/solar_windmill_bearing",
+            "x": 90
+        }
+    }
+}

@@ -92,5 +92,26 @@ public class AllCreativeTabs {
                                                 output.accept(AllItems.GREEN_SOLAR_GENERATOR.get());
                                                 output.accept(AllItems.RED_SOLAR_GENERATOR.get());
                                                 output.accept(AllItems.BLACK_SOLAR_GENERATOR.get());
+
+                                                // Solar Sails
+                                                output.accept(AllItems.WHITE_SOLAR_SAIL.get());
+                                                output.accept(AllItems.ORANGE_SOLAR_SAIL.get());
+                                                output.accept(AllItems.MAGENTA_SOLAR_SAIL.get());
+                                                output.accept(AllItems.LIGHT_BLUE_SOLAR_SAIL.get());
+                                                output.accept(AllItems.YELLOW_SOLAR_SAIL.get());
+                                                output.accept(AllItems.LIME_SOLAR_SAIL.get());
+                                                output.accept(AllItems.PINK_SOLAR_SAIL.get());
+                                                output.accept(AllItems.GRAY_SOLAR_SAIL.get());
+                                                output.accept(AllItems.LIGHT_GRAY_SOLAR_SAIL.get());
+                                                output.accept(AllItems.CYAN_SOLAR_SAIL.get());
+                                                output.accept(AllItems.PURPLE_SOLAR_SAIL.get());
+                                                output.accept(AllItems.BLUE_SOLAR_SAIL.get());
+                                                output.accept(AllItems.BROWN_SOLAR_SAIL.get());
+                                                output.accept(AllItems.GREEN_SOLAR_SAIL.get());
+                                                output.accept(AllItems.RED_SOLAR_SAIL.get());
+                                                output.accept(AllItems.BLACK_SOLAR_SAIL.get());
+
+                                                // Solar Windmill Bearing
+                                                output.accept(AllItems.SOLAR_WINDMILL_BEARING.get());
                                         }).build());
 }

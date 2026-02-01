@@ -283,4 +283,75 @@ public class AllItems {
         public static final DeferredItem<BlockItem> BLACK_HORZ_ADV_SOLAR_GENERATOR = ITEMS.registerSimpleBlockItem(
                         "black_horz_adv_solar_generator",
                         AllBlocks.BLACK_HORZ_ADV_SOLAR_GENERATOR);
+
+        // Solar Sails
+
+        public static final DeferredItem<BlockItem> WHITE_SOLAR_SAIL = ITEMS.registerSimpleBlockItem(
+                        "white_solar_sail",
+                        AllBlocks.WHITE_SOLAR_SAIL);
+
+        public static final DeferredItem<BlockItem> ORANGE_SOLAR_SAIL = ITEMS.registerSimpleBlockItem(
+                        "orange_solar_sail",
+                        AllBlocks.ORANGE_SOLAR_SAIL);
+
+        public static final DeferredItem<BlockItem> MAGENTA_SOLAR_SAIL = ITEMS.registerSimpleBlockItem(
+                        "magenta_solar_sail",
+                        AllBlocks.MAGENTA_SOLAR_SAIL);
+
+        public static final DeferredItem<BlockItem> LIGHT_BLUE_SOLAR_SAIL = ITEMS.registerSimpleBlockItem(
+                        "light_blue_solar_sail",
+                        AllBlocks.LIGHT_BLUE_SOLAR_SAIL);
+
+        public static final DeferredItem<BlockItem> YELLOW_SOLAR_SAIL = ITEMS.registerSimpleBlockItem(
+                        "yellow_solar_sail",
+                        AllBlocks.YELLOW_SOLAR_SAIL);
+
+        public static final DeferredItem<BlockItem> LIME_SOLAR_SAIL = ITEMS.registerSimpleBlockItem(
+                        "lime_solar_sail",
+                        AllBlocks.LIME_SOLAR_SAIL);
+
+        public static final DeferredItem<BlockItem> PINK_SOLAR_SAIL = ITEMS.registerSimpleBlockItem(
+                        "pink_solar_sail",
+                        AllBlocks.PINK_SOLAR_SAIL);
+
+        public static final DeferredItem<BlockItem> GRAY_SOLAR_SAIL = ITEMS.registerSimpleBlockItem(
+                        "gray_solar_sail",
+                        AllBlocks.GRAY_SOLAR_SAIL);
+
+        public static final DeferredItem<BlockItem> LIGHT_GRAY_SOLAR_SAIL = ITEMS.registerSimpleBlockItem(
+                        "light_gray_solar_sail",
+                        AllBlocks.LIGHT_GRAY_SOLAR_SAIL);
+
+        public static final DeferredItem<BlockItem> CYAN_SOLAR_SAIL = ITEMS.registerSimpleBlockItem(
+                        "cyan_solar_sail",
+                        AllBlocks.CYAN_SOLAR_SAIL);
+
+        public static final DeferredItem<BlockItem> PURPLE_SOLAR_SAIL = ITEMS.registerSimpleBlockItem(
+                        "purple_solar_sail",
+                        AllBlocks.PURPLE_SOLAR_SAIL);
+
+        public static final DeferredItem<BlockItem> BLUE_SOLAR_SAIL = ITEMS.registerSimpleBlockItem(
+                        "blue_solar_sail",
+                        AllBlocks.BLUE_SOLAR_SAIL);
+
+        public static final DeferredItem<BlockItem> BROWN_SOLAR_SAIL = ITEMS.registerSimpleBlockItem(
+                        "brown_solar_sail",
+                        AllBlocks.BROWN_SOLAR_SAIL);
+
+        public static final DeferredItem<BlockItem> GREEN_SOLAR_SAIL = ITEMS.registerSimpleBlockItem(
+                        "green_solar_sail",
+                        AllBlocks.GREEN_SOLAR_SAIL);
+
+        public static final DeferredItem<BlockItem> RED_SOLAR_SAIL = ITEMS.registerSimpleBlockItem(
+                        "red_solar_sail",
+                        AllBlocks.RED_SOLAR_SAIL);
+
+        public static final DeferredItem<BlockItem> BLACK_SOLAR_SAIL = ITEMS.registerSimpleBlockItem(
+                        "black_solar_sail",
+                        AllBlocks.BLACK_SOLAR_SAIL);
+
+        // Solar Windmill Bearing
+        public static final DeferredItem<BlockItem> SOLAR_WINDMILL_BEARING = ITEMS.registerSimpleBlockItem(
+                        "solar_windmill_bearing",
+                        AllBlocks.SOLAR_WINDMILL_BEARING);
 }

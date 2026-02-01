@@ -1,0 +1,685 @@
+{
+    "credit": "Solar variant of Create windmill bearing",
+    "textures": {
+        "particle": "create:block/windmill_bearing_side",
+        "bearing_side": "create:block/windmill_bearing_side",
+        "bearing_top": "create:block/gearbox_top",
+        "gearbox": "create:block/gearbox",
+        "redstone": "minecraft:block/redstone_block"
+    },
+    "elements": [
+        {
+            "name": "Side_West",
+            "from": [
+                0,
+                0,
+                0
+            ],
+            "to": [
+                2,
+                12,
+                16
+            ],
+            "faces": {
+                "north": {
+                    "uv": [
+                        14,
+                        4,
+                        16,
+                        16
+                    ],
+                    "texture": "#bearing_side"
+                },
+                "east": {
+                    "uv": [
+                        0,
+                        4,
+                        16,
+                        16
+                    ],
+                    "texture": "#bearing_side"
+                },
+                "south": {
+                    "uv": [
+                        0,
+                        4,
+                        2,
+                        16
+                    ],
+                    "texture": "#bearing_side"
+                },
+                "west": {
+                    "uv": [
+                        0,
+                        4,
+                        16,
+                        16
+                    ],
+                    "texture": "#bearing_side"
+                },
+                "up": {
+                    "uv": [
+                        0,
+                        0,
+                        2,
+                        16
+                    ],
+                    "texture": "#gearbox"
+                },
+                "down": {
+                    "uv": [
+                        0,
+                        0,
+                        2,
+                        16
+                    ],
+                    "texture": "#gearbox"
+                }
+            }
+        },
+        {
+            "name": "Side_East",
+            "from": [
+                14,
+                0,
+                0
+            ],
+            "to": [
+                16,
+                12,
+                16
+            ],
+            "faces": {
+                "north": {
+                    "uv": [
+                        0,
+                        4,
+                        2,
+                        16
+                    ],
+                    "texture": "#bearing_side"
+                },
+                "east": {
+                    "uv": [
+                        0,
+                        4,
+                        16,
+                        16
+                    ],
+                    "texture": "#bearing_side"
+                },
+                "south": {
+                    "uv": [
+                        14,
+                        4,
+                        16,
+                        16
+                    ],
+                    "texture": "#bearing_side"
+                },
+                "west": {
+                    "uv": [
+                        0,
+                        4,
+                        16,
+                        16
+                    ],
+                    "texture": "#bearing_side"
+                },
+                "up": {
+                    "uv": [
+                        14,
+                        0,
+                        16,
+                        16
+                    ],
+                    "texture": "#gearbox"
+                },
+                "down": {
+                    "uv": [
+                        14,
+                        0,
+                        16,
+                        16
+                    ],
+                    "texture": "#gearbox"
+                }
+            }
+        },
+        {
+            "name": "Side_North",
+            "from": [
+                2,
+                0,
+                0
+            ],
+            "to": [
+                14,
+                12,
+                2
+            ],
+            "faces": {
+                "north": {
+                    "uv": [
+                        2,
+                        4,
+                        14,
+                        16
+                    ],
+                    "texture": "#bearing_side"
+                },
+                "south": {
+                    "uv": [
+                        2,
+                        4,
+                        14,
+                        16
+                    ],
+                    "texture": "#bearing_side"
+                },
+                "up": {
+                    "uv": [
+                        2,
+                        0,
+                        14,
+                        2
+                    ],
+                    "texture": "#gearbox"
+                },
+                "down": {
+                    "uv": [
+                        2,
+                        14,
+                        14,
+                        16
+                    ],
+                    "texture": "#gearbox"
+                }
+            }
+        },
+        {
+            "name": "Side_South",
+            "from": [
+                2,
+                0,
+                14
+            ],
+            "to": [
+                14,
+                12,
+                16
+            ],
+            "faces": {
+                "north": {
+                    "uv": [
+                        2,
+                        4,
+                        14,
+                        16
+                    ],
+                    "texture": "#bearing_side"
+                },
+                "south": {
+                    "uv": [
+                        2,
+                        4,
+                        14,
+                        16
+                    ],
+                    "texture": "#bearing_side"
+                },
+                "up": {
+                    "uv": [
+                        2,
+                        14,
+                        14,
+                        16
+                    ],
+                    "texture": "#gearbox"
+                },
+                "down": {
+                    "uv": [
+                        2,
+                        0,
+                        14,
+                        2
+                    ],
+                    "texture": "#gearbox"
+                }
+            }
+        },
+        {
+            "name": "Core",
+            "from": [
+                2,
+                0.95,
+                2
+            ],
+            "to": [
+                14,
+                12,
+                14
+            ],
+            "faces": {
+                "up": {
+                    "uv": [
+                        2,
+                        2,
+                        14,
+                        14
+                    ],
+                    "texture": "#gearbox"
+                },
+                "down": {
+                    "uv": [
+                        2,
+                        2,
+                        14,
+                        14
+                    ],
+                    "texture": "#gearbox"
+                }
+            }
+        },
+        {
+            "name": "Redstone_Bottom_West",
+            "comment": "1px redstone strip on west edge of bottom face",
+            "from": [
+                0,
+                -0.01,
+                0
+            ],
+            "to": [
+                1,
+                0,
+                16
+            ],
+            "faces": {
+                "down": {
+                    "uv": [
+                        0,
+                        0,
+                        1,
+                        16
+                    ],
+                    "texture": "#redstone"
+                }
+            }
+        },
+        {
+            "name": "Redstone_Bottom_East",
+            "comment": "1px redstone strip on east edge of bottom face",
+            "from": [
+                15,
+                -0.01,
+                0
+            ],
+            "to": [
+                16,
+                0,
+                16
+            ],
+            "faces": {
+                "down": {
+                    "uv": [
+                        15,
+                        0,
+                        16,
+                        16
+                    ],
+                    "texture": "#redstone"
+                }
+            }
+        },
+        {
+            "name": "Redstone_Bottom_North",
+            "comment": "1px redstone strip on north edge of bottom face",
+            "from": [
+                1,
+                -0.01,
+                0
+            ],
+            "to": [
+                15,
+                0,
+                1
+            ],
+            "faces": {
+                "down": {
+                    "uv": [
+                        1,
+                        0,
+                        15,
+                        1
+                    ],
+                    "texture": "#redstone"
+                }
+            }
+        },
+        {
+            "name": "Redstone_Bottom_South",
+            "comment": "1px redstone strip on south edge of bottom face",
+            "from": [
+                1,
+                -0.01,
+                15
+            ],
+            "to": [
+                15,
+                0,
+                16
+            ],
+            "faces": {
+                "down": {
+                    "uv": [
+                        1,
+                        15,
+                        15,
+                        16
+                    ],
+                    "texture": "#redstone"
+                }
+            }
+        },
+        {
+            "name": "Redstone_Side_West_Left",
+            "comment": "1px redstone strip on left edge (south) of west side face",
+            "from": [
+                -0.01,
+                0,
+                15
+            ],
+            "to": [
+                0,
+                11,
+                16
+            ],
+            "faces": {
+                "west": {
+                    "uv": [
+                        0,
+                        5,
+                        1,
+                        16
+                    ],
+                    "texture": "#redstone"
+                }
+            }
+        },
+        {
+            "name": "Redstone_Side_West_Right",
+            "comment": "1px redstone strip on right edge (north) of west side face",
+            "from": [
+                -0.01,
+                0,
+                0
+            ],
+            "to": [
+                0,
+                11,
+                1
+            ],
+            "faces": {
+                "west": {
+                    "uv": [
+                        15,
+                        5,
+                        16,
+                        16
+                    ],
+                    "texture": "#redstone"
+                }
+            }
+        },
+        {
+            "name": "Redstone_Side_West_Bottom",
+            "comment": "1px redstone strip on bottom edge of west side face",
+            "from": [
+                -0.01,
+                0,
+                1
+            ],
+            "to": [
+                0,
+                1,
+                15
+            ],
+            "faces": {
+                "west": {
+                    "uv": [
+                        1,
+                        15,
+                        15,
+                        16
+                    ],
+                    "texture": "#redstone"
+                }
+            }
+        },
+        {
+            "name": "Redstone_Side_East_Left",
+            "comment": "1px redstone strip on left edge (north) of east side face",
+            "from": [
+                16,
+                0,
+                0
+            ],
+            "to": [
+                16.01,
+                11,
+                1
+            ],
+            "faces": {
+                "east": {
+                    "uv": [
+                        0,
+                        5,
+                        1,
+                        16
+                    ],
+                    "texture": "#redstone"
+                }
+            }
+        },
+        {
+            "name": "Redstone_Side_East_Right",
+            "comment": "1px redstone strip on right edge (south) of east side face",
+            "from": [
+                16,
+                0,
+                15
+            ],
+            "to": [
+                16.01,
+                11,
+                16
+            ],
+            "faces": {
+                "east": {
+                    "uv": [
+                        15,
+                        5,
+                        16,
+                        16
+                    ],
+                    "texture": "#redstone"
+                }
+            }
+        },
+        {
+            "name": "Redstone_Side_East_Bottom",
+            "comment": "1px redstone strip on bottom edge of east side face",
+            "from": [
+                16,
+                0,
+                1
+            ],
+            "to": [
+                16.01,
+                1,
+                15
+            ],
+            "faces": {
+                "east": {
+                    "uv": [
+                        1,
+                        15,
+                        15,
+                        16
+                    ],
+                    "texture": "#redstone"
+                }
+            }
+        },
+        {
+            "name": "Redstone_Side_North_Left",
+            "comment": "1px redstone strip on left edge (west) of north side face",
+            "from": [
+                0,
+                0,
+                -0.01
+            ],
+            "to": [
+                1,
+                11,
+                0
+            ],
+            "faces": {
+                "north": {
+                    "uv": [
+                        15,
+                        5,
+                        16,
+                        16
+                    ],
+                    "texture": "#redstone"
+                }
+            }
+        },
+        {
+            "name": "Redstone_Side_North_Right",
+            "comment": "1px redstone strip on right edge (east) of north side face",
+            "from": [
+                15,
+                0,
+                -0.01
+            ],
+            "to": [
+                16,
+                11,
+                0
+            ],
+            "faces": {
+                "north": {
+                    "uv": [
+                        0,
+                        5,
+                        1,
+                        16
+                    ],
+                    "texture": "#redstone"
+                }
+            }
+        },
+        {
+            "name": "Redstone_Side_North_Bottom",
+            "comment": "1px redstone strip on bottom edge of north side face",
+            "from": [
+                1,
+                0,
+                -0.01
+            ],
+            "to": [
+                15,
+                1,
+                0
+            ],
+            "faces": {
+                "north": {
+                    "uv": [
+                        1,
+                        15,
+                        15,
+                        16
+                    ],
+                    "texture": "#redstone"
+                }
+            }
+        },
+        {
+            "name": "Redstone_Side_South_Left",
+            "comment": "1px redstone strip on left edge (east) of south side face",
+            "from": [
+                15,
+                0,
+                16
+            ],
+            "to": [
+                16,
+                11,
+                16.01
+            ],
+            "faces": {
+                "south": {
+                    "uv": [
+                        15,
+                        5,
+                        16,
+                        16
+                    ],
+                    "texture": "#redstone"
+                }
+            }
+        },
+        {
+            "name": "Redstone_Side_South_Right",
+            "comment": "1px redstone strip on right edge (west) of south side face",
+            "from": [
+                0,
+                0,
+                16
+            ],
+            "to": [
+                1,
+                11,
+                16.01
+            ],
+            "faces": {
+                "south": {
+                    "uv": [
+                        0,
+                        5,
+                        1,
+                        16
+                    ],
+                    "texture": "#redstone"
+                }
+            }
+        },
+        {
+            "name": "Redstone_Side_South_Bottom",
+            "comment": "1px redstone strip on bottom edge of south side face",
+            "from": [
+                1,
+                0,
+                16
+            ],
+            "to": [
+                15,
+                1,
+                16.01
+            ],
+            "faces": {
+                "south": {
+                    "uv": [
+                        1,
+                        15,
+                        15,
+                        16
+                    ],
+                    "texture": "#redstone"
+                }
+            }
+        }
+    ]
+}

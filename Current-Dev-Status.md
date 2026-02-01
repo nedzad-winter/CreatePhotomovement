@@ -1,11 +1,11 @@
 # Create Photomovement - Development Status
-**Last Updated:** 2026-01-18 11:05
+**Last Updated:** 2026-01-28 17:27
 
 ## Version 0.2.0 - RELEASE READY ✅
 
 ### All Versions Complete:
 
-#### NeoForge 1.21.1 ✅
+#### NeoForge 1.21.1 ✅ (recipe folder NOT recipes)
 - All 68 blocks registered
 - All recipes, tags, loot tables working
 - German and Spanish translations
@@ -47,3 +47,64 @@ This will:
 1. Build all 4 mod versions
 2. Copy JARs to `tools/builds/`
 3. Copy JARs to game mods folders (if they exist)
+
+---
+
+## Version 0.3.0 - IN DEVELOPMENT
+
+### New Features:
+- Solar Sail (16 color variants)
+- Solar Windmill Bearing
+
+### Experimental: Cyan Solar Sail Glass Pane Texture (2026-01-28)
+**Status:** Testing in progress - user will evaluate
+
+Created `cyan_solar_sail_glass_test.json` model with:
+- Outer 1-pixel ring at Y=9-10 (connected to frame)
+- Clear glass pane at Y=9.01-9.99 covering inner 14x14 area
+- Recessed inner sail texture at Y=8-8.99 visible through glass
+
+**Files modified:**
+- `neoforge/1211/src/main/resources/assets/createphotomovement/models/block/cyan_solar_sail_glass_test.json` (NEW)
+- `neoforge/1211/src/main/resources/assets/createphotomovement/blockstates/cyan_solar_sail.json` (temporarily points to test model)
+
+**To revert:** Change blockstate back to use `cyan_solar_sail` model instead of `cyan_solar_sail_glass_test`
+
+---
+
+## Recipe Format Differences (IMPORTANT for porting)
+
+### NeoForge 1.21.1:
+```json
+{
+    "type": "minecraft:crafting_shapeless",
+    "category": "misc",
+    "ingredients": [
+        { "tag": "createphotomovement:solar_sails" },
+        { "item": "minecraft:red_dye" }
+    ],
+    "result": {
+        "count": 1,
+        "id": "createphotomovement:red_solar_sail"
+    }
+}
+```
+
+### NeoForge/Forge 1.20.1:
+```json
+{
+    "type": "minecraft:crafting_shapeless",
+    "ingredients": [
+        { "tag": "createphotomovement:solar_sails" },
+        { "item": "minecraft:red_dye" }
+    ],
+    "result": {
+        "item": "createphotomovement:red_solar_sail"
+    }
+}
+```
+
+**Key differences:**
+- 1.21.1 uses `"id"` in result, 1.20.x uses `"item"`
+- 1.21.1 requires `"count": 1`, 1.20.x defaults to 1
+- 1.21.1 uses `"category": "misc"`, 1.20.x doesn't need it

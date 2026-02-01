@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.3.0] - 2026-02-01
+
+### Fixed
+- **Solar Generator Visuals**: Raised glass layer on all solar generators (basic and advanced, vertical and horizontal) by 1 pixel to sit flush with the top of the block
+
+---
+
 ## [0.2.0] - 2026-01-18
 
 ### Added

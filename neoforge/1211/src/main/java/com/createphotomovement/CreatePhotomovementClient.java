@@ -2,6 +2,7 @@ package com.createphotomovement;
 
 import com.createphotomovement.content.kinetics.solargenerator.SolarGeneratorRenderer;
 import com.createphotomovement.content.kinetics.solargenerator.HorizontalSolarGeneratorRenderer;
+import com.simibubi.create.content.contraptions.bearing.BearingRenderer;
 import com.createphotomovement.ponder.PhotomovementPonderPlugin;
 
 import net.createmod.ponder.foundation.PonderIndex;
@@ -28,5 +29,6 @@ public class CreatePhotomovementClient {
         event.registerBlockEntityRenderer(AllBlockEntityTypes.ADV_SOLAR_GENERATOR.get(), SolarGeneratorRenderer::new);
         event.registerBlockEntityRenderer(AllBlockEntityTypes.HORZ_ADV_SOLAR_GENERATOR.get(),
                 HorizontalSolarGeneratorRenderer::new);
+        event.registerBlockEntityRenderer(AllBlockEntityTypes.SOLAR_WINDMILL_BEARING.get(), BearingRenderer::new);
     }
 }

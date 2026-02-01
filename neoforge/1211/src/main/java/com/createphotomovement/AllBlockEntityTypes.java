@@ -111,4 +111,13 @@ public class AllBlockEntityTypes {
                                                         AllBlocks.GREEN_HORZ_ADV_SOLAR_GENERATOR.get(),
                                                         AllBlocks.RED_HORZ_ADV_SOLAR_GENERATOR.get(),
                                                         AllBlocks.BLACK_HORZ_ADV_SOLAR_GENERATOR.get()).build(null));
+
+        public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<com.createphotomovement.content.kinetics.solarwindmill.SolarWindmillBearingBlockEntity>> SOLAR_WINDMILL_BEARING = BLOCK_ENTITY_TYPES
+                        .register("solar_windmill_bearing",
+                                        () -> BlockEntityType.Builder.of(
+                                                        (pos, state) -> new com.createphotomovement.content.kinetics.solarwindmill.SolarWindmillBearingBlockEntity(
+                                                                        AllBlockEntityTypes.SOLAR_WINDMILL_BEARING
+                                                                                        .get(),
+                                                                        pos, state),
+                                                        AllBlocks.SOLAR_WINDMILL_BEARING.get()).build(null));
 }
