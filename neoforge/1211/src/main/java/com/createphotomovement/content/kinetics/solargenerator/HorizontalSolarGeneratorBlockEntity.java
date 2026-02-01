@@ -19,7 +19,7 @@ public class HorizontalSolarGeneratorBlockEntity extends GeneratingKineticBlockE
 
     private float currentStressCapacity;
     private int updateTimer;
-    private boolean firstTick = true;
+    private int warmup = 10;
 
     public HorizontalSolarGeneratorBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -30,15 +30,6 @@ public class HorizontalSolarGeneratorBlockEntity extends GeneratingKineticBlockE
     @Override
     public void onLoad() {
         super.onLoad();
-        // Force recalculation and network update on chunk load
-        if (level != null && !level.isClientSide) {
-            // Reset firstTick to ensure we update on next tick
-            firstTick = true;
-            // Force immediate stress recalculation
-            updateStressCapacity();
-            // Always force network update on load to sync with kinetic network
-            updateGeneratedRotation();
-        }
     }
 
     /**
@@ -70,8 +61,7 @@ public class HorizontalSolarGeneratorBlockEntity extends GeneratingKineticBlockE
     @Override
     public float calculateAddedStressCapacity() {
         float capacity = currentStressCapacity;
-        if (capacity < 0)
-            capacity = 0;
+        this.lastCapacityProvided = capacity; // Vital for correct Network Delta updates
         return capacity;
     }
 
@@ -82,13 +72,12 @@ public class HorizontalSolarGeneratorBlockEntity extends GeneratingKineticBlockE
         if (level == null || level.isClientSide)
             return;
 
-        // Immediate update on first tick (handles placement)
-        if (firstTick) {
-            firstTick = false;
-            updateStressCapacity();
-            // Force network update even if capacity didn't change
-            updateGeneratedRotation();
-            notifyUpdate();
+        if (warmup > 0) {
+            warmup--;
+            if (warmup == 0) {
+                // Initial update after placement/load delay
+                updateStressCapacity();
+            }
             return;
         }
 
@@ -159,6 +148,9 @@ public class HorizontalSolarGeneratorBlockEntity extends GeneratingKineticBlockE
         // Round to nearest integer to avoid floating point numbers
         newCapacity = Math.round(newCapacity);
 
+        // If capacity changes OR if it's our first real check after 0-init, update.
+        // Math.abs handles normal changes.
+        // If current is 0 (Clean Start) and new is 200, we update.
         if (Math.abs(newCapacity - currentStressCapacity) > 0.01f) {
             currentStressCapacity = newCapacity;
             updateGeneratedRotation();
@@ -198,13 +190,19 @@ public class HorizontalSolarGeneratorBlockEntity extends GeneratingKineticBlockE
     protected void write(CompoundTag compound, net.minecraft.core.HolderLookup.Provider registries,
             boolean clientPacket) {
         super.write(compound, registries, clientPacket);
-        compound.putFloat("CurrentStressCapacity", currentStressCapacity);
+        if (clientPacket) {
+            compound.putFloat("CurrentStressCapacity", currentStressCapacity);
+        }
     }
 
     @Override
     protected void read(CompoundTag compound, net.minecraft.core.HolderLookup.Provider registries,
             boolean clientPacket) {
         super.read(compound, registries, clientPacket);
-        currentStressCapacity = compound.getFloat("CurrentStressCapacity");
+        if (clientPacket) {
+            currentStressCapacity = compound.getFloat("CurrentStressCapacity");
+        }
+        // Server: currentStressCapacity stays at 0/Default.
+        // super.read() restores lastCapacityProvided (e.g. 200).
     }
 }
