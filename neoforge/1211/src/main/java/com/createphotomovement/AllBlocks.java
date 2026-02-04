@@ -580,16 +580,14 @@ public class AllBlocks {
                                         .sound(SoundType.WOOD)
                                         .noOcclusion()));
 
-        public static final DeferredBlock<com.createphotomovement.content.kinetics.solarwindmill.SolarSailBlock> WHITE_SOLAR_SAIL = BLOCKS
-                        .register("white_solar_sail",
+        public static final DeferredBlock<com.createphotomovement.content.kinetics.solarwindmill.SolarSailBlock> SOLAR_SAIL = BLOCKS
+                        .register("solar_sail",
                                         () -> com.createphotomovement.content.kinetics.solarwindmill.SolarSailBlock
                                                         .withCanvas(BlockBehaviour.Properties.of()
-                                                                        .mapColor(MapColor.SNOW)
-                                                                        .strength(0.1F)
-                                                                        .sound(SoundType.SCAFFOLDING)
-                                                                        .noOcclusion(),
+                                                                        .mapColor(net.minecraft.world.level.material.MapColor.WOOL)
+                                                                        .sound(net.minecraft.world.level.block.SoundType.WOOL)
+                                                                        .strength(0.8F),
                                                                         net.minecraft.world.item.DyeColor.WHITE));
-
         public static final DeferredBlock<com.createphotomovement.content.kinetics.solarwindmill.SolarSailBlock> ORANGE_SOLAR_SAIL = BLOCKS
                         .register("orange_solar_sail",
                                         () -> com.createphotomovement.content.kinetics.solarwindmill.SolarSailBlock

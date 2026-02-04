@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.simibubi.create.AllSoundEvents;
 import com.simibubi.create.content.contraptions.AssemblyException;
+import com.simibubi.create.content.contraptions.Contraption;
 import com.simibubi.create.content.contraptions.ControlledContraptionEntity;
 import com.simibubi.create.content.contraptions.bearing.BearingBlock;
 import com.simibubi.create.content.contraptions.bearing.BearingContraption;
@@ -11,6 +12,8 @@ import com.simibubi.create.content.contraptions.bearing.WindmillBearingBlockEnti
 import com.simibubi.create.foundation.advancement.AllAdvancements;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.infrastructure.config.AllConfigs;
+import com.mojang.logging.LogUtils;
+import org.slf4j.Logger;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -37,11 +40,14 @@ import net.minecraft.world.level.block.state.BlockState;
  */
 public class SolarWindmillBearingBlockEntity extends WindmillBearingBlockEntity {
 
+    private static final Logger LOGGER = LogUtils.getLogger();
+
     // Cached at assembly time
     private int regularSailCount = 0;
     private int solarSailCount = 0;
     private boolean hasSkyAccess = false;
     private float lastSolarMultiplier = -1;
+    private int warmup = 10; // Delay before refreshing from contraption
 
     public SolarWindmillBearingBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -55,6 +61,16 @@ public class SolarWindmillBearingBlockEntity extends WindmillBearingBlockEntity 
     public void solarTick() {
         if (level == null || level.isClientSide)
             return;
+
+        // Handle warmup after world load - refresh from contraption
+        if (warmup > 0) {
+            warmup--;
+            if (warmup == 0) {
+                // Force refresh from contraption after load delay
+                updateGeneratedRotation();
+            }
+            return;
+        }
 
         float currentMultiplier = getSolarMultiplier();
         if (Math.abs(currentMultiplier - lastSolarMultiplier) > 0.001f) {
@@ -117,16 +133,27 @@ public class SolarWindmillBearingBlockEntity extends WindmillBearingBlockEntity 
     @Override
     public void updateGeneratedRotation() {
         // Update sail counts when contraption is assembled/updated
-        if (movedContraption != null && movedContraption.getContraption() instanceof SolarBearingContraption sbc) {
-            this.solarSailCount = sbc.getSolarSailBlocks();
-            this.regularSailCount = sbc.getRegularSailBlocks();
-            this.hasSkyAccess = sbc.hasSkyAccess();
-        } else if (movedContraption != null
-                && movedContraption.getContraption() instanceof BearingContraption bc) {
-            // Fallback for regular BearingContraption
-            this.regularSailCount = bc.getSailBlocks();
-            this.solarSailCount = 0;
-            this.hasSkyAccess = false;
+        if (movedContraption != null) {
+            Contraption c = movedContraption.getContraption();
+            LOGGER.info("[SolarWindmillBearingBE] updateGeneratedRotation: contraption class={}, type={}",
+                    c != null ? c.getClass().getSimpleName() : "null",
+                    c != null ? c.getType() : "null");
+
+            if (c instanceof SolarBearingContraption sbc) {
+                this.solarSailCount = sbc.getSolarSailBlocks();
+                this.regularSailCount = sbc.getRegularSailBlocks();
+                this.hasSkyAccess = sbc.hasSkyAccess();
+                LOGGER.info("[SolarWindmillBearingBE] instanceof SolarBearingContraption: solar={}, regular={}, sky={}",
+                        solarSailCount, regularSailCount, hasSkyAccess);
+            } else if (c instanceof BearingContraption bc) {
+                // Fallback for regular BearingContraption
+                this.regularSailCount = bc.getSailBlocks();
+                this.solarSailCount = 0;
+                this.hasSkyAccess = false;
+                LOGGER.info("[SolarWindmillBearingBE] FALLBACK to BearingContraption: regular={}", regularSailCount);
+            }
+        } else {
+            LOGGER.info("[SolarWindmillBearingBE] updateGeneratedRotation: movedContraption is null");
         }
         super.updateGeneratedRotation();
     }
@@ -229,10 +256,15 @@ public class SolarWindmillBearingBlockEntity extends WindmillBearingBlockEntity 
 
     @Override
     protected void read(CompoundTag compound, HolderLookup.Provider registries, boolean clientPacket) {
-        regularSailCount = compound.getInt("RegularSails");
-        solarSailCount = compound.getInt("SolarSails");
-        hasSkyAccess = compound.getBoolean("HasSkyAccess");
         super.read(compound, registries, clientPacket);
+        if (clientPacket) {
+            // Client receives synced values from server
+            regularSailCount = compound.getInt("RegularSails");
+            solarSailCount = compound.getInt("SolarSails");
+            hasSkyAccess = compound.getBoolean("HasSkyAccess");
+        }
+        // Server: Values stay at 0. updateGeneratedRotation() refreshes from
+        // contraption after warmup.
     }
 
     // Getters for display/debug

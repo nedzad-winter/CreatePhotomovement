@@ -235,7 +235,7 @@ public class SolarSailBlock extends WrenchableDirectionalBlock {
 
     private Block getSolarSailForColor(DyeColor dyeColor) {
         return switch (dyeColor) {
-            case WHITE -> AllBlocks.WHITE_SOLAR_SAIL.get();
+            case WHITE -> AllBlocks.SOLAR_SAIL.get();
             case ORANGE -> AllBlocks.ORANGE_SOLAR_SAIL.get();
             case MAGENTA -> AllBlocks.MAGENTA_SOLAR_SAIL.get();
             case LIGHT_BLUE -> AllBlocks.LIGHT_BLUE_SOLAR_SAIL.get();
@@ -269,7 +269,7 @@ public class SolarSailBlock extends WrenchableDirectionalBlock {
             Player player) {
         ItemStack pickBlock = super.getCloneItemStack(state, target, world, pos, player);
         if (pickBlock.isEmpty())
-            return AllBlocks.WHITE_SOLAR_SAIL.get().getCloneItemStack(state, target, world, pos, player);
+            return AllBlocks.SOLAR_SAIL.get().getCloneItemStack(state, target, world, pos, player);
         return pickBlock;
     }
 

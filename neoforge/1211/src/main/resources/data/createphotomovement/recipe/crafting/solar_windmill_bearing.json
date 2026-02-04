@@ -1,16 +1,13 @@
 {
     "type": "minecraft:crafting_shaped",
     "pattern": [
-        " R ",
-        "SBS",
-        " S "
+        "   ",
+        "RBR",
+        "RRR"
     ],
     "key": {
         "R": {
             "item": "minecraft:redstone"
-        },
-        "S": {
-            "item": "createphotomovement:white_solar_sail"
         },
         "B": {
             "item": "create:windmill_bearing"

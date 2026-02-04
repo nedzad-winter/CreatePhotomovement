@@ -97,7 +97,7 @@ public class AllCreativeTabs {
                                                 output.accept(AllItems.PINK_SOLAR_GENERATOR.get());
 
                                                 // Solar Sails - Minecraft dye order
-                                                output.accept(AllItems.WHITE_SOLAR_SAIL.get());
+                                                output.accept(AllItems.SOLAR_SAIL.get());
                                                 output.accept(AllItems.LIGHT_GRAY_SOLAR_SAIL.get());
                                                 output.accept(AllItems.GRAY_SOLAR_SAIL.get());
                                                 output.accept(AllItems.BLACK_SOLAR_SAIL.get());

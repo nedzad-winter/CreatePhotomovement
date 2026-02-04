@@ -286,9 +286,9 @@ public class AllItems {
 
         // Solar Sails
 
-        public static final DeferredItem<BlockItem> WHITE_SOLAR_SAIL = ITEMS.registerSimpleBlockItem(
-                        "white_solar_sail",
-                        AllBlocks.WHITE_SOLAR_SAIL);
+        public static final DeferredItem<BlockItem> SOLAR_SAIL = ITEMS.registerSimpleBlockItem(
+                        "solar_sail",
+                        AllBlocks.SOLAR_SAIL);
 
         public static final DeferredItem<BlockItem> ORANGE_SOLAR_SAIL = ITEMS.registerSimpleBlockItem(
                         "orange_solar_sail",

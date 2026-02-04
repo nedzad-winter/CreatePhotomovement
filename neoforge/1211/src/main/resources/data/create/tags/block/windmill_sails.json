@@ -1,7 +1,7 @@
 {
     "replace": false,
     "values": [
-        "createphotomovement:white_solar_sail",
+        "createphotomovement:solar_sail",
         "createphotomovement:orange_solar_sail",
         "createphotomovement:magenta_solar_sail",
         "createphotomovement:light_blue_solar_sail",

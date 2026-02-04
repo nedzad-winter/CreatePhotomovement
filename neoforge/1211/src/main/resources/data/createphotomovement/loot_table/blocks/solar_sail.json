@@ -6,7 +6,7 @@
             "entries": [
                 {
                     "type": "minecraft:item",
-                    "name": "createphotomovement:white_solar_sail"
+                    "name": "createphotomovement:solar_sail"
                 }
             ]
         }

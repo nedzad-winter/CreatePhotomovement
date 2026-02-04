@@ -53,8 +53,8 @@ This will:
 ## Version 0.3.0 - IN DEVELOPMENT
 
 ### New Features:
-- Solar Sail (16 color variants)
-- Solar Windmill Bearing
+- Solar Sail (16 color variants) - **VERIFIED**
+- Solar Windmill Bearing - **VERIFIED**
 
 ### Experimental: Cyan Solar Sail Glass Pane Texture (2026-01-28)
 **Status:** Testing in progress - user will evaluate
@@ -69,6 +69,30 @@ Created `cyan_solar_sail_glass_test.json` model with:
 - `neoforge/1211/src/main/resources/assets/createphotomovement/blockstates/cyan_solar_sail.json` (temporarily points to test model)
 
 **To revert:** Change blockstate back to use `cyan_solar_sail` model instead of `cyan_solar_sail_glass_test`
+
+---
+
+### IN PROGRESS: Solar Windmill Bearing SU Persistence Bug (2026-02-04)
+**Status:** Debugging - SU doubles after world reload
+
+**Problem:**
+- Initial SU with 8 solar sails: 1024 (correct)
+- After save/reload: 2048 (doubled!)
+
+**What's Fixed:**
+- ContraptionType now loads as `SolarBearingContraption` (not generic `BearingContraption`)
+- Added `AllContraptionTypes.java` with `DeferredRegister`
+
+**What's Broken:**
+- `SolarSails` NBT value loads as 0 despite being saved as 8
+- `hasSkyAccess` loads correctly (true)
+- Something is causing the SU calculation to double
+
+**Files with Debug Logging:**
+- `SolarBearingContraption.java` - readNBT/writeNBT logging
+- `SolarWindmillBearingBlockEntity.java` - updateGeneratedRotation logging
+
+**See `.bugs.md` for detailed investigation notes and theories**
 
 ---
 

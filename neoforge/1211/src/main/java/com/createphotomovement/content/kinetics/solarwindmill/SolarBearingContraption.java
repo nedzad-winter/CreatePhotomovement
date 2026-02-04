@@ -1,8 +1,10 @@
 package com.createphotomovement.content.kinetics.solarwindmill;
 
 import org.apache.commons.lang3.tuple.Pair;
+import org.slf4j.Logger;
 
-import com.simibubi.create.AllTags.AllBlockTags;
+import com.mojang.logging.LogUtils;
+import com.simibubi.create.api.contraption.ContraptionType;
 import com.simibubi.create.content.contraptions.AssemblyException;
 import com.simibubi.create.content.contraptions.bearing.BearingContraption;
 
@@ -22,8 +24,15 @@ import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemp
  */
 public class SolarBearingContraption extends BearingContraption {
 
+    private static final Logger LOGGER = LogUtils.getLogger();
+
     protected int solarSailBlocks = 0;
     protected boolean hasSkyAccess = false;
+
+    @Override
+    public ContraptionType getType() {
+        return com.createphotomovement.AllContraptionTypes.SOLAR_BEARING.get();
+    }
 
     public SolarBearingContraption() {
         super();
@@ -80,14 +89,23 @@ public class SolarBearingContraption extends BearingContraption {
         CompoundTag tag = super.writeNBT(registries, spawnPacket);
         tag.putInt("SolarSails", solarSailBlocks);
         tag.putBoolean("HasSkyAccess", hasSkyAccess);
+        LOGGER.info("[SolarBearingContraption] writeNBT: solarSails={}, hasSkyAccess={}, spawnPacket={}",
+                solarSailBlocks, hasSkyAccess, spawnPacket);
         return tag;
     }
 
     @Override
     public void readNBT(Level world, CompoundTag tag, boolean spawnData) {
-        solarSailBlocks = tag.getInt("SolarSails");
+        // Load values from NBT - addBlock() is NOT called during deserialization
+        // (Contraption.readBlocksCompound directly populates the blocks map)
+        int nbtValue = tag.getInt("SolarSails");
         hasSkyAccess = tag.getBoolean("HasSkyAccess");
+        LOGGER.info(
+                "[SolarBearingContraption] readNBT: current={}, nbtValue={}, hasSkyAccess={}, spawnData={}",
+                solarSailBlocks, nbtValue, hasSkyAccess, spawnData);
+        solarSailBlocks = nbtValue;
         super.readNBT(world, tag, spawnData);
+        LOGGER.info("[SolarBearingContraption] readNBT AFTER super: solarSails={}", solarSailBlocks);
     }
 
     /**
