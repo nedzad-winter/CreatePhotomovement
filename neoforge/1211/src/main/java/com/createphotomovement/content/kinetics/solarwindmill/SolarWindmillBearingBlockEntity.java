@@ -143,8 +143,9 @@ public class SolarWindmillBearingBlockEntity extends WindmillBearingBlockEntity 
                 this.solarSailCount = sbc.getSolarSailBlocks();
                 this.regularSailCount = sbc.getRegularSailBlocks();
                 this.hasSkyAccess = sbc.hasSkyAccess();
-                LOGGER.info("[SolarWindmillBearingBE] instanceof SolarBearingContraption: solar={}, regular={}, sky={}",
-                        solarSailCount, regularSailCount, hasSkyAccess);
+                LOGGER.info(
+                        "[SolarWindmillBearingBE] instanceof SolarBearingContraption: solar={}, regular={}, sky={}, TOTAL_BLOCKS={}, TOTAL_SAILS={}",
+                        solarSailCount, regularSailCount, hasSkyAccess, sbc.getBlocks().size(), sbc.getSailBlocks());
             } else if (c instanceof BearingContraption bc) {
                 // Fallback for regular BearingContraption
                 this.regularSailCount = bc.getSailBlocks();
@@ -153,7 +154,6 @@ public class SolarWindmillBearingBlockEntity extends WindmillBearingBlockEntity 
                 LOGGER.info("[SolarWindmillBearingBE] FALLBACK to BearingContraption: regular={}", regularSailCount);
             }
         } else {
-            LOGGER.info("[SolarWindmillBearingBE] updateGeneratedRotation: movedContraption is null");
         }
         super.updateGeneratedRotation();
     }
@@ -170,7 +170,9 @@ public class SolarWindmillBearingBlockEntity extends WindmillBearingBlockEntity 
         int sailsPerRPM = AllConfigs.server().kinetics.windmillSailsPerRPM.get();
         int rpm = totalSails / sailsPerRPM;
 
-        return Mth.clamp(rpm, 1, 16) * getAngleSpeedDirection();
+        float speed = Mth.clamp(rpm, 1, 16) * getAngleSpeedDirection();
+
+        return speed;
     }
 
     /**
@@ -215,7 +217,10 @@ public class SolarWindmillBearingBlockEntity extends WindmillBearingBlockEntity 
         int totalSails = regularSailCount + solarSailCount;
         int rpm = Math.max(1, totalSails / sailsPerBracket);
 
-        return totalSU / rpm;
+        float result = totalSU / rpm;
+
+        this.lastCapacityProvided = result;
+        return result;
     }
 
     /**
@@ -262,6 +267,8 @@ public class SolarWindmillBearingBlockEntity extends WindmillBearingBlockEntity 
             regularSailCount = compound.getInt("RegularSails");
             solarSailCount = compound.getInt("SolarSails");
             hasSkyAccess = compound.getBoolean("HasSkyAccess");
+        } else {
+            // Note: We don't load sail counts from disk on server, we rely on contraption
         }
         // Server: Values stay at 0. updateGeneratedRotation() refreshes from
         // contraption after warmup.

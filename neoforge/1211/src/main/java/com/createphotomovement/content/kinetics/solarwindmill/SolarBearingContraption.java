@@ -44,10 +44,16 @@ public class SolarBearingContraption extends BearingContraption {
 
     @Override
     public boolean assemble(Level world, BlockPos pos) throws AssemblyException {
+        // Reset counters before assembly
+        solarSailBlocks = 0;
+
         boolean result = super.assemble(world, pos);
         if (result) {
             // Check sky access for the bearing position at assembly time
             hasSkyAccess = checkSkyAccess(world, pos);
+            LOGGER.info(
+                    "[SolarBearingContraption] assemble FINISHED: SolarSails={}, TotalSails (super)={}, TotalBlocks={}",
+                    solarSailBlocks, getSailBlocks(), getBlocks().size());
         }
         return result;
     }
@@ -55,16 +61,26 @@ public class SolarBearingContraption extends BearingContraption {
     @Override
     public void addBlock(Level level, BlockPos pos, Pair<StructureBlockInfo, BlockEntity> capture) {
         BlockPos localPos = pos.subtract(anchor);
+        boolean isNew = !getBlocks().containsKey(localPos);
 
         // Check if this is a new block and if it's a solar sail
-        if (!getBlocks().containsKey(localPos)) {
+        if (isNew) {
             BlockState state = capture.getKey().state();
             if (state.getBlock() instanceof SolarSailBlock) {
                 solarSailBlocks++;
+                LOGGER.debug("[SolarBearingContraption] addBlock: Found SolarSail at {}, Count={}", localPos,
+                        solarSailBlocks);
             }
         }
 
         super.addBlock(level, pos, capture);
+
+        if (isNew) {
+            // Verify if super counted it
+            // We can't access super.sailBlocks directly, but we can infer if total sail
+            // count increased?
+            // Not easily during the loop without tracking previous.
+        }
     }
 
     /**
@@ -89,23 +105,70 @@ public class SolarBearingContraption extends BearingContraption {
         CompoundTag tag = super.writeNBT(registries, spawnPacket);
         tag.putInt("SolarSails", solarSailBlocks);
         tag.putBoolean("HasSkyAccess", hasSkyAccess);
-        LOGGER.info("[SolarBearingContraption] writeNBT: solarSails={}, hasSkyAccess={}, spawnPacket={}",
-                solarSailBlocks, hasSkyAccess, spawnPacket);
+        if (!spawnPacket) {
+            LOGGER.info(
+                    "[SolarBearingContraption] writeNBT (DISK SAVE): solarSails={}, hasSkyAccess={}, SUPER.Sails={}",
+                    solarSailBlocks, hasSkyAccess, getSailBlocks());
+        }
         return tag;
     }
 
     @Override
     public void readNBT(Level world, CompoundTag tag, boolean spawnData) {
-        // Load values from NBT - addBlock() is NOT called during deserialization
-        // (Contraption.readBlocksCompound directly populates the blocks map)
-        int nbtValue = tag.getInt("SolarSails");
-        hasSkyAccess = tag.getBoolean("HasSkyAccess");
-        LOGGER.info(
-                "[SolarBearingContraption] readNBT: current={}, nbtValue={}, hasSkyAccess={}, spawnData={}",
-                solarSailBlocks, nbtValue, hasSkyAccess, spawnData);
-        solarSailBlocks = nbtValue;
+        // Load block data first via super (populates 'blocks' map)
         super.readNBT(world, tag, spawnData);
-        LOGGER.info("[SolarBearingContraption] readNBT AFTER super: solarSails={}", solarSailBlocks);
+
+        // Recalculate sail counts from actual blocks to ensure consistency
+        // This fixes issues where NBT integers might desync or double-count on reload
+        int recalcSolar = 0;
+        int recalcTotal = 0;
+
+        for (StructureBlockInfo info : getBlocks().values()) {
+            BlockState state = info.state();
+            boolean isSolar = state.getBlock() instanceof SolarSailBlock;
+
+            // Check if it's a sail (Standard Create check logic duplicate for safety)
+            // We assume if it's in the contraption and was counted as a sail before, it is
+            // one.
+            // But 'getBlocks()' contains ALL blocks (chassis, etc).
+            // We need to check if it IS a sail.
+
+            // Solar Sails are definitely sails
+            if (isSolar) {
+                recalcSolar++;
+                recalcTotal++;
+            }
+            // Check for regular sails (using Tag or instanceof SailBlock if needed)
+            // Since we can't easily access the "isSail" logic from here without
+            // dependencies,
+            // we rely on the fact that we can detect SolarSails.
+            // For regular sails, we might trust the difference?
+            // NO, we must count them to be sure.
+            else if (isSail(state)) {
+                recalcTotal++;
+            }
+        }
+
+        // Fix the fields
+        this.solarSailBlocks = recalcSolar;
+        this.sailBlocks = recalcTotal; // 'sailBlocks' is protected in BearingContraption
+
+        // Restore SkyAccess
+        hasSkyAccess = tag.getBoolean("HasSkyAccess");
+    }
+
+    // Helper to mirror BearingContraption's sail check
+    protected boolean isSail(BlockState state) {
+        // Use tags if possible, or instanceof
+        // We know SolarSailBlock is ours.
+        if (state.getBlock() instanceof SolarSailBlock)
+            return true;
+
+        // For other Create sails
+        if (state.is(com.simibubi.create.AllTags.AllBlockTags.WINDMILL_SAILS.tag))
+            return true;
+
+        return false;
     }
 
     /**
