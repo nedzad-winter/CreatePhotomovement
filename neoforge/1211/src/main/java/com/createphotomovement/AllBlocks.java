@@ -586,7 +586,7 @@ public class AllBlocks {
                                                         .withCanvas(BlockBehaviour.Properties.of()
                                                                         .mapColor(MapColor.SNOW)
                                                                         .strength(0.1F)
-                                                                        .sound(SoundType.WOOL)
+                                                                        .sound(SoundType.SCAFFOLDING)
                                                                         .noOcclusion(),
                                                                         net.minecraft.world.item.DyeColor.WHITE));
 
@@ -596,7 +596,7 @@ public class AllBlocks {
                                                         .withCanvas(BlockBehaviour.Properties.of()
                                                                         .mapColor(MapColor.COLOR_ORANGE)
                                                                         .strength(0.1F)
-                                                                        .sound(SoundType.WOOL)
+                                                                        .sound(SoundType.SCAFFOLDING)
                                                                         .noOcclusion(),
                                                                         net.minecraft.world.item.DyeColor.ORANGE));
 
@@ -606,7 +606,7 @@ public class AllBlocks {
                                                         .withCanvas(BlockBehaviour.Properties.of()
                                                                         .mapColor(MapColor.COLOR_MAGENTA)
                                                                         .strength(0.1F)
-                                                                        .sound(SoundType.WOOL)
+                                                                        .sound(SoundType.SCAFFOLDING)
                                                                         .noOcclusion(),
                                                                         net.minecraft.world.item.DyeColor.MAGENTA));
 
@@ -616,7 +616,7 @@ public class AllBlocks {
                                                         .withCanvas(BlockBehaviour.Properties.of()
                                                                         .mapColor(MapColor.COLOR_LIGHT_BLUE)
                                                                         .strength(0.1F)
-                                                                        .sound(SoundType.WOOL)
+                                                                        .sound(SoundType.SCAFFOLDING)
                                                                         .noOcclusion(),
                                                                         net.minecraft.world.item.DyeColor.LIGHT_BLUE));
 
@@ -626,7 +626,7 @@ public class AllBlocks {
                                                         .withCanvas(BlockBehaviour.Properties.of()
                                                                         .mapColor(MapColor.COLOR_YELLOW)
                                                                         .strength(0.1F)
-                                                                        .sound(SoundType.WOOL)
+                                                                        .sound(SoundType.SCAFFOLDING)
                                                                         .noOcclusion(),
                                                                         net.minecraft.world.item.DyeColor.YELLOW));
 
@@ -636,7 +636,7 @@ public class AllBlocks {
                                                         .withCanvas(BlockBehaviour.Properties.of()
                                                                         .mapColor(MapColor.COLOR_LIGHT_GREEN)
                                                                         .strength(0.1F)
-                                                                        .sound(SoundType.WOOL)
+                                                                        .sound(SoundType.SCAFFOLDING)
                                                                         .noOcclusion(),
                                                                         net.minecraft.world.item.DyeColor.LIME));
 
@@ -646,7 +646,7 @@ public class AllBlocks {
                                                         .withCanvas(BlockBehaviour.Properties.of()
                                                                         .mapColor(MapColor.COLOR_PINK)
                                                                         .strength(0.1F)
-                                                                        .sound(SoundType.WOOL)
+                                                                        .sound(SoundType.SCAFFOLDING)
                                                                         .noOcclusion(),
                                                                         net.minecraft.world.item.DyeColor.PINK));
 
@@ -656,7 +656,7 @@ public class AllBlocks {
                                                         .withCanvas(BlockBehaviour.Properties.of()
                                                                         .mapColor(MapColor.COLOR_GRAY)
                                                                         .strength(0.1F)
-                                                                        .sound(SoundType.WOOL)
+                                                                        .sound(SoundType.SCAFFOLDING)
                                                                         .noOcclusion(),
                                                                         net.minecraft.world.item.DyeColor.GRAY));
 
@@ -666,7 +666,7 @@ public class AllBlocks {
                                                         .withCanvas(BlockBehaviour.Properties.of()
                                                                         .mapColor(MapColor.COLOR_LIGHT_GRAY)
                                                                         .strength(0.1F)
-                                                                        .sound(SoundType.WOOL)
+                                                                        .sound(SoundType.SCAFFOLDING)
                                                                         .noOcclusion(),
                                                                         net.minecraft.world.item.DyeColor.LIGHT_GRAY));
 
@@ -676,7 +676,7 @@ public class AllBlocks {
                                                         .withCanvas(BlockBehaviour.Properties.of()
                                                                         .mapColor(MapColor.COLOR_CYAN)
                                                                         .strength(0.1F)
-                                                                        .sound(SoundType.WOOL)
+                                                                        .sound(SoundType.SCAFFOLDING)
                                                                         .noOcclusion(),
                                                                         net.minecraft.world.item.DyeColor.CYAN));
 
@@ -686,7 +686,7 @@ public class AllBlocks {
                                                         .withCanvas(BlockBehaviour.Properties.of()
                                                                         .mapColor(MapColor.COLOR_PURPLE)
                                                                         .strength(0.1F)
-                                                                        .sound(SoundType.WOOL)
+                                                                        .sound(SoundType.SCAFFOLDING)
                                                                         .noOcclusion(),
                                                                         net.minecraft.world.item.DyeColor.PURPLE));
 
@@ -696,7 +696,7 @@ public class AllBlocks {
                                                         .withCanvas(BlockBehaviour.Properties.of()
                                                                         .mapColor(MapColor.COLOR_BLUE)
                                                                         .strength(0.1F)
-                                                                        .sound(SoundType.WOOL)
+                                                                        .sound(SoundType.SCAFFOLDING)
                                                                         .noOcclusion(),
                                                                         net.minecraft.world.item.DyeColor.BLUE));
 
@@ -706,7 +706,7 @@ public class AllBlocks {
                                                         .withCanvas(BlockBehaviour.Properties.of()
                                                                         .mapColor(MapColor.COLOR_BROWN)
                                                                         .strength(0.1F)
-                                                                        .sound(SoundType.WOOL)
+                                                                        .sound(SoundType.SCAFFOLDING)
                                                                         .noOcclusion(),
                                                                         net.minecraft.world.item.DyeColor.BROWN));
 
@@ -716,7 +716,7 @@ public class AllBlocks {
                                                         .withCanvas(BlockBehaviour.Properties.of()
                                                                         .mapColor(MapColor.COLOR_GREEN)
                                                                         .strength(0.1F)
-                                                                        .sound(SoundType.WOOL)
+                                                                        .sound(SoundType.SCAFFOLDING)
                                                                         .noOcclusion(),
                                                                         net.minecraft.world.item.DyeColor.GREEN));
 
@@ -726,7 +726,7 @@ public class AllBlocks {
                                                         .withCanvas(BlockBehaviour.Properties.of()
                                                                         .mapColor(MapColor.COLOR_RED)
                                                                         .strength(0.1F)
-                                                                        .sound(SoundType.WOOL)
+                                                                        .sound(SoundType.SCAFFOLDING)
                                                                         .noOcclusion(),
                                                                         net.minecraft.world.item.DyeColor.RED));
 
@@ -736,7 +736,7 @@ public class AllBlocks {
                                                         .withCanvas(BlockBehaviour.Properties.of()
                                                                         .mapColor(MapColor.COLOR_BLACK)
                                                                         .strength(0.1F)
-                                                                        .sound(SoundType.WOOL)
+                                                                        .sound(SoundType.SCAFFOLDING)
                                                                         .noOcclusion(),
                                                                         net.minecraft.world.item.DyeColor.BLACK));
 

@@ -1,0 +1,21 @@
+{
+    "replace": false,
+    "values": [
+        "createphotomovement:white_solar_sail",
+        "createphotomovement:orange_solar_sail",
+        "createphotomovement:magenta_solar_sail",
+        "createphotomovement:light_blue_solar_sail",
+        "createphotomovement:yellow_solar_sail",
+        "createphotomovement:lime_solar_sail",
+        "createphotomovement:pink_solar_sail",
+        "createphotomovement:gray_solar_sail",
+        "createphotomovement:light_gray_solar_sail",
+        "createphotomovement:cyan_solar_sail",
+        "createphotomovement:purple_solar_sail",
+        "createphotomovement:blue_solar_sail",
+        "createphotomovement:brown_solar_sail",
+        "createphotomovement:green_solar_sail",
+        "createphotomovement:red_solar_sail",
+        "createphotomovement:black_solar_sail"
+    ]
+}
