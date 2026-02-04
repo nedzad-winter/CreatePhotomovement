@@ -1,5 +1,17 @@
 package com.createphotomovement.content.kinetics.solarwindmill;
 
+/*
+ * I want to thank stackoverflow, reddit, my prof who inspired me......
+ * who am I kidding this shit took 5 whole days to make, troubleshoot and test.
+ * 
+ * Biggest problem is that I am using AI to code all of this and I don't have
+ * any clue about java or how the Create mod works.
+ * I surely did learn a bit how Create works even if it's just a tiny bit.
+ * 
+ * Why am I doing this again?
+ * 
+ * - The SU doubling bug fix (2026-02-04)
+ */
 import java.util.List;
 
 import com.simibubi.create.AllSoundEvents;
@@ -9,11 +21,10 @@ import com.simibubi.create.content.contraptions.ControlledContraptionEntity;
 import com.simibubi.create.content.contraptions.bearing.BearingBlock;
 import com.simibubi.create.content.contraptions.bearing.BearingContraption;
 import com.simibubi.create.content.contraptions.bearing.WindmillBearingBlockEntity;
+import com.simibubi.create.content.kinetics.KineticNetwork;
 import com.simibubi.create.foundation.advancement.AllAdvancements;
 import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.infrastructure.config.AllConfigs;
-import com.mojang.logging.LogUtils;
-import org.slf4j.Logger;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -40,8 +51,6 @@ import net.minecraft.world.level.block.state.BlockState;
  */
 public class SolarWindmillBearingBlockEntity extends WindmillBearingBlockEntity {
 
-    private static final Logger LOGGER = LogUtils.getLogger();
-
     // Cached at assembly time
     private int regularSailCount = 0;
     private int solarSailCount = 0;
@@ -56,6 +65,14 @@ public class SolarWindmillBearingBlockEntity extends WindmillBearingBlockEntity 
     @Override
     public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
         super.addBehaviours(behaviours);
+    }
+
+    @Override
+    public void tick() {
+        super.tick();
+        if (!level.isClientSide) {
+            solarTick();
+        }
     }
 
     public void solarTick() {
@@ -132,38 +149,46 @@ public class SolarWindmillBearingBlockEntity extends WindmillBearingBlockEntity 
 
     @Override
     public void updateGeneratedRotation() {
+
         // Update sail counts when contraption is assembled/updated
         if (movedContraption != null) {
             Contraption c = movedContraption.getContraption();
-            LOGGER.info("[SolarWindmillBearingBE] updateGeneratedRotation: contraption class={}, type={}",
-                    c != null ? c.getClass().getSimpleName() : "null",
-                    c != null ? c.getType() : "null");
 
             if (c instanceof SolarBearingContraption sbc) {
                 this.solarSailCount = sbc.getSolarSailBlocks();
                 this.regularSailCount = sbc.getRegularSailBlocks();
                 this.hasSkyAccess = sbc.hasSkyAccess();
-                LOGGER.info(
-                        "[SolarWindmillBearingBE] instanceof SolarBearingContraption: solar={}, regular={}, sky={}, TOTAL_BLOCKS={}, TOTAL_SAILS={}",
-                        solarSailCount, regularSailCount, hasSkyAccess, sbc.getBlocks().size(), sbc.getSailBlocks());
+
+                // CRITICAL: Zero out parent's sailBlocks to prevent double-counting!
+                // We handle all sail capacity ourselves in calculateAddedStressCapacity().
+                sbc.setSailBlocks(0);
             } else if (c instanceof BearingContraption bc) {
                 // Fallback for regular BearingContraption
                 this.regularSailCount = bc.getSailBlocks();
                 this.solarSailCount = 0;
                 this.hasSkyAccess = false;
-                LOGGER.info("[SolarWindmillBearingBE] FALLBACK to BearingContraption: regular={}", regularSailCount);
+
+                // Note: Can't zero sailBlocks for regular BearingContraption - parent handles
+                // this
             }
         } else {
+            // Detached or invalid contraption - reset counts to prevent ghost SU
+            this.regularSailCount = 0;
+            this.solarSailCount = 0;
+            this.hasSkyAccess = false;
+
         }
         super.updateGeneratedRotation();
     }
 
     @Override
     public float getGeneratedSpeed() {
-        if (!running)
+        if (!running) {
             return 0;
-        if (movedContraption == null)
-            return lastGeneratedSpeed;
+        }
+        if (movedContraption == null) {
+            return 0; // Prevent ghost speed from stale lastGeneratedSpeed
+        }
 
         // RPM is calculated normally - no solar bonus on speed
         int totalSails = regularSailCount + solarSailCount;
@@ -195,9 +220,15 @@ public class SolarWindmillBearingBlockEntity extends WindmillBearingBlockEntity 
 
     @Override
     public float calculateAddedStressCapacity() {
+
+        // Guard against detached/invalid bearings reporting capacity
+        if (!running || movedContraption == null)
+            return 0;
+
         // Calculate SU separately for normal and solar sails using power brackets
         // Formula: floor(sailCount / 8) * 512
-        int sailsPerBracket = 8;
+        // Formula: floor(sailCount / sailsPerRPM) * 512
+        int sailsPerBracket = AllConfigs.server().kinetics.windmillSailsPerRPM.get();
         float suPerBracket = 512f;
 
         // Normal sails: standard bracket calculation
@@ -253,25 +284,75 @@ public class SolarWindmillBearingBlockEntity extends WindmillBearingBlockEntity 
 
     @Override
     public void write(CompoundTag compound, HolderLookup.Provider registries, boolean clientPacket) {
-        compound.putInt("RegularSails", regularSailCount);
-        compound.putInt("SolarSails", solarSailCount);
-        compound.putBoolean("HasSkyAccess", hasSkyAccess);
+        if (clientPacket) {
+            compound.putInt("RegularSails", regularSailCount);
+            compound.putInt("SolarSails", solarSailCount);
+            compound.putBoolean("HasSkyAccess", hasSkyAccess);
+        } else {
+            // CRITICAL: Zero BOTH 'capacity' AND 'lastCapacityProvided' BEFORE
+            // super.write()!
+            this.capacity = 0;
+            this.lastCapacityProvided = 0;
+        }
         super.write(compound, registries, clientPacket);
     }
 
     @Override
     protected void read(CompoundTag compound, HolderLookup.Provider registries, boolean clientPacket) {
         super.read(compound, registries, clientPacket);
+
         if (clientPacket) {
-            // Client receives synced values from server
             regularSailCount = compound.getInt("RegularSails");
             solarSailCount = compound.getInt("SolarSails");
             hasSkyAccess = compound.getBoolean("HasSkyAccess");
         } else {
-            // Note: We don't load sail counts from disk on server, we rely on contraption
+            // Server: reset to prevent ghost SU
+            regularSailCount = 0;
+            solarSailCount = 0;
+            hasSkyAccess = false;
+            // Force capacity reset - but super.read() already loaded from NBT
+            this.lastCapacityProvided = 0;
+            this.capacity = 0;
         }
-        // Server: Values stay at 0. updateGeneratedRotation() refreshes from
-        // contraption after warmup.
+    }
+
+    @Override
+    public void initialize() {
+
+        // CRITICAL FIX: Force the network to recalculate from scratch.
+        // The problem is that initFromTE() sets unloadedCapacity from stale NBT data,
+        // and our BE is then double-counted (once in unloadedCapacity, once in
+        // sources).
+        //
+        // We mark the network as uninitialized BEFORE super.initialize() runs.
+        // This way, initFromTE() will be called with OUR (zeroed) capacity value,
+        // not whatever was cached in the network from a previous session.
+        if (hasNetwork() && !level.isClientSide) {
+            KineticNetwork net = getOrCreateNetwork();
+            if (net.initialized) {
+                // Force re-initialization with our zeroed values
+                net.initialized = false;
+
+            }
+        }
+
+        super.initialize();
+    }
+
+    @Override
+    public void updateFromNetwork(float maxStress, float currentStress, int networkSize) {
+        // CRITICAL FIX: The KineticNetwork is calculating double capacity because it
+        // includes both unloadedCapacity (from initFromTE) AND our contribution via
+        // sources.
+        // We override this to recalculate the correct capacity ourselves.
+
+        // Calculate what OUR contribution should be
+        float ourCapacity = calculateAddedStressCapacity(); // per RPM
+        float ourSpeed = Math.abs(getGeneratedSpeed());
+        float correctTotalSU = ourCapacity * ourSpeed;
+
+        // Call parent with our corrected capacity instead of the network's wrong value
+        super.updateFromNetwork(correctTotalSU, currentStress, networkSize);
     }
 
     // Getters for display/debug

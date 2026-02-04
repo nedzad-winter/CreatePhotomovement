@@ -27,6 +27,7 @@ public class SolarBearingContraption extends BearingContraption {
     private static final Logger LOGGER = LogUtils.getLogger();
 
     protected int solarSailBlocks = 0;
+    protected int regularSailBlocks = 0; // Track separately since sailBlocks is zeroed
     protected boolean hasSkyAccess = false;
 
     @Override
@@ -46,6 +47,7 @@ public class SolarBearingContraption extends BearingContraption {
     public boolean assemble(Level world, BlockPos pos) throws AssemblyException {
         // Reset counters before assembly
         solarSailBlocks = 0;
+        regularSailBlocks = 0;
 
         boolean result = super.assemble(world, pos);
         if (result) {
@@ -63,13 +65,15 @@ public class SolarBearingContraption extends BearingContraption {
         BlockPos localPos = pos.subtract(anchor);
         boolean isNew = !getBlocks().containsKey(localPos);
 
-        // Check if this is a new block and if it's a solar sail
+        // Check if this is a new block and track sail types separately
         if (isNew) {
             BlockState state = capture.getKey().state();
             if (state.getBlock() instanceof SolarSailBlock) {
                 solarSailBlocks++;
                 LOGGER.debug("[SolarBearingContraption] addBlock: Found SolarSail at {}, Count={}", localPos,
                         solarSailBlocks);
+            } else if (isSail(state)) {
+                regularSailBlocks++;
             }
         }
 
@@ -102,13 +106,18 @@ public class SolarBearingContraption extends BearingContraption {
 
     @Override
     public CompoundTag writeNBT(HolderLookup.Provider registries, boolean spawnPacket) {
+        // CRITICAL: Zero sailBlocks BEFORE super.writeNBT() so parent class
+        // serializes 0 to disk. This prevents double-counting on load.
+        this.sailBlocks = 0;
+
         CompoundTag tag = super.writeNBT(registries, spawnPacket);
         tag.putInt("SolarSails", solarSailBlocks);
+        tag.putInt("RegularSails", regularSailBlocks); // Save our separately tracked count
         tag.putBoolean("HasSkyAccess", hasSkyAccess);
         if (!spawnPacket) {
             LOGGER.info(
-                    "[SolarBearingContraption] writeNBT (DISK SAVE): solarSails={}, hasSkyAccess={}, SUPER.Sails={}",
-                    solarSailBlocks, hasSkyAccess, getSailBlocks());
+                    "[SolarBearingContraption] writeNBT (DISK SAVE): solarSails={}, regularSails={}, hasSkyAccess={}, SUPER.Sails={}",
+                    solarSailBlocks, regularSailBlocks, hasSkyAccess, getSailBlocks());
         }
         return tag;
     }
@@ -149,12 +158,22 @@ public class SolarBearingContraption extends BearingContraption {
             }
         }
 
-        // Fix the fields
+        // Fix the fields - track separately since sailBlocks will be zeroed
         this.solarSailBlocks = recalcSolar;
-        this.sailBlocks = recalcTotal; // 'sailBlocks' is protected in BearingContraption
+        this.regularSailBlocks = recalcTotal - recalcSolar; // Regular = total - solar
+        // CRITICAL: Set sailBlocks to 0 to prevent parent class
+        // (WindmillBearingBlockEntity)
+        // from contributing its own capacity. SolarWindmillBearingBlockEntity handles
+        // ALL
+        // capacity calculation through its overridden calculateAddedStressCapacity().
+        this.sailBlocks = 0;
 
         // Restore SkyAccess
         hasSkyAccess = tag.getBoolean("HasSkyAccess");
+
+        LOGGER.info(
+                "[SolarBearingContraption] readNBT: solarSails={}, regularSails={}, recalcTotal={}, sailBlocks SET TO 0, hasSkyAccess={}",
+                solarSailBlocks, regularSailBlocks, recalcTotal, hasSkyAccess);
     }
 
     // Helper to mirror BearingContraption's sail check
@@ -179,11 +198,20 @@ public class SolarBearingContraption extends BearingContraption {
     }
 
     /**
+     * Sets the parent's sailBlocks field. Used by SolarWindmillBearingBlockEntity
+     * to zero it out to prevent double capacity contribution.
+     */
+    public void setSailBlocks(int count) {
+        this.sailBlocks = count;
+    }
+
+    /**
      * Returns the number of regular (non-solar) sail blocks in this contraption.
-     * This is calculated as total sail blocks minus solar sail blocks.
+     * Tracked separately since sailBlocks is zeroed to prevent parent capacity
+     * contribution.
      */
     public int getRegularSailBlocks() {
-        return getSailBlocks() - solarSailBlocks;
+        return regularSailBlocks;
     }
 
     /**

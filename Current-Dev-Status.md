@@ -72,27 +72,39 @@ Created `cyan_solar_sail_glass_test.json` model with:
 
 ---
 
-### IN PROGRESS: Solar Windmill Bearing SU Persistence Bug (2026-02-04)
-**Status:** Debugging - SU doubles after world reload
+### FIXED: Solar Windmill Bearing SU Doubling Bug ✅ (2026-02-04)
+**Status:** FIXED - 5 day debugging marathon complete!
 
 **Problem:**
-- Initial SU with 8 solar sails: 1024 (correct)
-- After save/reload: 2048 (doubled!)
+- Solar Windmill Bearing showed **6144 SU** instead of correct **3072 SU** after world reload
+- Value was exactly double the expected amount
+- Fresh assemblies worked correctly, but reloading the world caused doubling
 
-**What's Fixed:**
-- ContraptionType now loads as `SolarBearingContraption` (not generic `BearingContraption`)
-- Added `AllContraptionTypes.java` with `DeferredRegister`
+**Root Cause:**
+Create's `KineticNetwork` capacity tracking double-counts capacity:
+1. `initFromTE()` sets `unloadedCapacity` from saved NBT
+2. `addSilently()` also adds capacity via `calculateAddedStressCapacity()`  
+3. Final calculation: `presentCapacity + unloadedCapacity` = 2x expected
 
-**What's Broken:**
-- `SolarSails` NBT value loads as 0 despite being saved as 8
-- `hasSkyAccess` loads correctly (true)
-- Something is causing the SU calculation to double
+**Solution (Three-part fix in `SolarWindmillBearingBlockEntity.java`):**
+1. **Override `write()`:** Zero `capacity` and `lastCapacityProvided` BEFORE super.write() to prevent stale data in NBT
+2. **Override `initialize()`:** Force network to re-initialize by setting `net.initialized = false` before super.initialize() runs
+3. **Override `updateFromNetwork()`:** Recalculate the correct capacity ourselves and pass that to super
 
-**Files with Debug Logging:**
-- `SolarBearingContraption.java` - readNBT/writeNBT logging
-- `SolarWindmillBearingBlockEntity.java` - updateGeneratedRotation logging
+**Files Modified:**
+- `SolarWindmillBearingBlockEntity.java`
+- `SolarBearingContraption.java`
 
-**See `.bugs.md` for detailed investigation notes and theories**
+**Testing:**
+- ✅ Fresh assembly: Shows correct 3072 SU
+- ✅ After world reload: Shows correct 3072 SU
+- ✅ Sail counts persist correctly (16 solar + 16 regular)
+
+**Porting Status:**
+- [x] 1.21.1 NeoForge - **FIXED**
+- [ ] 1.20.1 NeoForge - Pending
+- [ ] 1.20.1 Forge - Pending
+- [ ] Fabric - Pending
 
 ---
 
