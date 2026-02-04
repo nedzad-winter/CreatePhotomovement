@@ -72,6 +72,21 @@ Created `cyan_solar_sail_glass_test.json` model with:
 
 ---
 
+### Fixed: Solar Windmill Bearing SU Update & Crash (2026-02-04)
+**Status:** Fixed & Verified 
+
+**Issues Resolved:**
+1.  **SU Update Bug:** Bearing wasn't updating Stress Units when Day/Night/Weather changed.
+    *   *Fix:* Added `solarTick()` logic and implemented `getTicker` to actively monitor environmental conditions.
+2.  **Startup Crash:** "Invalid block entity" error.
+    *   *Fix:* Restored missing `getBlockEntityType()` method in `SolarWindmillBearingBlock`.
+
+**Files modified:**
+- `SolarWindmillBearingBlockEntity.java`: Added `solarTick()`
+- `SolarWindmillBearingBlock.java`: Implemented `getTicker` and restored `getBlockEntityType`
+
+---
+
 ## Recipe Format Differences (IMPORTANT for porting)
 
 ### NeoForge 1.21.1:

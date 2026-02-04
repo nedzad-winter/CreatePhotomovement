@@ -3,7 +3,11 @@ package com.createphotomovement.content.kinetics.solarwindmill;
 import com.simibubi.create.content.contraptions.bearing.WindmillBearingBlock;
 import com.simibubi.create.content.contraptions.bearing.WindmillBearingBlockEntity;
 
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
+import net.minecraft.world.level.block.state.BlockState;
 
 /**
  * Solar Windmill Bearing block - generates double RPM from Solar Sails
@@ -18,5 +22,19 @@ public class SolarWindmillBearingBlock extends WindmillBearingBlock {
     @Override
     public BlockEntityType<? extends WindmillBearingBlockEntity> getBlockEntityType() {
         return com.createphotomovement.AllBlockEntityTypes.SOLAR_WINDMILL_BEARING.get();
+    }
+
+    @Override
+    public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state,
+            BlockEntityType<T> type) {
+        return (l, p, s, be) -> {
+            if (be instanceof SolarWindmillBearingBlockEntity solarBe) {
+                // Manually call the standard tick logic (inherited from
+                // WindmillBearingBlockEntity -> SmartBlockEntity)
+                solarBe.tick();
+                // Then call our custom solar logic
+                solarBe.solarTick();
+            }
+        };
     }
 }

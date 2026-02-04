@@ -41,6 +41,7 @@ public class SolarWindmillBearingBlockEntity extends WindmillBearingBlockEntity 
     private int regularSailCount = 0;
     private int solarSailCount = 0;
     private boolean hasSkyAccess = false;
+    private float lastSolarMultiplier = -1;
 
     public SolarWindmillBearingBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -49,6 +50,17 @@ public class SolarWindmillBearingBlockEntity extends WindmillBearingBlockEntity 
     @Override
     public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
         super.addBehaviours(behaviours);
+    }
+
+    public void solarTick() {
+        if (level == null || level.isClientSide)
+            return;
+
+        float currentMultiplier = getSolarMultiplier();
+        if (Math.abs(currentMultiplier - lastSolarMultiplier) > 0.001f) {
+            lastSolarMultiplier = currentMultiplier;
+            updateGeneratedRotation();
+        }
     }
 
     /**
