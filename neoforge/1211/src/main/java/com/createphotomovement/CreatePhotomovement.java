@@ -18,5 +18,19 @@ public class CreatePhotomovement {
         AllBlockEntityTypes.BLOCK_ENTITY_TYPES.register(modEventBus);
 
         PMConfigs.register(ModLoadingContext.get(), modContainer);
+
+        // Register movement checks
+        com.simibubi.create.api.contraption.BlockMovementChecks
+                .registerAttachedCheck((state, world, pos, direction) -> {
+                    if (state
+                            .getBlock() instanceof com.createphotomovement.content.kinetics.solarwindmill.SolarSailBlock) {
+                        return com.simibubi.create.api.contraption.BlockMovementChecks.CheckResult.of(
+                                direction.getAxis() != state
+                                        .getValue(
+                                                com.createphotomovement.content.kinetics.solarwindmill.SolarSailBlock.FACING)
+                                        .getAxis());
+                    }
+                    return com.simibubi.create.api.contraption.BlockMovementChecks.CheckResult.PASS;
+                });
     }
 }
