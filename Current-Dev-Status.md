@@ -1,5 +1,5 @@
 # Create Photomovement - Development Status
-**Last Updated:** 2026-01-28 17:27
+**Last Updated:** 2026-02-07
 
 ## Global Informations
  - Create version: 6.0.8 - MC 1.20.1
@@ -222,3 +222,13 @@ com.simibubi.create.api.contraption.BlockMovementChecks.registerAttachedCheck((s
 **Current Task:** 
 - Compile failed with `runtimedistc` error at end of session.
 - Needs investigation next session (likely clean build required).
+
+### Porting SolarSail Logic to 1.20.1 (2026-02-07)
+- **Status:** VERIFIED ✅ (Build Success)
+- **Changes:**
+  - Ported `SolarSailBlock.java` logic from 1.21.1 to 1.20.1.
+  - Implemented manual VoxelShapes because `AllShapes.SAIL` is likely missing in 1.20 API.
+  - **CRITICAL:** Restored `PlacementHelper` and `Iterate` usage by importing from `net.createmod.catnip` packages (found in Create 6.0.8+).
+- **Notes:**
+  - Initial builds failed due to missing `com.simibubi.create.foundation.utility` packages.
+  - Runtime crash observed (exit code 1) was traced to **ASUS Overlay (GTII-OSD64-GL.dll)**, not mod code.

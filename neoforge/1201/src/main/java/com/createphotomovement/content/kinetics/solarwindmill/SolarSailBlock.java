@@ -1,19 +1,22 @@
 package com.createphotomovement.content.kinetics.solarwindmill;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Predicate;
 
 import javax.annotation.Nullable;
 
 import com.createphotomovement.AllBlocks;
 import com.simibubi.create.AllShapes;
-import com.simibubi.create.content.equipment.wrench.IWrenchable;
 import com.simibubi.create.foundation.block.WrenchableDirectionalBlock;
 import com.simibubi.create.foundation.utility.BlockHelper;
 
+import net.createmod.catnip.data.Iterate;
+import net.createmod.catnip.placement.IPlacementHelper;
+import net.createmod.catnip.placement.PlacementHelpers;
+import net.createmod.catnip.placement.PlacementOffset;
 import net.minecraft.MethodsReturnNonnullByDefault;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -33,7 +36,6 @@ import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.SoundType;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
@@ -45,6 +47,7 @@ import net.minecraft.world.phys.Vec3;
 import net.minecraft.world.phys.shapes.CollisionContext;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
+@MethodsReturnNonnullByDefault
 public class SolarSailBlock extends WrenchableDirectionalBlock {
 
     public enum GlassColor implements StringRepresentable {
@@ -101,13 +104,15 @@ public class SolarSailBlock extends WrenchableDirectionalBlock {
 
     public static final EnumProperty<GlassColor> GLASS_COLOR = EnumProperty.create("glass_color", GlassColor.class);
 
-    public static SolarSailBlock withCanvas(BlockBehaviour.Properties properties, DyeColor color) {
+    public static SolarSailBlock withCanvas(Properties properties, DyeColor color) {
         return new SolarSailBlock(properties, color);
     }
 
+    private static final int placementHelperId = PlacementHelpers.register(new PlacementHelper());
+
     protected final DyeColor color;
 
-    protected SolarSailBlock(BlockBehaviour.Properties properties, @Nullable DyeColor color) {
+    protected SolarSailBlock(Properties properties, @Nullable DyeColor color) {
         super(properties);
         this.color = color;
         this.registerDefaultState(this.stateDefinition.any()
@@ -144,33 +149,12 @@ public class SolarSailBlock extends WrenchableDirectionalBlock {
             return InteractionResult.sidedSuccess(world.isClientSide);
         }
 
-        // Standard placement logic (simplified for 1.20.1 without IPlacementHelper)
+        IPlacementHelper placementHelper = PlacementHelpers.get(placementHelperId);
         if (!player.isShiftKeyDown() && player.mayBuild()) {
-            if (stack.getItem() instanceof BlockItem blockItem && blockItem.getBlock() instanceof SolarSailBlock) {
-                // Try to place extending the sail
-                Direction facing = state.getValue(FACING);
-                // We want to extend in the plane perpendicular to FACING
-                // We can use the hit vector and direction to determine where to place
-                // But without the helper, let's just do a simple check on the clicked face
-                Direction clickedFace = ray.getDirection();
-                if (clickedFace.getAxis() != facing.getAxis()) {
-                    BlockPos targetPos = pos.relative(clickedFace);
-                    if (world.getBlockState(targetPos).canBeReplaced()) {
-                        BlockState newState = ((SolarSailBlock) blockItem.getBlock()).defaultBlockState()
-                                .setValue(FACING, facing);
-
-                        if (!world.isClientSide) {
-                            world.setBlockAndUpdate(targetPos, newState);
-                            SoundType soundType = newState.getBlock().getSoundType(newState);
-                            world.playSound(null, targetPos, soundType.getPlaceSound(), SoundSource.BLOCKS,
-                                    (soundType.getVolume() + 1.0F) / 2.0F, soundType.getPitch() * 0.8F);
-                            if (!player.getAbilities().instabuild) {
-                                stack.shrink(1);
-                            }
-                        }
-                        return InteractionResult.SUCCESS;
-                    }
-                }
+            if (placementHelper.matchesItem(stack)) {
+                placementHelper.getOffset(player, world, state, pos, ray)
+                        .placeInWorld(world, (BlockItem) stack.getItem(), player, hand, ray);
+                return InteractionResult.SUCCESS;
             }
         }
 
@@ -190,26 +174,13 @@ public class SolarSailBlock extends WrenchableDirectionalBlock {
             world.setBlockAndUpdate(pos, newState);
             // Don't return, we might want to propagate to neighbors even if self didn't
             // change (simplifies logic)
-            // But usually we only start propagation if we successfully dyed self or if
-            // already dyed and user clicks again?
-            // 1.21 logic: checks if state != newState. If not equal, updates self and
-            // returns.
-            // Wait, 1.21 logic:
-            // if (state != newState) { update(pos); return; }
-            // This means simpler: click once -> dye self. Click again -> dye neighbors.
             return;
         }
 
         // Dye all adjacent (replacement for
         // IPlacementHelper.orderedByDistanceExceptAxis)
-        List<Direction> directions = new ArrayList<>();
-        Direction.Axis axis = state.getValue(FACING).getAxis();
-        for (Direction d : Direction.values()) {
-            if (d.getAxis() != axis) {
-                directions.add(d);
-            }
-        }
-        directions.sort(Comparator.comparingDouble(d -> pos.relative(d).distToCenterSqr(hit.x, hit.y, hit.z)));
+        List<Direction> directions = IPlacementHelper.orderedByDistanceExceptAxis(pos, hit,
+                state.getValue(FACING).getAxis());
 
         for (Direction d : directions) {
             BlockPos offset = pos.relative(d);
@@ -237,7 +208,7 @@ public class SolarSailBlock extends WrenchableDirectionalBlock {
             BlockPos currentPos = frontier.remove(0);
             visited.add(currentPos);
 
-            for (Direction d : Direction.values()) {
+            for (Direction d : Iterate.directions) {
                 if (d.getAxis() == state.getValue(FACING).getAxis())
                     continue;
                 BlockPos offset = currentPos.relative(d);
@@ -327,5 +298,38 @@ public class SolarSailBlock extends WrenchableDirectionalBlock {
 
     public DyeColor getColor() {
         return color;
+    }
+
+    @MethodsReturnNonnullByDefault
+    private static class PlacementHelper implements IPlacementHelper {
+        @Override
+        public Predicate<ItemStack> getItemPredicate() {
+            return i -> {
+                if (i.getItem() instanceof BlockItem blockItem) {
+                    return blockItem.getBlock() instanceof SolarSailBlock;
+                }
+                return false;
+            };
+        }
+
+        @Override
+        public Predicate<BlockState> getStatePredicate() {
+            return s -> s.getBlock() instanceof SolarSailBlock;
+        }
+
+        @Override
+        public PlacementOffset getOffset(Player player, Level world, BlockState state, BlockPos pos,
+                BlockHitResult ray) {
+            List<Direction> directions = IPlacementHelper.orderedByDistanceExceptAxis(pos, ray.getLocation(),
+                    state.getValue(SolarSailBlock.FACING).getAxis(),
+                    dir -> world.getBlockState(pos.relative(dir)).canBeReplaced());
+
+            if (directions.isEmpty())
+                return PlacementOffset.fail();
+            else {
+                return PlacementOffset.success(pos.relative(directions.get(0)),
+                        s -> s.setValue(FACING, state.getValue(FACING)));
+            }
+        }
     }
 }
