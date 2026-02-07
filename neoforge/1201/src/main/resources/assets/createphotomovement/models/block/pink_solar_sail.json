@@ -1,0 +1,7 @@
+{
+    "parent": "createphotomovement:block/solar_sail_base",
+    "textures": {
+        "sail": "createphotomovement:block/solar_canvas_pink"
+    }
+}
+

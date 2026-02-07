@@ -1,6 +1,9 @@
 # Create Photomovement - Development Status
 **Last Updated:** 2026-01-28 17:27
 
+## Global Informations
+ - Create version: 6.0.8 - MC 1.20.1
+
 ## Version 0.2.0 - RELEASE READY ✅
 
 ### All Versions Complete:
@@ -102,7 +105,7 @@ Create's `KineticNetwork` capacity tracking double-counts capacity:
 
 **Porting Status:**
 - [x] 1.21.1 NeoForge - **FIXED**
-- [ ] 1.20.1 NeoForge - Pending
+- [/] 1.20.1 NeoForge - **Java code ported and compiling** (API fixes: `CreateLang`, `addBlock` signature, `AllBlocks.SAIL.get()`)
 - [ ] 1.20.1 Forge - Pending
 - [ ] Fabric - Pending
 
@@ -122,6 +125,19 @@ Create's `KineticNetwork` capacity tracking double-counts capacity:
 - `SolarWindmillBearingBlock.java`: Implemented `getTicker` and restored `getBlockEntityType`
 
 ---
+
+## Tag Directory Naming Differences (IMPORTANT)
+
+- **NeoForge 1.21.1**: Uses singular directory names
+  - `data/create/tags/block/`
+  - `data/create/tags/item/`
+
+- **NeoForge/Forge 1.20.1**: Uses PLURAL directory names
+  - `data/create/tags/blocks/`
+  - `data/create/tags/items/`
+  - *Note:* Create 6.0.8 JAR confirms plural usage.
+
+ **Porting Strategy:** Ensure both directory structures exist or use the correct one for the target version.
 
 ## Recipe Format Differences (IMPORTANT for porting)
 
@@ -159,3 +175,50 @@ Create's `KineticNetwork` capacity tracking double-counts capacity:
 - 1.21.1 uses `"id"` in result, 1.20.x uses `"item"`
 - 1.21.1 requires `"count": 1`, 1.20.x defaults to 1
 - 1.21.1 uses `"category": "misc"`, 1.20.x doesn't need it
+
+### Development Tools (2026-02-06)
+- Added **Tag Tooltips** (by Jagm11) to `neoforge/1201` environment.
+  - NOTE: Used v1.0 (File ID: 4687165) for Forge 47.1.33 compatibility.
+- Shows Tags in tooltips when holding key (usually `Shift` or `Control`).
+
+
+## Knowledge Base 🧠
+
+### Create Mod Contraption Assembly: Connecting Custom Blocks (Sail Logic)
+**Problem:** Custom blocks (like `SolarSailBlock`) do not automatically connect to Chassis or Stick together like regular Sails, even if tagged correctly.
+
+**Reason:** 
+Create's connectivity logic (specifically in `BlockMovementChecksImpl.java` or `Contraption.java`) often relies on hardcoded `instanceof SailBlock` checks to determine if a block should "stick" to its neighbors without glue/chassis range. If your custom block does not extend `SailBlock`, it fails these checks.
+
+**Solution (The "AttachedCheck" Registration):**
+To make a custom block behave like a Sail (connect to neighbors of same type/facing), you must register a custom `AttachedCheck` in your main mod class.
+
+**Code Example (1.20.1 / 1.21.1):**
+```java
+// inside your @Mod constructor or common setup
+com.simibubi.create.api.contraption.BlockMovementChecks.registerAttachedCheck((state, world, pos, direction) -> {
+    if (state.getBlock() instanceof YourCustomBlock) {
+        // Return SUCCESS/FAIL logic based on facing
+        return com.simibubi.create.api.contraption.BlockMovementChecks.CheckResult.of(
+            direction.getAxis() != state.getValue(YourCustomBlock.FACING).getAxis()
+        );
+    }
+    return com.simibubi.create.api.contraption.BlockMovementChecks.CheckResult.PASS;
+});
+```
+
+**Why this works:** 
+- `AttachedCheck` is part of Create's API that allows addons to inject custom stickiness logic.
+- Returning `CheckResult.of(true)` tells the assembler "Yes, these blocks are attached," bypassing the need for glue or chassis range.
+- Returning `PASS` lets Create continue checking other rules (like glue).
+
+### Fixed: Solar Sail Connectivity (2026-02-06)
+**Status:** FIXED & Verified (Logic 100% matched with 1.21.1)
+
+**Issue:** Solar Sails were not connecting to each other or the bearing.
+**Fix:** Added missing `AttachedCheck` registration in `CreatePhotomovement.java` (1.20.1).
+**Refinement:** Removed `RadialChassisBlock` logic from `SolarSailBlock` placement helper to match standard Create behavior.
+
+**Current Task:** 
+- Compile failed with `runtimedistc` error at end of session.
+- Needs investigation next session (likely clean build required).

@@ -37,25 +37,25 @@ public class SolarGeneratorBlock extends RotatedPillarKineticBlock
         implements IBE<SolarGeneratorBlockEntity>, IWrenchable {
 
     // Map dye colors to their corresponding solar generator blocks
-    private static final Map<DyeColor, java.util.function.Supplier<Block>> COLOR_TO_BLOCK = new HashMap<>();
+    private static final Map<DyeColor, com.tterrag.registrate.util.entry.RegistryEntry<? extends Block>> COLOR_TO_BLOCK = new HashMap<>();
 
     static {
-        COLOR_TO_BLOCK.put(DyeColor.WHITE, () -> AllBlocks.WHITE_SOLAR_GENERATOR.get());
-        COLOR_TO_BLOCK.put(DyeColor.ORANGE, () -> AllBlocks.ORANGE_SOLAR_GENERATOR.get());
-        COLOR_TO_BLOCK.put(DyeColor.MAGENTA, () -> AllBlocks.MAGENTA_SOLAR_GENERATOR.get());
-        COLOR_TO_BLOCK.put(DyeColor.LIGHT_BLUE, () -> AllBlocks.LIGHT_BLUE_SOLAR_GENERATOR.get());
-        COLOR_TO_BLOCK.put(DyeColor.YELLOW, () -> AllBlocks.YELLOW_SOLAR_GENERATOR.get());
-        COLOR_TO_BLOCK.put(DyeColor.LIME, () -> AllBlocks.LIME_SOLAR_GENERATOR.get());
-        COLOR_TO_BLOCK.put(DyeColor.PINK, () -> AllBlocks.PINK_SOLAR_GENERATOR.get());
-        COLOR_TO_BLOCK.put(DyeColor.GRAY, () -> AllBlocks.GRAY_SOLAR_GENERATOR.get());
-        COLOR_TO_BLOCK.put(DyeColor.LIGHT_GRAY, () -> AllBlocks.LIGHT_GRAY_SOLAR_GENERATOR.get());
-        COLOR_TO_BLOCK.put(DyeColor.CYAN, () -> AllBlocks.CYAN_SOLAR_GENERATOR.get());
-        COLOR_TO_BLOCK.put(DyeColor.PURPLE, () -> AllBlocks.PURPLE_SOLAR_GENERATOR.get());
-        COLOR_TO_BLOCK.put(DyeColor.BLUE, () -> AllBlocks.BLUE_SOLAR_GENERATOR.get());
-        COLOR_TO_BLOCK.put(DyeColor.BROWN, () -> AllBlocks.BROWN_SOLAR_GENERATOR.get());
-        COLOR_TO_BLOCK.put(DyeColor.GREEN, () -> AllBlocks.GREEN_SOLAR_GENERATOR.get());
-        COLOR_TO_BLOCK.put(DyeColor.RED, () -> AllBlocks.RED_SOLAR_GENERATOR.get());
-        COLOR_TO_BLOCK.put(DyeColor.BLACK, () -> AllBlocks.BLACK_SOLAR_GENERATOR.get());
+        COLOR_TO_BLOCK.put(DyeColor.WHITE, AllBlocks.WHITE_SOLAR_GENERATOR);
+        COLOR_TO_BLOCK.put(DyeColor.ORANGE, AllBlocks.ORANGE_SOLAR_GENERATOR);
+        COLOR_TO_BLOCK.put(DyeColor.MAGENTA, AllBlocks.MAGENTA_SOLAR_GENERATOR);
+        COLOR_TO_BLOCK.put(DyeColor.LIGHT_BLUE, AllBlocks.LIGHT_BLUE_SOLAR_GENERATOR);
+        COLOR_TO_BLOCK.put(DyeColor.YELLOW, AllBlocks.YELLOW_SOLAR_GENERATOR);
+        COLOR_TO_BLOCK.put(DyeColor.LIME, AllBlocks.LIME_SOLAR_GENERATOR);
+        COLOR_TO_BLOCK.put(DyeColor.PINK, AllBlocks.PINK_SOLAR_GENERATOR);
+        COLOR_TO_BLOCK.put(DyeColor.GRAY, AllBlocks.GRAY_SOLAR_GENERATOR);
+        COLOR_TO_BLOCK.put(DyeColor.LIGHT_GRAY, AllBlocks.LIGHT_GRAY_SOLAR_GENERATOR);
+        COLOR_TO_BLOCK.put(DyeColor.CYAN, AllBlocks.CYAN_SOLAR_GENERATOR);
+        COLOR_TO_BLOCK.put(DyeColor.PURPLE, AllBlocks.PURPLE_SOLAR_GENERATOR);
+        COLOR_TO_BLOCK.put(DyeColor.BLUE, AllBlocks.BLUE_SOLAR_GENERATOR);
+        COLOR_TO_BLOCK.put(DyeColor.BROWN, AllBlocks.BROWN_SOLAR_GENERATOR);
+        COLOR_TO_BLOCK.put(DyeColor.GREEN, AllBlocks.GREEN_SOLAR_GENERATOR);
+        COLOR_TO_BLOCK.put(DyeColor.RED, AllBlocks.RED_SOLAR_GENERATOR);
+        COLOR_TO_BLOCK.put(DyeColor.BLACK, AllBlocks.BLACK_SOLAR_GENERATOR);
     }
 
     public SolarGeneratorBlock(Properties properties) {

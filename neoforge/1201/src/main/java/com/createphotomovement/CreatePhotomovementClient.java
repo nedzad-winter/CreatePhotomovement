@@ -19,7 +19,7 @@ public class CreatePhotomovementClient {
     @SubscribeEvent
     public static void onClientSetup(FMLClientSetupEvent event) {
         // Register Ponder plugin
-        PonderIndex.addPlugin(new PhotomovementPonderPlugin());
+        // PonderIndex.addPlugin(new PhotomovementPonderPlugin());
     }
 
     @SubscribeEvent

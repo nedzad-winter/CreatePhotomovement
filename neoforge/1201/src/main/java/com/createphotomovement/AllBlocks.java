@@ -15,6 +15,176 @@ public class AllBlocks {
         public static final DeferredRegister<net.minecraft.world.level.block.Block> BLOCKS = DeferredRegister
                         .create(ForgeRegistries.BLOCKS, CreatePhotomovement.MOD_ID);
 
+        // Solar Sails Base
+        public static final RegistryObject<com.createphotomovement.content.kinetics.solarwindmill.SolarSailBlock> SOLAR_SAIL = BLOCKS
+                        .register("solar_sail",
+                                        () -> com.createphotomovement.content.kinetics.solarwindmill.SolarSailBlock
+                                                        .withCanvas(BlockBehaviour.Properties.of()
+                                                                        .mapColor(net.minecraft.world.level.material.MapColor.WOOL)
+                                                                        .sound(net.minecraft.world.level.block.SoundType.WOOL)
+                                                                        .strength(0.8F),
+                                                                        net.minecraft.world.item.DyeColor.WHITE));
+
+        // Solar Sails Colored Variants
+        public static final RegistryObject<com.createphotomovement.content.kinetics.solarwindmill.SolarSailBlock> ORANGE_SOLAR_SAIL = BLOCKS
+                        .register("orange_solar_sail",
+                                        () -> com.createphotomovement.content.kinetics.solarwindmill.SolarSailBlock
+                                                        .withCanvas(BlockBehaviour.Properties.of()
+                                                                        .mapColor(MapColor.COLOR_ORANGE)
+                                                                        .strength(0.1F)
+                                                                        .sound(SoundType.SCAFFOLDING)
+                                                                        .noOcclusion(),
+                                                                        net.minecraft.world.item.DyeColor.ORANGE));
+
+        public static final RegistryObject<com.createphotomovement.content.kinetics.solarwindmill.SolarSailBlock> MAGENTA_SOLAR_SAIL = BLOCKS
+                        .register("magenta_solar_sail",
+                                        () -> com.createphotomovement.content.kinetics.solarwindmill.SolarSailBlock
+                                                        .withCanvas(BlockBehaviour.Properties.of()
+                                                                        .mapColor(MapColor.COLOR_MAGENTA)
+                                                                        .strength(0.1F)
+                                                                        .sound(SoundType.SCAFFOLDING)
+                                                                        .noOcclusion(),
+                                                                        net.minecraft.world.item.DyeColor.MAGENTA));
+
+        public static final RegistryObject<com.createphotomovement.content.kinetics.solarwindmill.SolarSailBlock> LIGHT_BLUE_SOLAR_SAIL = BLOCKS
+                        .register("light_blue_solar_sail",
+                                        () -> com.createphotomovement.content.kinetics.solarwindmill.SolarSailBlock
+                                                        .withCanvas(BlockBehaviour.Properties.of()
+                                                                        .mapColor(MapColor.COLOR_LIGHT_BLUE)
+                                                                        .strength(0.1F)
+                                                                        .sound(SoundType.SCAFFOLDING)
+                                                                        .noOcclusion(),
+                                                                        net.minecraft.world.item.DyeColor.LIGHT_BLUE));
+
+        public static final RegistryObject<com.createphotomovement.content.kinetics.solarwindmill.SolarSailBlock> YELLOW_SOLAR_SAIL = BLOCKS
+                        .register("yellow_solar_sail",
+                                        () -> com.createphotomovement.content.kinetics.solarwindmill.SolarSailBlock
+                                                        .withCanvas(BlockBehaviour.Properties.of()
+                                                                        .mapColor(MapColor.COLOR_YELLOW)
+                                                                        .strength(0.1F)
+                                                                        .sound(SoundType.SCAFFOLDING)
+                                                                        .noOcclusion(),
+                                                                        net.minecraft.world.item.DyeColor.YELLOW));
+
+        public static final RegistryObject<com.createphotomovement.content.kinetics.solarwindmill.SolarSailBlock> LIME_SOLAR_SAIL = BLOCKS
+                        .register("lime_solar_sail",
+                                        () -> com.createphotomovement.content.kinetics.solarwindmill.SolarSailBlock
+                                                        .withCanvas(BlockBehaviour.Properties.of()
+                                                                        .mapColor(MapColor.COLOR_LIGHT_GREEN)
+                                                                        .strength(0.1F)
+                                                                        .sound(SoundType.SCAFFOLDING)
+                                                                        .noOcclusion(),
+                                                                        net.minecraft.world.item.DyeColor.LIME));
+
+        public static final RegistryObject<com.createphotomovement.content.kinetics.solarwindmill.SolarSailBlock> PINK_SOLAR_SAIL = BLOCKS
+                        .register("pink_solar_sail",
+                                        () -> com.createphotomovement.content.kinetics.solarwindmill.SolarSailBlock
+                                                        .withCanvas(BlockBehaviour.Properties.of()
+                                                                        .mapColor(MapColor.COLOR_PINK)
+                                                                        .strength(0.1F)
+                                                                        .sound(SoundType.SCAFFOLDING)
+                                                                        .noOcclusion(),
+                                                                        net.minecraft.world.item.DyeColor.PINK));
+
+        public static final RegistryObject<com.createphotomovement.content.kinetics.solarwindmill.SolarSailBlock> GRAY_SOLAR_SAIL = BLOCKS
+                        .register("gray_solar_sail",
+                                        () -> com.createphotomovement.content.kinetics.solarwindmill.SolarSailBlock
+                                                        .withCanvas(BlockBehaviour.Properties.of()
+                                                                        .mapColor(MapColor.COLOR_GRAY)
+                                                                        .strength(0.1F)
+                                                                        .sound(SoundType.SCAFFOLDING)
+                                                                        .noOcclusion(),
+                                                                        net.minecraft.world.item.DyeColor.GRAY));
+
+        public static final RegistryObject<com.createphotomovement.content.kinetics.solarwindmill.SolarSailBlock> LIGHT_GRAY_SOLAR_SAIL = BLOCKS
+                        .register("light_gray_solar_sail",
+                                        () -> com.createphotomovement.content.kinetics.solarwindmill.SolarSailBlock
+                                                        .withCanvas(BlockBehaviour.Properties.of()
+                                                                        .mapColor(MapColor.COLOR_LIGHT_GRAY)
+                                                                        .strength(0.1F)
+                                                                        .sound(SoundType.SCAFFOLDING)
+                                                                        .noOcclusion(),
+                                                                        net.minecraft.world.item.DyeColor.LIGHT_GRAY));
+
+        public static final RegistryObject<com.createphotomovement.content.kinetics.solarwindmill.SolarSailBlock> CYAN_SOLAR_SAIL = BLOCKS
+                        .register("cyan_solar_sail",
+                                        () -> com.createphotomovement.content.kinetics.solarwindmill.SolarSailBlock
+                                                        .withCanvas(BlockBehaviour.Properties.of()
+                                                                        .mapColor(MapColor.COLOR_CYAN)
+                                                                        .strength(0.1F)
+                                                                        .sound(SoundType.SCAFFOLDING)
+                                                                        .noOcclusion(),
+                                                                        net.minecraft.world.item.DyeColor.CYAN));
+
+        public static final RegistryObject<com.createphotomovement.content.kinetics.solarwindmill.SolarSailBlock> PURPLE_SOLAR_SAIL = BLOCKS
+                        .register("purple_solar_sail",
+                                        () -> com.createphotomovement.content.kinetics.solarwindmill.SolarSailBlock
+                                                        .withCanvas(BlockBehaviour.Properties.of()
+                                                                        .mapColor(MapColor.COLOR_PURPLE)
+                                                                        .strength(0.1F)
+                                                                        .sound(SoundType.SCAFFOLDING)
+                                                                        .noOcclusion(),
+                                                                        net.minecraft.world.item.DyeColor.PURPLE));
+
+        public static final RegistryObject<com.createphotomovement.content.kinetics.solarwindmill.SolarSailBlock> BLUE_SOLAR_SAIL = BLOCKS
+                        .register("blue_solar_sail",
+                                        () -> com.createphotomovement.content.kinetics.solarwindmill.SolarSailBlock
+                                                        .withCanvas(BlockBehaviour.Properties.of()
+                                                                        .mapColor(MapColor.COLOR_BLUE)
+                                                                        .strength(0.1F)
+                                                                        .sound(SoundType.SCAFFOLDING)
+                                                                        .noOcclusion(),
+                                                                        net.minecraft.world.item.DyeColor.BLUE));
+
+        public static final RegistryObject<com.createphotomovement.content.kinetics.solarwindmill.SolarSailBlock> BROWN_SOLAR_SAIL = BLOCKS
+                        .register("brown_solar_sail",
+                                        () -> com.createphotomovement.content.kinetics.solarwindmill.SolarSailBlock
+                                                        .withCanvas(BlockBehaviour.Properties.of()
+                                                                        .mapColor(MapColor.COLOR_BROWN)
+                                                                        .strength(0.1F)
+                                                                        .sound(SoundType.SCAFFOLDING)
+                                                                        .noOcclusion(),
+                                                                        net.minecraft.world.item.DyeColor.BROWN));
+
+        public static final RegistryObject<com.createphotomovement.content.kinetics.solarwindmill.SolarSailBlock> GREEN_SOLAR_SAIL = BLOCKS
+                        .register("green_solar_sail",
+                                        () -> com.createphotomovement.content.kinetics.solarwindmill.SolarSailBlock
+                                                        .withCanvas(BlockBehaviour.Properties.of()
+                                                                        .mapColor(MapColor.COLOR_GREEN)
+                                                                        .strength(0.1F)
+                                                                        .sound(SoundType.SCAFFOLDING)
+                                                                        .noOcclusion(),
+                                                                        net.minecraft.world.item.DyeColor.GREEN));
+
+        public static final RegistryObject<com.createphotomovement.content.kinetics.solarwindmill.SolarSailBlock> RED_SOLAR_SAIL = BLOCKS
+                        .register("red_solar_sail",
+                                        () -> com.createphotomovement.content.kinetics.solarwindmill.SolarSailBlock
+                                                        .withCanvas(BlockBehaviour.Properties.of()
+                                                                        .mapColor(MapColor.COLOR_RED)
+                                                                        .strength(0.1F)
+                                                                        .sound(SoundType.SCAFFOLDING)
+                                                                        .noOcclusion(),
+                                                                        net.minecraft.world.item.DyeColor.RED));
+
+        public static final RegistryObject<com.createphotomovement.content.kinetics.solarwindmill.SolarSailBlock> BLACK_SOLAR_SAIL = BLOCKS
+                        .register("black_solar_sail",
+                                        () -> com.createphotomovement.content.kinetics.solarwindmill.SolarSailBlock
+                                                        .withCanvas(BlockBehaviour.Properties.of()
+                                                                        .mapColor(MapColor.COLOR_BLACK)
+                                                                        .strength(0.1F)
+                                                                        .sound(SoundType.SCAFFOLDING)
+                                                                        .noOcclusion(),
+                                                                        net.minecraft.world.item.DyeColor.BLACK));
+
+        // Solar Windmill Bearing
+        public static final RegistryObject<com.createphotomovement.content.kinetics.solarwindmill.SolarWindmillBearingBlock> SOLAR_WINDMILL_BEARING = BLOCKS
+                        .register("solar_windmill_bearing",
+                                        () -> new com.createphotomovement.content.kinetics.solarwindmill.SolarWindmillBearingBlock(
+                                                        BlockBehaviour.Properties.of()
+                                                                        .mapColor(MapColor.PODZOL)
+                                                                        .strength(3.0F, 6.0F)
+                                                                        .sound(SoundType.WOOD)));
+
         public static final RegistryObject<SolarGeneratorBlock> SOLAR_GENERATOR = BLOCKS.register("solar_generator",
                         () -> new SolarGeneratorBlock(BlockBehaviour.Properties.of()
                                         .mapColor(MapColor.WOOD)
