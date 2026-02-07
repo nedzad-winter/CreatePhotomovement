@@ -29,25 +29,16 @@ public class SolarWindmillBearingBlock extends WindmillBearingBlock {
     @Override
     public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state,
             BlockEntityType<T> type) {
-        if (level.isClientSide())
-            return null; // Kinetic blocks usually tick on server, or handled by super?
-                         // Check WindmillBearingBlock if it has client ticker. Usually not.
-
-        if (type == AllBlockEntityTypes.SOLAR_WINDMILL_BEARING.get()) {
-            @SuppressWarnings("unchecked")
-            BlockEntityTicker<T> ticker = (l, p, s, be) -> {
-                if (be instanceof SolarWindmillBearingBlockEntity solarBe) {
-                    solarBe.tick();
+        return (l, p, s, be) -> {
+            if (be instanceof SolarWindmillBearingBlockEntity solarBe) {
+                // Manually call the standard tick logic (inherited from
+                // WindmillBearingBlockEntity -> SmartBlockEntity)
+                solarBe.tick();
+                // Then call our custom solar logic (server-side only)
+                if (!level.isClientSide) {
                     solarBe.solarTick();
                 }
-            };
-            return ticker;
-        }
-        return null; // Or super.getTicker(level, state, type)?
-                     // WindmillBearingBlock might have its own ticker.
-                     // However, we are fully overriding behavior here.
-                     // The WindmillBearingBlock only returns null?
-                     // Usually KineticBlockEntity handles ticking via its own registration or logic.
-                     // But here we explicitly call tick().
+            }
+        };
     }
 }

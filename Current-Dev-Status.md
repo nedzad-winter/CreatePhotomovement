@@ -234,3 +234,31 @@ com.simibubi.create.api.contraption.BlockMovementChecks.registerAttachedCheck((s
   - Initial builds failed due to missing `com.simibubi.create.foundation.utility` packages.
 
   - Runtime crash observed (exit code 1) was traced to **ASUS Overlay (GTII-OSD64-GL.dll)**, not mod code.
+
+### Fixed: WindmillBearingRenderer Compilation Error (2026-02-07)
+**Status:** FIXED 
+
+**Issue:** Build failed with compilation error in `CreatePhotomovementClient.java`:
+``
+error: cannot find symbol
+    com.simibubi.create.content.contraptions.bearing.WindmillBearingRenderer::new);
+                                                    ^
+  symbol:   class WindmillBearingRenderer
+  location: package com.simibubi.create.content.contraptions.bearing
+``
+
+**Root Cause:** 
+The `WindmillBearingRenderer` class doesn't exist (or isn't publicly accessible) in Create version 6.0.8-291. Create handles bearing rendering internally through its own systems.
+
+**Solution:**
+Removed the problematic renderer registration line for `SOLAR_WINDMILL_BEARING`. Since `SolarWindmillBearingBlockEntity` extends Create's `WindmillBearingBlockEntity`, the rendering is automatically handled by Create's internal rendering system. No manual renderer registration is required for inherited bearing functionality.
+
+**Files Modified:**
+- `neoforge/1201/src/main/java/com/createphotomovement/CreatePhotomovementClient.java` (removed line 35-36, added explanatory comment)
+
+**Learning Point:**
+When extending block entities from the Create mod (or any dependency mod), verify whether the parent class handles rendering automatically. Many modern Minecraft mods use internal renderer registration that doesn't require manual client-side registration for inherited functionality. Only register custom renderers when implementing unique visual behavior beyond what the parent provides.
+
+---
+
+**UPDATE (2026-02-07):** The initial fix was incorrect. The correct solution is to use `BearingRenderer` (which exists in Create 6.0.8-291), not remove the registration entirely. The Solar Windmill Bearing now properly registers `BearingRenderer::new` and should render correctly with animations.

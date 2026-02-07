@@ -55,12 +55,15 @@ public class SolarWindmillBearingBlockEntity extends WindmillBearingBlockEntity 
         super.addBehaviours(behaviours);
     }
 
+    /**
+     * Note: tick() is called by both client AND server via getTicker in the block class.
+     * Client-side ticking is REQUIRED for animation to work!
+     * Server-side ticking updates capacity and checks solar conditions.
+     */
     @Override
     public void tick() {
         super.tick();
-        if (!level.isClientSide) {
-            solarTick();
-        }
+        // solarTick is called separately by the block's getTicker (server-side only)
     }
 
     public void solarTick() {
