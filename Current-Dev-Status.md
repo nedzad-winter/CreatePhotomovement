@@ -229,6 +229,8 @@ com.simibubi.create.api.contraption.BlockMovementChecks.registerAttachedCheck((s
   - Ported `SolarSailBlock.java` logic from 1.21.1 to 1.20.1.
   - Implemented manual VoxelShapes because `AllShapes.SAIL` is likely missing in 1.20 API.
   - **CRITICAL:** Restored `PlacementHelper` and `Iterate` usage by importing from `net.createmod.catnip` packages (found in Create 6.0.8+).
+  - **Fixed:** Updated `SOLAR_SAIL` registration in `AllBlocks.java` to use `SoundType.SCAFFOLDING`, `strength(0.1F)`, and `noOcclusion()` to match colored variants (and fix "old sound" bug).
 - **Notes:**
   - Initial builds failed due to missing `com.simibubi.create.foundation.utility` packages.
+
   - Runtime crash observed (exit code 1) was traced to **ASUS Overlay (GTII-OSD64-GL.dll)**, not mod code.

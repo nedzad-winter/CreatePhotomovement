@@ -21,8 +21,9 @@ public class AllBlocks {
                                         () -> com.createphotomovement.content.kinetics.solarwindmill.SolarSailBlock
                                                         .withCanvas(BlockBehaviour.Properties.of()
                                                                         .mapColor(net.minecraft.world.level.material.MapColor.WOOL)
-                                                                        .sound(net.minecraft.world.level.block.SoundType.WOOL)
-                                                                        .strength(0.8F),
+                                                                        .strength(0.1F)
+                                                                        .sound(SoundType.SCAFFOLDING)
+                                                                        .noOcclusion(),
                                                                         net.minecraft.world.item.DyeColor.WHITE));
 
         // Solar Sails Colored Variants
