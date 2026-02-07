@@ -60,9 +60,8 @@ public class HorizontalSolarGeneratorBlockEntity extends GeneratingKineticBlockE
         }
         float speed = PMConfigs.server().generationSpeed.get();
         // Reduce speed by half during rain
-        if (getLevel() != null && getLevel().isRainingAt(
-                worldPosition.relative(getBlockState().getValue(
-                        com.simibubi.create.content.kinetics.base.HorizontalKineticBlock.HORIZONTAL_FACING)))) {
+        if (level != null && level.isRainingAt(
+                worldPosition.relative(getBlockState().getValue(HorizontalSolarGeneratorBlock.HORIZONTAL_FACING)))) {
             speed = speed / 2;
         }
         return speed;
@@ -80,7 +79,7 @@ public class HorizontalSolarGeneratorBlockEntity extends GeneratingKineticBlockE
     public void tick() {
         super.tick();
 
-        if (getLevel() == null || getLevel().isClientSide)
+        if (level == null || level.isClientSide)
             return;
 
         // Immediate update on first tick (handles placement)
@@ -113,8 +112,7 @@ public class HorizontalSolarGeneratorBlockEntity extends GeneratingKineticBlockE
         }
 
         BlockState state = getBlockState();
-        Direction facing = state
-                .getValue(com.simibubi.create.content.kinetics.base.HorizontalKineticBlock.HORIZONTAL_FACING);
+        Direction facing = state.getValue(HorizontalSolarGeneratorBlock.HORIZONTAL_FACING);
 
         // Base config capacity
         float base = PMConfigs.server().stressCapacity.get();
@@ -125,9 +123,9 @@ public class HorizontalSolarGeneratorBlockEntity extends GeneratingKineticBlockE
         boolean distantObstruction = false;
         for (int i = 2; i <= 10; i++) {
             BlockPos checkPos = worldPosition.relative(facing, i);
-            BlockState checkState = getLevel().getBlockState(checkPos);
+            BlockState checkState = level.getBlockState(checkPos);
             // only for solid blocks
-            if (checkState.getLightBlock(getLevel(), checkPos) > 0) {
+            if (checkState.getLightBlock(level, checkPos) > 0) {
                 distantObstruction = true;
                 break;
             }
@@ -136,7 +134,7 @@ public class HorizontalSolarGeneratorBlockEntity extends GeneratingKineticBlockE
         if (distantObstruction) {
             newCapacity = min;
         } else {
-            long time = getLevel().getDayTime() % 24000;
+            long time = level.getDayTime() % 24000;
             float peak = 4 * base;
 
             // Clamp time to 0-12000 for curve calculation.
@@ -169,28 +167,27 @@ public class HorizontalSolarGeneratorBlockEntity extends GeneratingKineticBlockE
     }
 
     protected boolean canGeneratePower() {
-        if (getLevel() == null)
+        if (level == null)
             return false;
 
         BlockState state = getBlockState();
-        Direction facing = state
-                .getValue(com.simibubi.create.content.kinetics.base.HorizontalKineticBlock.HORIZONTAL_FACING);
+        Direction facing = state.getValue(HorizontalSolarGeneratorBlock.HORIZONTAL_FACING);
         BlockPos frontPos = worldPosition.relative(facing);
 
         // Check if skylight can reach the block
         // Using light threshold of 12
-        int skyLight = getLevel().getBrightness(LightLayer.SKY, frontPos);
-        int currentSkyLight = skyLight - getLevel().getSkyDarken();
+        int skyLight = level.getBrightness(LightLayer.SKY, frontPos);
+        int currentSkyLight = skyLight - level.getSkyDarken();
         if (currentSkyLight < 12) {
             return false;
         }
 
-        BlockState frontState = getLevel().getBlockState(frontPos);
+        BlockState frontState = level.getBlockState(frontPos);
 
         // if the block right next to the solar face the generator does not produce
         // anything
         // only for solid blocks
-        if (frontState.getLightBlock(getLevel(), frontPos) > 0) {
+        if (frontState.getLightBlock(level, frontPos) > 0) {
             return false;
         }
 

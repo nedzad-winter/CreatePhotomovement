@@ -29,22 +29,22 @@ public class HorzAdvSolarGeneratorBlock extends HorizontalSolarGeneratorBlock {
     private static final Map<DyeColor, Supplier<Block>> COLOR_TO_BLOCK = new HashMap<>();
 
     static {
-        COLOR_TO_BLOCK.put(DyeColor.WHITE, () -> (Block) AllBlocks.WHITE_HORZ_ADV_SOLAR_GENERATOR.get());
-        COLOR_TO_BLOCK.put(DyeColor.ORANGE, () -> (Block) AllBlocks.ORANGE_HORZ_ADV_SOLAR_GENERATOR.get());
-        COLOR_TO_BLOCK.put(DyeColor.MAGENTA, () -> (Block) AllBlocks.MAGENTA_HORZ_ADV_SOLAR_GENERATOR.get());
-        COLOR_TO_BLOCK.put(DyeColor.LIGHT_BLUE, () -> (Block) AllBlocks.LIGHT_BLUE_HORZ_ADV_SOLAR_GENERATOR.get());
-        COLOR_TO_BLOCK.put(DyeColor.YELLOW, () -> (Block) AllBlocks.YELLOW_HORZ_ADV_SOLAR_GENERATOR.get());
-        COLOR_TO_BLOCK.put(DyeColor.LIME, () -> (Block) AllBlocks.LIME_HORZ_ADV_SOLAR_GENERATOR.get());
-        COLOR_TO_BLOCK.put(DyeColor.PINK, () -> (Block) AllBlocks.PINK_HORZ_ADV_SOLAR_GENERATOR.get());
-        COLOR_TO_BLOCK.put(DyeColor.GRAY, () -> (Block) AllBlocks.GRAY_HORZ_ADV_SOLAR_GENERATOR.get());
-        COLOR_TO_BLOCK.put(DyeColor.LIGHT_GRAY, () -> (Block) AllBlocks.LIGHT_GRAY_HORZ_ADV_SOLAR_GENERATOR.get());
-        COLOR_TO_BLOCK.put(DyeColor.CYAN, () -> (Block) AllBlocks.CYAN_HORZ_ADV_SOLAR_GENERATOR.get());
-        COLOR_TO_BLOCK.put(DyeColor.PURPLE, () -> (Block) AllBlocks.PURPLE_HORZ_ADV_SOLAR_GENERATOR.get());
-        COLOR_TO_BLOCK.put(DyeColor.BLUE, () -> (Block) AllBlocks.BLUE_HORZ_ADV_SOLAR_GENERATOR.get());
-        COLOR_TO_BLOCK.put(DyeColor.BROWN, () -> (Block) AllBlocks.BROWN_HORZ_ADV_SOLAR_GENERATOR.get());
-        COLOR_TO_BLOCK.put(DyeColor.GREEN, () -> (Block) AllBlocks.GREEN_HORZ_ADV_SOLAR_GENERATOR.get());
-        COLOR_TO_BLOCK.put(DyeColor.RED, () -> (Block) AllBlocks.RED_HORZ_ADV_SOLAR_GENERATOR.get());
-        COLOR_TO_BLOCK.put(DyeColor.BLACK, () -> (Block) AllBlocks.BLACK_HORZ_ADV_SOLAR_GENERATOR.get());
+        COLOR_TO_BLOCK.put(DyeColor.WHITE, () -> AllBlocks.WHITE_HORZ_ADV_SOLAR_GENERATOR.get());
+        COLOR_TO_BLOCK.put(DyeColor.ORANGE, () -> AllBlocks.ORANGE_HORZ_ADV_SOLAR_GENERATOR.get());
+        COLOR_TO_BLOCK.put(DyeColor.MAGENTA, () -> AllBlocks.MAGENTA_HORZ_ADV_SOLAR_GENERATOR.get());
+        COLOR_TO_BLOCK.put(DyeColor.LIGHT_BLUE, () -> AllBlocks.LIGHT_BLUE_HORZ_ADV_SOLAR_GENERATOR.get());
+        COLOR_TO_BLOCK.put(DyeColor.YELLOW, () -> AllBlocks.YELLOW_HORZ_ADV_SOLAR_GENERATOR.get());
+        COLOR_TO_BLOCK.put(DyeColor.LIME, () -> AllBlocks.LIME_HORZ_ADV_SOLAR_GENERATOR.get());
+        COLOR_TO_BLOCK.put(DyeColor.PINK, () -> AllBlocks.PINK_HORZ_ADV_SOLAR_GENERATOR.get());
+        COLOR_TO_BLOCK.put(DyeColor.GRAY, () -> AllBlocks.GRAY_HORZ_ADV_SOLAR_GENERATOR.get());
+        COLOR_TO_BLOCK.put(DyeColor.LIGHT_GRAY, () -> AllBlocks.LIGHT_GRAY_HORZ_ADV_SOLAR_GENERATOR.get());
+        COLOR_TO_BLOCK.put(DyeColor.CYAN, () -> AllBlocks.CYAN_HORZ_ADV_SOLAR_GENERATOR.get());
+        COLOR_TO_BLOCK.put(DyeColor.PURPLE, () -> AllBlocks.PURPLE_HORZ_ADV_SOLAR_GENERATOR.get());
+        COLOR_TO_BLOCK.put(DyeColor.BLUE, () -> AllBlocks.BLUE_HORZ_ADV_SOLAR_GENERATOR.get());
+        COLOR_TO_BLOCK.put(DyeColor.BROWN, () -> AllBlocks.BROWN_HORZ_ADV_SOLAR_GENERATOR.get());
+        COLOR_TO_BLOCK.put(DyeColor.GREEN, () -> AllBlocks.GREEN_HORZ_ADV_SOLAR_GENERATOR.get());
+        COLOR_TO_BLOCK.put(DyeColor.RED, () -> AllBlocks.RED_HORZ_ADV_SOLAR_GENERATOR.get());
+        COLOR_TO_BLOCK.put(DyeColor.BLACK, () -> AllBlocks.BLACK_HORZ_ADV_SOLAR_GENERATOR.get());
     }
 
     public HorzAdvSolarGeneratorBlock(Properties properties) {

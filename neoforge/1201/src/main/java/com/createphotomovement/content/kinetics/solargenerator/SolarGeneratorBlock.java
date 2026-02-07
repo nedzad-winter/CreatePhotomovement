@@ -13,6 +13,8 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.DyeItem;
@@ -37,25 +39,25 @@ public class SolarGeneratorBlock extends RotatedPillarKineticBlock
         implements IBE<SolarGeneratorBlockEntity>, IWrenchable {
 
     // Map dye colors to their corresponding solar generator blocks
-    private static final Map<DyeColor, com.tterrag.registrate.util.entry.RegistryEntry<? extends Block>> COLOR_TO_BLOCK = new HashMap<>();
+    private static final Map<DyeColor, java.util.function.Supplier<Block>> COLOR_TO_BLOCK = new HashMap<>();
 
     static {
-        COLOR_TO_BLOCK.put(DyeColor.WHITE, AllBlocks.WHITE_SOLAR_GENERATOR);
-        COLOR_TO_BLOCK.put(DyeColor.ORANGE, AllBlocks.ORANGE_SOLAR_GENERATOR);
-        COLOR_TO_BLOCK.put(DyeColor.MAGENTA, AllBlocks.MAGENTA_SOLAR_GENERATOR);
-        COLOR_TO_BLOCK.put(DyeColor.LIGHT_BLUE, AllBlocks.LIGHT_BLUE_SOLAR_GENERATOR);
-        COLOR_TO_BLOCK.put(DyeColor.YELLOW, AllBlocks.YELLOW_SOLAR_GENERATOR);
-        COLOR_TO_BLOCK.put(DyeColor.LIME, AllBlocks.LIME_SOLAR_GENERATOR);
-        COLOR_TO_BLOCK.put(DyeColor.PINK, AllBlocks.PINK_SOLAR_GENERATOR);
-        COLOR_TO_BLOCK.put(DyeColor.GRAY, AllBlocks.GRAY_SOLAR_GENERATOR);
-        COLOR_TO_BLOCK.put(DyeColor.LIGHT_GRAY, AllBlocks.LIGHT_GRAY_SOLAR_GENERATOR);
-        COLOR_TO_BLOCK.put(DyeColor.CYAN, AllBlocks.CYAN_SOLAR_GENERATOR);
-        COLOR_TO_BLOCK.put(DyeColor.PURPLE, AllBlocks.PURPLE_SOLAR_GENERATOR);
-        COLOR_TO_BLOCK.put(DyeColor.BLUE, AllBlocks.BLUE_SOLAR_GENERATOR);
-        COLOR_TO_BLOCK.put(DyeColor.BROWN, AllBlocks.BROWN_SOLAR_GENERATOR);
-        COLOR_TO_BLOCK.put(DyeColor.GREEN, AllBlocks.GREEN_SOLAR_GENERATOR);
-        COLOR_TO_BLOCK.put(DyeColor.RED, AllBlocks.RED_SOLAR_GENERATOR);
-        COLOR_TO_BLOCK.put(DyeColor.BLACK, AllBlocks.BLACK_SOLAR_GENERATOR);
+        COLOR_TO_BLOCK.put(DyeColor.WHITE, () -> AllBlocks.WHITE_SOLAR_GENERATOR.get());
+        COLOR_TO_BLOCK.put(DyeColor.ORANGE, () -> AllBlocks.ORANGE_SOLAR_GENERATOR.get());
+        COLOR_TO_BLOCK.put(DyeColor.MAGENTA, () -> AllBlocks.MAGENTA_SOLAR_GENERATOR.get());
+        COLOR_TO_BLOCK.put(DyeColor.LIGHT_BLUE, () -> AllBlocks.LIGHT_BLUE_SOLAR_GENERATOR.get());
+        COLOR_TO_BLOCK.put(DyeColor.YELLOW, () -> AllBlocks.YELLOW_SOLAR_GENERATOR.get());
+        COLOR_TO_BLOCK.put(DyeColor.LIME, () -> AllBlocks.LIME_SOLAR_GENERATOR.get());
+        COLOR_TO_BLOCK.put(DyeColor.PINK, () -> AllBlocks.PINK_SOLAR_GENERATOR.get());
+        COLOR_TO_BLOCK.put(DyeColor.GRAY, () -> AllBlocks.GRAY_SOLAR_GENERATOR.get());
+        COLOR_TO_BLOCK.put(DyeColor.LIGHT_GRAY, () -> AllBlocks.LIGHT_GRAY_SOLAR_GENERATOR.get());
+        COLOR_TO_BLOCK.put(DyeColor.CYAN, () -> AllBlocks.CYAN_SOLAR_GENERATOR.get());
+        COLOR_TO_BLOCK.put(DyeColor.PURPLE, () -> AllBlocks.PURPLE_SOLAR_GENERATOR.get());
+        COLOR_TO_BLOCK.put(DyeColor.BLUE, () -> AllBlocks.BLUE_SOLAR_GENERATOR.get());
+        COLOR_TO_BLOCK.put(DyeColor.BROWN, () -> AllBlocks.BROWN_SOLAR_GENERATOR.get());
+        COLOR_TO_BLOCK.put(DyeColor.GREEN, () -> AllBlocks.GREEN_SOLAR_GENERATOR.get());
+        COLOR_TO_BLOCK.put(DyeColor.RED, () -> AllBlocks.RED_SOLAR_GENERATOR.get());
+        COLOR_TO_BLOCK.put(DyeColor.BLACK, () -> AllBlocks.BLACK_SOLAR_GENERATOR.get());
     }
 
     public SolarGeneratorBlock(Properties properties) {
@@ -87,9 +89,8 @@ public class SolarGeneratorBlock extends RotatedPillarKineticBlock
     }
 
     @Override
-    @SuppressWarnings("deprecation")
-    public InteractionResult use(BlockState state, Level level, BlockPos pos,
-            Player player, InteractionHand hand, BlockHitResult hitResult) {
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
+            BlockHitResult hitResult) {
 
         ItemStack stack = player.getItemInHand(hand);
 
@@ -115,7 +116,7 @@ public class SolarGeneratorBlock extends RotatedPillarKineticBlock
                 level.playSound(null, pos, SoundEvents.DYE_USE, SoundSource.BLOCKS, 1.0F, 1.0F);
 
                 // Consume dye if not in creative mode
-                if (!player.getAbilities().instabuild) {
+                if (!player.isCreative()) {
                     stack.shrink(1);
                 }
             }
