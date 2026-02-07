@@ -262,3 +262,38 @@ When extending block entities from the Create mod (or any dependency mod), verif
 ---
 
 **UPDATE (2026-02-07):** The initial fix was incorrect. The correct solution is to use `BearingRenderer` (which exists in Create 6.0.8-291), not remove the registration entirely. The Solar Windmill Bearing now properly registers `BearingRenderer::new` and should render correctly with animations.
+
+---
+
+### Repository Cleanup (2026-02-07)
+- **Deleted:**
+  - `Feature_pipeline` (Ideas migrated to task list)
+  - `bin-versions/` (Old binary directory)
+  - `build_log*.txt` (Temporary build logs)
+- **Kept:**
+  - `_Create(1201)/` & `_Create(1211)/` (Reference directories)
+  - `_minecraft-assets-master/` (Asset reference)
+
+### Future Ideas (Backlog)
+- **Enhanced Solar Generator:**
+  - Recipe: Blackstone + Brass (instead of Deepslate + Andesite)
+  - Stats: High RPM (32), same SU as normal generator
+- **Solar Fences**
+
+### NeoForge 1.20.1 to Forge 1.20.1 Migration Analysis (2026-02-07)
+**Status:** COMPLETE - Universal Jar Strategy
+
+**Discovery:**
+The codebase in `neoforge/1201`:
+1. Uses standard Forge APIs (`net.minecraftforge.*`).
+2. Configures `mods.toml` to accept BOTH `forge` and `neoforge` loaders.
+3. Uses the `legacyforge` plugin which creates a compatible jar for both platforms.
+
+**Conclusion:**
+The `createphotomovement-neoforge-1.20.1-*.jar` IS a Universal Jar.
+It works on both NeoForge 1.20.1 AND Forge 1.20.1.
+
+**Action:**
+- Deleted redundant `forge/1201/build.gradle`.
+- **Decision:** Keep `neoforge` naming convention for the build output.
+- **Verification:** User can just drop the `createphotomovement-neoforge-1.20.1-*.jar` into a Forge `mods` folder and it will work.

@@ -44,7 +44,7 @@ public class SolarWindmillBearingBlockEntity extends WindmillBearingBlockEntity 
     private int solarSailCount = 0;
     private boolean hasSkyAccess = false;
     private float lastSolarMultiplier = -1;
-    private int warmup = 10; // Delay before refreshing from contraption
+    private int warmup = 20; // Delay before refreshing from contraption (increased from 10)
 
     public SolarWindmillBearingBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -76,6 +76,10 @@ public class SolarWindmillBearingBlockEntity extends WindmillBearingBlockEntity 
             if (warmup == 0) {
                 // Force refresh from contraption after load delay
                 updateGeneratedRotation();
+                // Explicitly notify network to recalculate
+                if (hasNetwork()) {
+                    getOrCreateNetwork().updateCapacityFor(this, getGeneratedSpeed());
+                }
             }
             return;
         }
@@ -165,13 +169,10 @@ public class SolarWindmillBearingBlockEntity extends WindmillBearingBlockEntity 
                 // Note: Can't zero sailBlocks for regular BearingContraption - parent handles
                 // this
             }
-        } else {
-            // Detached or invalid contraption - reset counts to prevent ghost SU
-            this.regularSailCount = 0;
-            this.solarSailCount = 0;
-            this.hasSkyAccess = false;
-
-        }
+        } 
+        // If movedContraption is null but we have counts from NBT, keep them
+        // (happens during world reload before contraption entity loads)
+        
         super.updateGeneratedRotation();
     }
 
@@ -215,8 +216,9 @@ public class SolarWindmillBearingBlockEntity extends WindmillBearingBlockEntity 
     @Override
     public float calculateAddedStressCapacity() {
 
-        // Guard against detached/invalid bearings reporting capacity
-        if (!running || movedContraption == null)
+        // Use sail counts from NBT if contraption is loading
+        // This allows SU to work immediately after world reload
+        if (!running)
             return 0;
 
         // Calculate SU separately for normal and solar sails using power brackets
@@ -278,11 +280,12 @@ public class SolarWindmillBearingBlockEntity extends WindmillBearingBlockEntity 
 
     @Override
     public void write(CompoundTag compound, boolean clientPacket) {
-        if (clientPacket) {
-            compound.putInt("RegularSails", regularSailCount);
-            compound.putInt("SolarSails", solarSailCount);
-            compound.putBoolean("HasSkyAccess", hasSkyAccess);
-        } else {
+        // Save sail counts to NBT so they survive world reload
+        compound.putInt("RegularSails", regularSailCount);
+        compound.putInt("SolarSails", solarSailCount);
+        compound.putBoolean("HasSkyAccess", hasSkyAccess);
+        
+        if (!clientPacket) {
             // CRITICAL: Zero BOTH 'capacity' AND 'lastCapacityProvided' BEFORE
             // super.write()!
             this.capacity = 0;
@@ -295,18 +298,17 @@ public class SolarWindmillBearingBlockEntity extends WindmillBearingBlockEntity 
     protected void read(CompoundTag compound, boolean clientPacket) {
         super.read(compound, clientPacket);
 
-        if (clientPacket) {
-            regularSailCount = compound.getInt("RegularSails");
-            solarSailCount = compound.getInt("SolarSails");
-            hasSkyAccess = compound.getBoolean("HasSkyAccess");
-        } else {
-            // Server: reset to prevent ghost SU
-            regularSailCount = 0;
-            solarSailCount = 0;
-            hasSkyAccess = false;
-            // Force capacity reset - but super.read() already loaded from NBT
+        // Always read sail counts from NBT (both client and server)
+        regularSailCount = compound.getInt("RegularSails");
+        solarSailCount = compound.getInt("SolarSails");
+        hasSkyAccess = compound.getBoolean("HasSkyAccess");
+        
+        if (!clientPacket) {
+            // Server load from disk: Zero capacity (will be recalculated)
             this.lastCapacityProvided = 0;
             this.capacity = 0;
+            // Reset warmup so we trigger network update after load
+            this.warmup = 20;
         }
     }
 
