@@ -3,6 +3,7 @@ package com.createphotomovement;
 import com.createphotomovement.content.kinetics.solargenerator.SolarGeneratorRenderer;
 import com.createphotomovement.content.kinetics.solargenerator.HorizontalSolarGeneratorRenderer;
 import com.createphotomovement.ponder.PhotomovementPonderPlugin;
+import com.simibubi.create.content.contraptions.bearing.BearingRenderer;
 
 import net.createmod.ponder.foundation.PonderIndex;
 import net.minecraftforge.api.distmarker.Dist;
@@ -32,5 +33,6 @@ public class CreatePhotomovementClient {
                 context -> (BlockEntityRenderer) new SolarGeneratorRenderer(context));
         event.registerBlockEntityRenderer(AllBlockEntityTypes.HORZ_ADV_SOLAR_GENERATOR.get(),
                 context -> (BlockEntityRenderer) new HorizontalSolarGeneratorRenderer(context));
+        event.registerBlockEntityRenderer(AllBlockEntityTypes.SOLAR_WINDMILL_BEARING.get(), BearingRenderer::new);
     }
 }

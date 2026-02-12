@@ -1,0 +1,449 @@
+{
+    "variants":  {
+                     "facing=north,glass_color=pink":  {
+                                                           "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                           "x":  90
+                                                       },
+                     "facing=south,glass_color=green":  {
+                                                            "y":  180,
+                                                            "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                            "x":  90
+                                                        },
+                     "facing=north,glass_color=light_blue":  {
+                                                                 "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                                 "x":  90
+                                                             },
+                     "facing=south,glass_color=magenta":  {
+                                                              "y":  180,
+                                                              "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                              "x":  90
+                                                          },
+                     "facing=south,glass_color=orange":  {
+                                                             "y":  180,
+                                                             "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                             "x":  90
+                                                         },
+                     "facing=east,glass_color=gray":  {
+                                                          "y":  90,
+                                                          "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                          "x":  90
+                                                      },
+                     "facing=south,glass_color=purple":  {
+                                                             "y":  180,
+                                                             "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                             "x":  90
+                                                         },
+                     "facing=east,glass_color=black":  {
+                                                           "y":  90,
+                                                           "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                           "x":  90
+                                                       },
+                     "facing=west,glass_color=blue":  {
+                                                          "y":  270,
+                                                          "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                          "x":  90
+                                                      },
+                     "facing=east,glass_color=lime":  {
+                                                          "y":  90,
+                                                          "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                          "x":  90
+                                                      },
+                     "facing=west,glass_color=white":  {
+                                                           "y":  270,
+                                                           "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                           "x":  90
+                                                       },
+                     "facing=up,glass_color=light_blue":  {
+                                                              "model": "createphotomovement:block/cyan_solar_sail_glass_clear"
+                                                          },
+                     "facing=up,glass_color=light_gray":  {
+                                                              "model": "createphotomovement:block/cyan_solar_sail_glass_clear"
+                                                          },
+                     "facing=east,glass_color=pink":  {
+                                                          "y":  90,
+                                                          "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                          "x":  90
+                                                      },
+                     "facing=up,glass_color=yellow":  {
+                                                          "model": "createphotomovement:block/cyan_solar_sail_glass_clear"
+                                                      },
+                     "facing=up,glass_color=brown":  {
+                                                         "model": "createphotomovement:block/cyan_solar_sail_glass_clear"
+                                                     },
+                     "facing=down,glass_color=red":  {
+                                                         "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                         "x":  180
+                                                     },
+                     "facing=west,glass_color=clear":  {
+                                                           "y":  270,
+                                                           "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                           "x":  90
+                                                       },
+                     "facing=north,glass_color=blue":  {
+                                                           "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                           "x":  90
+                                                       },
+                     "facing=north,glass_color=light_gray":  {
+                                                                 "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                                 "x":  90
+                                                             },
+                     "facing=up,glass_color=black":  {
+                                                         "model": "createphotomovement:block/cyan_solar_sail_glass_clear"
+                                                     },
+                     "facing=south,glass_color=clear":  {
+                                                            "y":  180,
+                                                            "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                            "x":  90
+                                                        },
+                     "facing=up,glass_color=blue":  {
+                                                        "model": "createphotomovement:block/cyan_solar_sail_glass_clear"
+                                                    },
+                     "facing=south,glass_color=light_gray":  {
+                                                                 "y":  180,
+                                                                 "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                                 "x":  90
+                                                             },
+                     "facing=north,glass_color=green":  {
+                                                            "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                            "x":  90
+                                                        },
+                     "facing=west,glass_color=black":  {
+                                                           "y":  270,
+                                                           "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                           "x":  90
+                                                       },
+                     "facing=up,glass_color=red":  {
+                                                       "model": "createphotomovement:block/cyan_solar_sail_glass_clear"
+                                                   },
+                     "facing=down,glass_color=lime":  {
+                                                          "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                          "x":  180
+                                                      },
+                     "facing=down,glass_color=black":  {
+                                                           "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                           "x":  180
+                                                       },
+                     "facing=up,glass_color=green":  {
+                                                         "model": "createphotomovement:block/cyan_solar_sail_glass_clear"
+                                                     },
+                     "facing=east,glass_color=light_gray":  {
+                                                                "y":  90,
+                                                                "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                                "x":  90
+                                                            },
+                     "facing=up,glass_color=lime":  {
+                                                        "model": "createphotomovement:block/cyan_solar_sail_glass_clear"
+                                                    },
+                     "facing=east,glass_color=purple":  {
+                                                            "y":  90,
+                                                            "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                            "x":  90
+                                                        },
+                     "facing=up,glass_color=pink":  {
+                                                        "model": "createphotomovement:block/cyan_solar_sail_glass_clear"
+                                                    },
+                     "facing=north,glass_color=magenta":  {
+                                                              "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                              "x":  90
+                                                          },
+                     "facing=south,glass_color=pink":  {
+                                                           "y":  180,
+                                                           "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                           "x":  90
+                                                       },
+                     "facing=north,glass_color=purple":  {
+                                                             "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                             "x":  90
+                                                         },
+                     "facing=east,glass_color=red":  {
+                                                         "y":  90,
+                                                         "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                         "x":  90
+                                                     },
+                     "facing=west,glass_color=red":  {
+                                                         "y":  270,
+                                                         "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                         "x":  90
+                                                     },
+                     "facing=south,glass_color=white":  {
+                                                            "y":  180,
+                                                            "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                            "x":  90
+                                                        },
+                     "facing=north,glass_color=black":  {
+                                                            "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                            "x":  90
+                                                        },
+                     "facing=west,glass_color=cyan":  {
+                                                          "y":  270,
+                                                          "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                          "x":  90
+                                                      },
+                     "facing=east,glass_color=brown":  {
+                                                           "y":  90,
+                                                           "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                           "x":  90
+                                                       },
+                     "facing=south,glass_color=gray":  {
+                                                           "y":  180,
+                                                           "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                           "x":  90
+                                                       },
+                     "facing=west,glass_color=lime":  {
+                                                          "y":  270,
+                                                          "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                          "x":  90
+                                                      },
+                     "facing=up,glass_color=cyan":  {
+                                                        "model": "createphotomovement:block/cyan_solar_sail_glass_clear"
+                                                    },
+                     "facing=west,glass_color=brown":  {
+                                                           "y":  270,
+                                                           "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                           "x":  90
+                                                       },
+                     "facing=up,glass_color=white":  {
+                                                         "model": "createphotomovement:block/cyan_solar_sail_glass_clear"
+                                                     },
+                     "facing=west,glass_color=light_gray":  {
+                                                                "y":  270,
+                                                                "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                                "x":  90
+                                                            },
+                     "facing=east,glass_color=white":  {
+                                                           "y":  90,
+                                                           "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                           "x":  90
+                                                       },
+                     "facing=down,glass_color=blue":  {
+                                                          "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                          "x":  180
+                                                      },
+                     "facing=down,glass_color=cyan":  {
+                                                          "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                          "x":  180
+                                                      },
+                     "facing=north,glass_color=gray":  {
+                                                           "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                           "x":  90
+                                                       },
+                     "facing=up,glass_color=purple":  {
+                                                          "model": "createphotomovement:block/cyan_solar_sail_glass_clear"
+                                                      },
+                     "facing=south,glass_color=brown":  {
+                                                            "y":  180,
+                                                            "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                            "x":  90
+                                                        },
+                     "facing=east,glass_color=cyan":  {
+                                                          "y":  90,
+                                                          "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                          "x":  90
+                                                      },
+                     "facing=up,glass_color=magenta":  {
+                                                           "model": "createphotomovement:block/cyan_solar_sail_glass_clear"
+                                                       },
+                     "facing=north,glass_color=yellow":  {
+                                                             "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                             "x":  90
+                                                         },
+                     "facing=east,glass_color=light_blue":  {
+                                                                "y":  90,
+                                                                "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                                "x":  90
+                                                            },
+                     "facing=west,glass_color=light_blue":  {
+                                                                "y":  270,
+                                                                "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                                "x":  90
+                                                            },
+                     "facing=south,glass_color=blue":  {
+                                                           "y":  180,
+                                                           "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                           "x":  90
+                                                       },
+                     "facing=west,glass_color=gray":  {
+                                                          "y":  270,
+                                                          "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                          "x":  90
+                                                      },
+                     "facing=south,glass_color=black":  {
+                                                            "y":  180,
+                                                            "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                            "x":  90
+                                                        },
+                     "facing=down,glass_color=gray":  {
+                                                          "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                          "x":  180
+                                                      },
+                     "facing=north,glass_color=cyan":  {
+                                                           "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                           "x":  90
+                                                       },
+                     "facing=east,glass_color=blue":  {
+                                                          "y":  90,
+                                                          "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                          "x":  90
+                                                      },
+                     "facing=west,glass_color=magenta":  {
+                                                             "y":  270,
+                                                             "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                             "x":  90
+                                                         },
+                     "facing=down,glass_color=white":  {
+                                                           "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                           "x":  180
+                                                       },
+                     "facing=down,glass_color=yellow":  {
+                                                            "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                            "x":  180
+                                                        },
+                     "facing=up,glass_color=orange":  {
+                                                          "model": "createphotomovement:block/cyan_solar_sail_glass_clear"
+                                                      },
+                     "facing=down,glass_color=green":  {
+                                                           "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                           "x":  180
+                                                       },
+                     "facing=east,glass_color=green":  {
+                                                           "y":  90,
+                                                           "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                           "x":  90
+                                                       },
+                     "facing=west,glass_color=green":  {
+                                                           "y":  270,
+                                                           "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                           "x":  90
+                                                       },
+                     "facing=down,glass_color=clear":  {
+                                                           "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                           "x":  180
+                                                       },
+                     "facing=south,glass_color=yellow":  {
+                                                             "y":  180,
+                                                             "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                             "x":  90
+                                                         },
+                     "facing=down,glass_color=pink":  {
+                                                          "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                          "x":  180
+                                                      },
+                     "facing=east,glass_color=clear":  {
+                                                           "y":  90,
+                                                           "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                           "x":  90
+                                                       },
+                     "facing=east,glass_color=orange":  {
+                                                            "y":  90,
+                                                            "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                            "x":  90
+                                                        },
+                     "facing=down,glass_color=purple":  {
+                                                            "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                            "x":  180
+                                                        },
+                     "facing=south,glass_color=light_blue":  {
+                                                                 "y":  180,
+                                                                 "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                                 "x":  90
+                                                             },
+                     "facing=north,glass_color=brown":  {
+                                                            "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                            "x":  90
+                                                        },
+                     "facing=west,glass_color=yellow":  {
+                                                            "y":  270,
+                                                            "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                            "x":  90
+                                                        },
+                     "facing=north,glass_color=orange":  {
+                                                             "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                             "x":  90
+                                                         },
+                     "facing=north,glass_color=lime":  {
+                                                           "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                           "x":  90
+                                                       },
+                     "facing=up,glass_color=gray":  {
+                                                        "model": "createphotomovement:block/cyan_solar_sail_glass_clear"
+                                                    },
+                     "facing=down,glass_color=orange":  {
+                                                            "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                            "x":  180
+                                                        },
+                     "facing=north,glass_color=red":  {
+                                                          "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                          "x":  90
+                                                      },
+                     "facing=down,glass_color=light_blue":  {
+                                                                "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                                "x":  180
+                                                            },
+                     "facing=west,glass_color=orange":  {
+                                                            "y":  270,
+                                                            "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                            "x":  90
+                                                        },
+                     "facing=east,glass_color=magenta":  {
+                                                             "y":  90,
+                                                             "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                             "x":  90
+                                                         },
+                     "facing=north,glass_color=white":  {
+                                                            "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                            "x":  90
+                                                        },
+                     "facing=down,glass_color=light_gray":  {
+                                                                "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                                "x":  180
+                                                            },
+                     "facing=north,glass_color=clear":  {
+                                                            "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                            "x":  90
+                                                        },
+                     "facing=up,glass_color=clear":  {
+                                                         "model": "createphotomovement:block/cyan_solar_sail_glass_clear"
+                                                     },
+                     "facing=west,glass_color=pink":  {
+                                                          "y":  270,
+                                                          "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                          "x":  90
+                                                      },
+                     "facing=down,glass_color=brown":  {
+                                                           "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                           "x":  180
+                                                       },
+                     "facing=south,glass_color=red":  {
+                                                          "y":  180,
+                                                          "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                          "x":  90
+                                                      },
+                     "facing=west,glass_color=purple":  {
+                                                            "y":  270,
+                                                            "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                            "x":  90
+                                                        },
+                     "facing=east,glass_color=yellow":  {
+                                                            "y":  90,
+                                                            "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                            "x":  90
+                                                        },
+                     "facing=down,glass_color=magenta":  {
+                                                             "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                             "x":  180
+                                                         },
+                     "facing=south,glass_color=lime":  {
+                                                           "y":  180,
+                                                           "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                           "x":  90
+                                                       },
+                     "facing=south,glass_color=cyan":  {
+                                                           "y":  180,
+                                                           "model": "createphotomovement:block/cyan_solar_sail_glass_clear",
+                                                           "x":  90
+                                                       }
+                 }
+}
+
+
+

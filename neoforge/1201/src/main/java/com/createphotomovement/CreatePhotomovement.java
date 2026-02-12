@@ -21,8 +21,25 @@ public class CreatePhotomovement {
         AllItems.ITEMS.register(modEventBus);
         AllCreativeTabs.CREATIVE_MODE_TABS.register(modEventBus);
         AllBlockEntityTypes.BLOCK_ENTITY_TYPES.register(modEventBus);
+        AllContraptionTypes.register(modEventBus);
 
         PMConfigs.register(ModLoadingContext.get());
+
+        // Register AttachedCheck for Solar Sails (needed because they don't extend
+        // SailBlock)
+        com.simibubi.create.api.contraption.BlockMovementChecks
+                .registerAttachedCheck((state, world, pos, direction) -> {
+                    if (state
+                            .getBlock() instanceof com.createphotomovement.content.kinetics.solarwindmill.SolarSailBlock) {
+                        // Allow connection if the direction is perpendicular to the sail's facing
+                        // (Same logic as standard sails)
+                        return com.simibubi.create.api.contraption.BlockMovementChecks.CheckResult.of(
+                                direction.getAxis() != state.getValue(
+                                        com.createphotomovement.content.kinetics.solarwindmill.SolarSailBlock.FACING)
+                                        .getAxis());
+                    }
+                    return com.simibubi.create.api.contraption.BlockMovementChecks.CheckResult.PASS;
+                });
 
         MinecraftForge.EVENT_BUS.register(this);
         LOGGER.info("Create Photomovement initialized!");

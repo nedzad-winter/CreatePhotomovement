@@ -289,4 +289,57 @@ public class AllItems {
         public static final RegistryObject<BlockItem> BLACK_HORZ_ADV_SOLAR_GENERATOR = ITEMS.register(
                         "black_horz_adv_solar_generator",
                         () -> new BlockItem(AllBlocks.BLACK_HORZ_ADV_SOLAR_GENERATOR.get(), new Item.Properties()));
+
+        // Solar Sails
+        public static final RegistryObject<BlockItem> SOLAR_SAIL = ITEMS.register("solar_sail",
+                        () -> new BlockItem(AllBlocks.SOLAR_SAIL.get(), new Item.Properties()));
+
+        public static final RegistryObject<BlockItem> ORANGE_SOLAR_SAIL = ITEMS.register("orange_solar_sail",
+                        () -> new BlockItem(AllBlocks.ORANGE_SOLAR_SAIL.get(), new Item.Properties()));
+
+        public static final RegistryObject<BlockItem> MAGENTA_SOLAR_SAIL = ITEMS.register("magenta_solar_sail",
+                        () -> new BlockItem(AllBlocks.MAGENTA_SOLAR_SAIL.get(), new Item.Properties()));
+
+        public static final RegistryObject<BlockItem> LIGHT_BLUE_SOLAR_SAIL = ITEMS.register("light_blue_solar_sail",
+                        () -> new BlockItem(AllBlocks.LIGHT_BLUE_SOLAR_SAIL.get(), new Item.Properties()));
+
+        public static final RegistryObject<BlockItem> YELLOW_SOLAR_SAIL = ITEMS.register("yellow_solar_sail",
+                        () -> new BlockItem(AllBlocks.YELLOW_SOLAR_SAIL.get(), new Item.Properties()));
+
+        public static final RegistryObject<BlockItem> LIME_SOLAR_SAIL = ITEMS.register("lime_solar_sail",
+                        () -> new BlockItem(AllBlocks.LIME_SOLAR_SAIL.get(), new Item.Properties()));
+
+        public static final RegistryObject<BlockItem> PINK_SOLAR_SAIL = ITEMS.register("pink_solar_sail",
+                        () -> new BlockItem(AllBlocks.PINK_SOLAR_SAIL.get(), new Item.Properties()));
+
+        public static final RegistryObject<BlockItem> GRAY_SOLAR_SAIL = ITEMS.register("gray_solar_sail",
+                        () -> new BlockItem(AllBlocks.GRAY_SOLAR_SAIL.get(), new Item.Properties()));
+
+        public static final RegistryObject<BlockItem> LIGHT_GRAY_SOLAR_SAIL = ITEMS.register("light_gray_solar_sail",
+                        () -> new BlockItem(AllBlocks.LIGHT_GRAY_SOLAR_SAIL.get(), new Item.Properties()));
+
+        public static final RegistryObject<BlockItem> CYAN_SOLAR_SAIL = ITEMS.register("cyan_solar_sail",
+                        () -> new BlockItem(AllBlocks.CYAN_SOLAR_SAIL.get(), new Item.Properties()));
+
+        public static final RegistryObject<BlockItem> PURPLE_SOLAR_SAIL = ITEMS.register("purple_solar_sail",
+                        () -> new BlockItem(AllBlocks.PURPLE_SOLAR_SAIL.get(), new Item.Properties()));
+
+        public static final RegistryObject<BlockItem> BLUE_SOLAR_SAIL = ITEMS.register("blue_solar_sail",
+                        () -> new BlockItem(AllBlocks.BLUE_SOLAR_SAIL.get(), new Item.Properties()));
+
+        public static final RegistryObject<BlockItem> BROWN_SOLAR_SAIL = ITEMS.register("brown_solar_sail",
+                        () -> new BlockItem(AllBlocks.BROWN_SOLAR_SAIL.get(), new Item.Properties()));
+
+        public static final RegistryObject<BlockItem> GREEN_SOLAR_SAIL = ITEMS.register("green_solar_sail",
+                        () -> new BlockItem(AllBlocks.GREEN_SOLAR_SAIL.get(), new Item.Properties()));
+
+        public static final RegistryObject<BlockItem> RED_SOLAR_SAIL = ITEMS.register("red_solar_sail",
+                        () -> new BlockItem(AllBlocks.RED_SOLAR_SAIL.get(), new Item.Properties()));
+
+        public static final RegistryObject<BlockItem> BLACK_SOLAR_SAIL = ITEMS.register("black_solar_sail",
+                        () -> new BlockItem(AllBlocks.BLACK_SOLAR_SAIL.get(), new Item.Properties()));
+
+        // Solar Windmill Bearing
+        public static final RegistryObject<BlockItem> SOLAR_WINDMILL_BEARING = ITEMS.register("solar_windmill_bearing",
+                        () -> new BlockItem(AllBlocks.SOLAR_WINDMILL_BEARING.get(), new Item.Properties()));
 }

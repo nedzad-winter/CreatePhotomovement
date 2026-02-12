@@ -1,7 +1,0 @@
-{
-    "parent": "createphotomovement:block/adv_solar_generator",
-    "render_type": "minecraft:translucent",
-    "textures": {
-        "glass": "minecraft:block/white_stained_glass"
-    }
-}
