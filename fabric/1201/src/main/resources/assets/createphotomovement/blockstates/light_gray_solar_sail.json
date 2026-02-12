@@ -1,0 +1,11 @@
+{
+  "variants": {
+    "facing=down": { "model": "createphotomovement:block/light_gray_solar_sail_glass_clear", "x": 180 },
+    "facing=east": { "model": "createphotomovement:block/light_gray_solar_sail_glass_clear", "x": 90, "y": 90 },
+    "facing=north": { "model": "createphotomovement:block/light_gray_solar_sail_glass_clear", "x": 90 },
+    "facing=south": { "model": "createphotomovement:block/light_gray_solar_sail_glass_clear", "x": 90, "y": 180 },
+    "facing=up": { "model": "createphotomovement:block/light_gray_solar_sail_glass_clear" },
+    "facing=west": { "model": "createphotomovement:block/light_gray_solar_sail_glass_clear", "x": 90, "y": 270 }
+  }
+}
+

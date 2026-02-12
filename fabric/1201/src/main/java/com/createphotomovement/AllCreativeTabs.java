@@ -97,6 +97,27 @@ public class AllCreativeTabs {
                             entries.accept(AllItems.GREEN_HORZ_ADV_SOLAR_GENERATOR);
                             entries.accept(AllItems.RED_HORZ_ADV_SOLAR_GENERATOR);
                             entries.accept(AllItems.BLACK_HORZ_ADV_SOLAR_GENERATOR);
+
+                            // Solar Windmill Bearing & Sails
+                            entries.accept(AllItems.SOLAR_WINDMILL_BEARING);
+                            entries.accept(AllItems.SOLAR_SAIL);
+
+                            // Solar Sail Color Variants
+                            entries.accept(AllItems.ORANGE_SOLAR_SAIL);
+                            entries.accept(AllItems.MAGENTA_SOLAR_SAIL);
+                            entries.accept(AllItems.LIGHT_BLUE_SOLAR_SAIL);
+                            entries.accept(AllItems.YELLOW_SOLAR_SAIL);
+                            entries.accept(AllItems.LIME_SOLAR_SAIL);
+                            entries.accept(AllItems.PINK_SOLAR_SAIL);
+                            entries.accept(AllItems.GRAY_SOLAR_SAIL);
+                            entries.accept(AllItems.LIGHT_GRAY_SOLAR_SAIL);
+                            entries.accept(AllItems.CYAN_SOLAR_SAIL);
+                            entries.accept(AllItems.PURPLE_SOLAR_SAIL);
+                            entries.accept(AllItems.BLUE_SOLAR_SAIL);
+                            entries.accept(AllItems.BROWN_SOLAR_SAIL);
+                            entries.accept(AllItems.GREEN_SOLAR_SAIL);
+                            entries.accept(AllItems.RED_SOLAR_SAIL);
+                            entries.accept(AllItems.BLACK_SOLAR_SAIL);
                         }).build());
     }
 }

@@ -21,6 +21,7 @@ public class CreatePhotomovement {
         AllItems.ITEMS.register(modEventBus);
         AllCreativeTabs.CREATIVE_MODE_TABS.register(modEventBus);
         AllBlockEntityTypes.BLOCK_ENTITY_TYPES.register(modEventBus);
+        AllContraptionTypes.register(modEventBus);
 
         PMConfigs.register(ModLoadingContext.get());
 

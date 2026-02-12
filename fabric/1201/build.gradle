@@ -17,6 +17,7 @@ repositories {
     maven { url = "https://maven.jamieswhiteshirt.com/libs-release" } // Reach Entity Attributes
     maven { url = "https://maven.blamejared.com" } // JEI
     maven { url = "https://api.modrinth.com/maven" } // LazyDFU
+    maven { url = "https://cursemaven.com" } // Jade
 }
 
 loom {
@@ -57,6 +58,9 @@ dependencies {
     
     // JEI for testing
     modRuntimeOnly "mezz.jei:jei-1.20.1-fabric:15.20.0.106"
+
+    // Jade (Waila) for tag troubleshooting
+    modImplementation "maven.modrinth:jade:11.9.2+fabric"
 }
 
 configurations.all {
@@ -71,6 +75,8 @@ java {
     withSourcesJar()
 }
 
+
+
 tasks.withType(JavaCompile).configureEach {
     options.encoding = 'UTF-8'
     options.release = 17
@@ -78,10 +84,15 @@ tasks.withType(JavaCompile).configureEach {
 
 processResources {
     inputs.property "version", mod_version
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     
     filesMatching("fabric.mod.json") {
         expand "version": mod_version
     }
+}
+
+sourcesJar {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
 jar {

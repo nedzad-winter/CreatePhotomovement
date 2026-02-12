@@ -4,8 +4,10 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.slf4j.Logger;
 
 import com.mojang.logging.LogUtils;
+import com.simibubi.create.api.contraption.ContraptionType;
 import com.simibubi.create.content.contraptions.AssemblyException;
 import com.simibubi.create.content.contraptions.bearing.BearingContraption;
+import com.createphotomovement.AllContraptionTypes;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -33,6 +35,11 @@ public class SolarBearingContraption extends BearingContraption {
 
     public SolarBearingContraption() {
         super();
+    }
+
+    @Override
+    public ContraptionType getType() {
+        return AllContraptionTypes.SOLAR_BEARING.get();
     }
 
     public SolarBearingContraption(boolean isWindmill, Direction facing) {
