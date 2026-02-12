@@ -91,5 +91,22 @@
     "createphotomovement.ponder.solar_generator_dyeing.text_3": "Or craft any generator with a dye in a crafting table",
     "createphotomovement.ponder.solar_generator_dyeing.text_4": "All color variants function identically",
     "block.createphotomovement.solar_generator.rotation": "Rotation",
-    "block.createphotomovement.horizontal_solar_generator.rotation": "Rotation"
+    "block.createphotomovement.horizontal_solar_generator.rotation": "Rotation",
+    "block.createphotomovement.solar_sail": "Solar Sail",
+    "block.createphotomovement.orange_solar_sail": "Orange Solar Sail",
+    "block.createphotomovement.magenta_solar_sail": "Magenta Solar Sail",
+    "block.createphotomovement.light_blue_solar_sail": "Light Blue Solar Sail",
+    "block.createphotomovement.yellow_solar_sail": "Yellow Solar Sail",
+    "block.createphotomovement.lime_solar_sail": "Lime Solar Sail",
+    "block.createphotomovement.pink_solar_sail": "Pink Solar Sail",
+    "block.createphotomovement.gray_solar_sail": "Gray Solar Sail",
+    "block.createphotomovement.light_gray_solar_sail": "Light Gray Solar Sail",
+    "block.createphotomovement.cyan_solar_sail": "Cyan Solar Sail",
+    "block.createphotomovement.purple_solar_sail": "Purple Solar Sail",
+    "block.createphotomovement.blue_solar_sail": "Blue Solar Sail",
+    "block.createphotomovement.brown_solar_sail": "Brown Solar Sail",
+    "block.createphotomovement.green_solar_sail": "Green Solar Sail",
+    "block.createphotomovement.red_solar_sail": "Red Solar Sail",
+    "block.createphotomovement.black_solar_sail": "Black Solar Sail",
+    "block.createphotomovement.solar_windmill_bearing": "Solar Windmill Bearing"
 }

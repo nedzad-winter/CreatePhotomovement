@@ -46,6 +46,32 @@ The horizontal version of the advanced generator.
 - **Dynamic Output**: Same sun-tracking behavior as the basic horizontal
 - **Weather**: Speed is halved during rain
 
+### Solar Windmill Bearing & Solar Sails
+For massive power generation, build a custom solar array!
+
+#### Solar Windmill Bearing
+Works like a standard Windmill Bearing but is optimized for Solar Sails.
+- **Connection**: Attaches to Solar Sails (and standard sails).
+- **Output**: Generates **Stress Units (SU)** based on sail count and weather.
+- **Requirement**: Needs sky access to benefit from solar multipliers.
+
+#### Solar Sails
+Specialized sails that harness sunlight for boosted power.
+- **Material**: Translucent, comes in all 16 colors + clear.
+- **Efficiency**: 
+  - **Sunny**: 2x power output (compared to white sails).
+  - **Raining**: 1.5x power output.
+  - **Night/Thunder/Covered**: 1x power output (same as white sails).
+
+| Sails | Speed (RPM) | Standard SU | Solar (Rain) SU | Solar (Sunny) SU |
+| :---: | :---: | :---: | :---: | :---: |
+| 8 | 1 | 512 | 768 | 1024 |
+| 16 | 2 | 1024 | 1536 | 2048 |
+| 32 | 4 | 2048 | 3072 | 4096 |
+| 64 | 8 | 4096 | 6144 | 8192 |
+| 128 | 16 | 8192 | 12288 | 16384 |
+
+
 ### Color Variants
 - **68 Blocks Total**: 4 generator types × 17 colors each
 - **17 Color Options**: Clear glass + 16 Minecraft dye colors

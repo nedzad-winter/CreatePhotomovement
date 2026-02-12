@@ -1,0 +1,26 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        " G ",
+        "WRW",
+        " S "
+    ],
+    "key": {
+        "G": {
+            "tag": "forge:glass_panes"
+        },
+        "W": {
+            "tag": "minecraft:wool"
+        },
+        "R": {
+            "item": "minecraft:redstone"
+        },
+        "S": {
+            "item": "create:white_sail"
+        }
+    },
+    "result": {
+        "count": 1,
+        "item": "createphotomovement:solar_sail"
+    }
+}

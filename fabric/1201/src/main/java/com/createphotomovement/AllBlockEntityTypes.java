@@ -4,6 +4,7 @@ import com.createphotomovement.content.kinetics.solargenerator.SolarGeneratorBlo
 import com.createphotomovement.content.kinetics.solargenerator.HorizontalSolarGeneratorBlockEntity;
 import com.createphotomovement.content.kinetics.solargenerator.AdvSolarGeneratorBlockEntity;
 import com.createphotomovement.content.kinetics.solargenerator.HorzAdvSolarGeneratorBlockEntity;
+import com.createphotomovement.content.kinetics.solarwindmill.SolarWindmillBearingBlockEntity;
 import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -15,6 +16,7 @@ public class AllBlockEntityTypes {
         public static BlockEntityType<HorizontalSolarGeneratorBlockEntity> HORIZONTAL_SOLAR_GENERATOR;
         public static BlockEntityType<AdvSolarGeneratorBlockEntity> ADV_SOLAR_GENERATOR;
         public static BlockEntityType<HorzAdvSolarGeneratorBlockEntity> HORZ_ADV_SOLAR_GENERATOR;
+        public static BlockEntityType<SolarWindmillBearingBlockEntity> SOLAR_WINDMILL_BEARING;
 
         public static void register() {
                 SOLAR_GENERATOR = Registry.register(
@@ -112,5 +114,13 @@ public class AllBlockEntityTypes {
                                                 AllBlocks.GREEN_HORZ_ADV_SOLAR_GENERATOR,
                                                 AllBlocks.RED_HORZ_ADV_SOLAR_GENERATOR,
                                                 AllBlocks.BLACK_HORZ_ADV_SOLAR_GENERATOR).build());
+
+                SOLAR_WINDMILL_BEARING = Registry.register(
+                                BuiltInRegistries.BLOCK_ENTITY_TYPE,
+                                new ResourceLocation(CreatePhotomovement.MOD_ID, "solar_windmill_bearing"),
+                                FabricBlockEntityTypeBuilder.create(
+                                                (pos, state) -> new SolarWindmillBearingBlockEntity(
+                                                                SOLAR_WINDMILL_BEARING, pos, state),
+                                                AllBlocks.SOLAR_WINDMILL_BEARING).build());
         }
 }

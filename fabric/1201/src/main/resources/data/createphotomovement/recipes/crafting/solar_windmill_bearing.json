@@ -1,0 +1,20 @@
+{
+    "type": "minecraft:crafting_shaped",
+    "pattern": [
+        "   ",
+        "RBR",
+        "RRR"
+    ],
+    "key": {
+        "R": {
+            "item": "minecraft:redstone"
+        },
+        "B": {
+            "item": "create:windmill_bearing"
+        }
+    },
+    "result": {
+        "count": 1,
+        "item": "createphotomovement:solar_windmill_bearing"
+    }
+}

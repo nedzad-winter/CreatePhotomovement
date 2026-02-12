@@ -13,6 +13,8 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.level.block.state.BlockBehaviour.Properties;
+
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.DyeItem;
@@ -87,9 +89,8 @@ public class SolarGeneratorBlock extends RotatedPillarKineticBlock
     }
 
     @Override
-    @SuppressWarnings("deprecation")
-    public InteractionResult use(BlockState state, Level level, BlockPos pos,
-            Player player, InteractionHand hand, BlockHitResult hitResult) {
+    public InteractionResult use(BlockState state, Level level, BlockPos pos, Player player, InteractionHand hand,
+            BlockHitResult hitResult) {
 
         ItemStack stack = player.getItemInHand(hand);
 
@@ -115,7 +116,7 @@ public class SolarGeneratorBlock extends RotatedPillarKineticBlock
                 level.playSound(null, pos, SoundEvents.DYE_USE, SoundSource.BLOCKS, 1.0F, 1.0F);
 
                 // Consume dye if not in creative mode
-                if (!player.getAbilities().instabuild) {
+                if (!player.isCreative()) {
                     stack.shrink(1);
                 }
             }

@@ -1,16 +1,16 @@
 {
-    "type":  "minecraft:crafting_shapeless",
-    "ingredients":  [
-                        {
-                            "tag": "createphotomovement:adv_solar_generators"
-                        },
-                        {
-                            "item":  "minecraft:cyan_dye"
-                        }
-                    ],
-    "result":  {
-                   "count":  1,
-                   "item":  "createphotomovement:cyan_adv_solar_generator"
-               }
+    "type": "minecraft:crafting_shapeless",
+    "category": "misc",
+    "group": "adv_solar_generators_dyeing",
+    "ingredients": [
+        {
+            "tag": "createphotomovement:adv_solar_generators"
+        },
+        {
+            "item": "minecraft:cyan_dye"
+        }
+    ],
+    "result": {
+        "item": "createphotomovement:cyan_adv_solar_generator"
+    }
 }
-

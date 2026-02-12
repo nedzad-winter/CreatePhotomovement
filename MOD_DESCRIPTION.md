@@ -11,6 +11,7 @@ A reliable, vertical-facing power source.
 - **Requirement**: Light Level 12+ (needs direct sky access)
 - **Weather**: Speed is halved to 8 RPM during rain
 - **Orientation**: Must be placed with the glass panel facing up
+- **Compatibility**: Check status with Engineer's Goggles
 
 ### Horizontal Solar Generator
 A directional variant that tracks the sun's position.
@@ -23,29 +24,47 @@ A directional variant that tracks the sun's position.
   - **Block within 2-10 blocks**: Reduced output
 - **Weather**: Speed is halved during rain
 
-### Advanced Solar Generator
-A powerful upgrade with brass casing for **2x power output**!
+### Advanced Solar Generator (NEW in 0.2.0!)
+A powerful upgrade with brass casing for 2x power output.
 
 - **Generation**: 32 RPM and 32 SU (double the basic version!)
-- **Same Requirements**: Light Level 12+, direct sky access
+- **Requirement**: Same as basic Solar Generator
 - **Weather**: Speed is halved to 16 RPM during rain
 - **Crafting**: Upgrade your basic generator with brass components
 
-### Horizontal Advanced Solar Generator
+###  Horizontal Advanced Solar Generator (NEW in 0.2.0!)
 The horizontal version of the advanced generator.
 
 - **Generation**: 32 RPM base with dynamic stress capacity
 - **Dynamic Output**: Same sun-tracking behavior as the basic horizontal
 - **Weather**: Speed is halved during rain
 
-### Color Variants
-- **68 Blocks Total**: 4 generator types × 17 colors each
-- **17 Color Options**: Clear glass + 16 Minecraft dye colors
-- **Easy Customization**: 
-  - Right-click placed blocks with dye
-  - Craft any generator with dye
-  - Re-dye colored blocks to change color
-- **Conversion Recipes**: Convert between horizontal and vertical variants
+### Solar Windmill Bearing & Solar Sails
+For massive power generation, build a custom solar array!
+
+#### Solar Windmill Bearing
+Works like a standard Windmill Bearing but is optimized for Solar Sails.
+- **Connection**: Attaches to Solar Sails (and standard sails).
+- **Output**: Generates **Stress Units (SU)** based on sail count and weather.
+- **Requirement**: Needs sky access to benefit from solar multipliers.
+
+#### Solar Sails
+Specialized sails that harness sunlight for boosted power.
+- **Material**: Translucent, comes in all 16 colors + clear.
+- **Efficiency**: 
+  - **Sunny**: 2x power output (compared to white sails).
+  - **Raining**: 1.5x power output.
+  - **Night/Thunder/Covered**: 1x power output (same as white sails).
+
+| Sails | Speed (RPM) | Standard SU | Solar (Rain) SU | Solar (Sunny) SU |
+| :---: | :---: | :---: | :---: | :---: |
+| 8 | 1 | 512 | 768 | 1024 |
+| 16 | 2 | 1024 | 1536 | 2048 |
+| 32 | 4 | 2048 | 3072 | 4096 |
+| 64 | 8 | 4096 | 6144 | 8192 |
+| 128 | 16 | 8192 | 12288 | 16384 |
+
+
 
 ## Supported Platforms
 
