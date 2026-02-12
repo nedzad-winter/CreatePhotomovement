@@ -27,6 +27,7 @@ Current-Dev-Status.md
 _Create*
 _minecraft-assets-master
 tools/*
+.brain
 
 # Publish script (contains API tokens)
 tools/publish_mod.ps1

@@ -152,6 +152,37 @@ public class AllItems {
         public static final BlockItem BLACK_HORZ_ADV_SOLAR_GENERATOR = new BlockItem(
                         AllBlocks.BLACK_HORZ_ADV_SOLAR_GENERATOR, new Item.Properties());
 
+        // Solar Windmill Bearing & Sails
+        public static final BlockItem SOLAR_WINDMILL_BEARING = new BlockItem(AllBlocks.SOLAR_WINDMILL_BEARING,
+                        new Item.Properties());
+        public static final BlockItem SOLAR_SAIL = new BlockItem(AllBlocks.SOLAR_SAIL, new Item.Properties());
+
+        // Solar Sail Color Variants
+        public static final BlockItem ORANGE_SOLAR_SAIL = new BlockItem(AllBlocks.ORANGE_SOLAR_SAIL,
+                        new Item.Properties());
+        public static final BlockItem MAGENTA_SOLAR_SAIL = new BlockItem(AllBlocks.MAGENTA_SOLAR_SAIL,
+                        new Item.Properties());
+        public static final BlockItem LIGHT_BLUE_SOLAR_SAIL = new BlockItem(AllBlocks.LIGHT_BLUE_SOLAR_SAIL,
+                        new Item.Properties());
+        public static final BlockItem YELLOW_SOLAR_SAIL = new BlockItem(AllBlocks.YELLOW_SOLAR_SAIL,
+                        new Item.Properties());
+        public static final BlockItem LIME_SOLAR_SAIL = new BlockItem(AllBlocks.LIME_SOLAR_SAIL, new Item.Properties());
+        public static final BlockItem PINK_SOLAR_SAIL = new BlockItem(AllBlocks.PINK_SOLAR_SAIL, new Item.Properties());
+        public static final BlockItem GRAY_SOLAR_SAIL = new BlockItem(AllBlocks.GRAY_SOLAR_SAIL, new Item.Properties());
+        public static final BlockItem LIGHT_GRAY_SOLAR_SAIL = new BlockItem(AllBlocks.LIGHT_GRAY_SOLAR_SAIL,
+                        new Item.Properties());
+        public static final BlockItem CYAN_SOLAR_SAIL = new BlockItem(AllBlocks.CYAN_SOLAR_SAIL, new Item.Properties());
+        public static final BlockItem PURPLE_SOLAR_SAIL = new BlockItem(AllBlocks.PURPLE_SOLAR_SAIL,
+                        new Item.Properties());
+        public static final BlockItem BLUE_SOLAR_SAIL = new BlockItem(AllBlocks.BLUE_SOLAR_SAIL, new Item.Properties());
+        public static final BlockItem BROWN_SOLAR_SAIL = new BlockItem(AllBlocks.BROWN_SOLAR_SAIL,
+                        new Item.Properties());
+        public static final BlockItem GREEN_SOLAR_SAIL = new BlockItem(AllBlocks.GREEN_SOLAR_SAIL,
+                        new Item.Properties());
+        public static final BlockItem RED_SOLAR_SAIL = new BlockItem(AllBlocks.RED_SOLAR_SAIL, new Item.Properties());
+        public static final BlockItem BLACK_SOLAR_SAIL = new BlockItem(AllBlocks.BLACK_SOLAR_SAIL,
+                        new Item.Properties());
+
         public static void register() {
                 // Base items
                 registerItem("solar_generator", SOLAR_GENERATOR);
@@ -230,6 +261,27 @@ public class AllItems {
                 registerItem("green_horz_adv_solar_generator", GREEN_HORZ_ADV_SOLAR_GENERATOR);
                 registerItem("red_horz_adv_solar_generator", RED_HORZ_ADV_SOLAR_GENERATOR);
                 registerItem("black_horz_adv_solar_generator", BLACK_HORZ_ADV_SOLAR_GENERATOR);
+
+                // Solar Windmill Bearing & Sails
+                registerItem("solar_windmill_bearing", SOLAR_WINDMILL_BEARING);
+                registerItem("solar_sail", SOLAR_SAIL);
+
+                // Solar Sail Color Variants
+                registerItem("orange_solar_sail", ORANGE_SOLAR_SAIL);
+                registerItem("magenta_solar_sail", MAGENTA_SOLAR_SAIL);
+                registerItem("light_blue_solar_sail", LIGHT_BLUE_SOLAR_SAIL);
+                registerItem("yellow_solar_sail", YELLOW_SOLAR_SAIL);
+                registerItem("lime_solar_sail", LIME_SOLAR_SAIL);
+                registerItem("pink_solar_sail", PINK_SOLAR_SAIL);
+                registerItem("gray_solar_sail", GRAY_SOLAR_SAIL);
+                registerItem("light_gray_solar_sail", LIGHT_GRAY_SOLAR_SAIL);
+                registerItem("cyan_solar_sail", CYAN_SOLAR_SAIL);
+                registerItem("purple_solar_sail", PURPLE_SOLAR_SAIL);
+                registerItem("blue_solar_sail", BLUE_SOLAR_SAIL);
+                registerItem("brown_solar_sail", BROWN_SOLAR_SAIL);
+                registerItem("green_solar_sail", GREEN_SOLAR_SAIL);
+                registerItem("red_solar_sail", RED_SOLAR_SAIL);
+                registerItem("black_solar_sail", BLACK_SOLAR_SAIL);
         }
 
         private static void registerItem(String name, Item item) {

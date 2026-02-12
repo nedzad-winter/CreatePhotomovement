@@ -1,5 +1,24 @@
 # Changelog
 
+## [0.3.0] - 2026-02-09
+
+### Added
+- **Solar Windmill Bearing & Sails**: New windmill bearing and sail components for generating rotational power from wind
+- **16 color variants**: 16 colors for Solar Sails
+- **Conversion recipes**: Convert between vertical and horizontal advanced generators (preserving color)
+- **Dyeing recipes**: Dye any advanced generator to any of the 16 colors
+- **In-world dyeing**: Right-click with dye to change color without crafting
+
+### Changed
+- All generator types now use item tags for dyeing recipes (allows re-dyeing colored blocks)
+- Improved recipe organization with consistent naming conventions
+
+
+### Supported Platforms
+- NeoForge 1.21.1
+- (Neo)Forge 1.20.1
+
+
 ## [0.3.0] - 2026-02-01
 
 ### Fixed

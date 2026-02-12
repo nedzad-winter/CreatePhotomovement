@@ -4,6 +4,7 @@ import com.createphotomovement.content.kinetics.solargenerator.SolarGeneratorBlo
 import com.createphotomovement.content.kinetics.solargenerator.HorizontalSolarGeneratorBlockEntity;
 import com.createphotomovement.content.kinetics.solargenerator.AdvSolarGeneratorBlockEntity;
 import com.createphotomovement.content.kinetics.solargenerator.HorzAdvSolarGeneratorBlockEntity;
+import com.createphotomovement.content.kinetics.solarwindmill.SolarWindmillBearingBlockEntity;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraftforge.registries.DeferredRegister;
@@ -117,4 +118,15 @@ public class AllBlockEntityTypes {
                                                         AllBlocks.GREEN_HORZ_ADV_SOLAR_GENERATOR.get(),
                                                         AllBlocks.RED_HORZ_ADV_SOLAR_GENERATOR.get(),
                                                         AllBlocks.BLACK_HORZ_ADV_SOLAR_GENERATOR.get()).build(null));
+
+        @SuppressWarnings("DataFlowIssue")
+        public static final RegistryObject<BlockEntityType<SolarWindmillBearingBlockEntity>> SOLAR_WINDMILL_BEARING = BLOCK_ENTITY_TYPES
+                        .register("solar_windmill_bearing",
+                                        () -> BlockEntityType.Builder.of(
+                                                        (pos, state) -> new SolarWindmillBearingBlockEntity(
+                                                                        AllBlockEntityTypes.SOLAR_WINDMILL_BEARING
+                                                                                        .get(),
+                                                                        pos, state),
+                                                        AllBlocks.SOLAR_WINDMILL_BEARING.get())
+                                                        .build(null));
 }

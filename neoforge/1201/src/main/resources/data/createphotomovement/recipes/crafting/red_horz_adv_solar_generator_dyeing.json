@@ -1,16 +1,16 @@
 {
-    "type":  "minecraft:crafting_shapeless",
-    "ingredients":  [
-                        {
-                            "tag": "createphotomovement:horz_adv_solar_generators"
-                        },
-                        {
-                            "item":  "minecraft:red_dye"
-                        }
-                    ],
-    "result":  {
-                   "count":  1,
-                   "item":  "createphotomovement:red_horz_adv_solar_generator"
-               }
+    "type": "minecraft:crafting_shapeless",
+    "category": "misc",
+    "group": "horz_adv_solar_generators_dyeing",
+    "ingredients": [
+        {
+            "tag": "createphotomovement:horz_adv_solar_generators"
+        },
+        {
+            "item": "minecraft:red_dye"
+        }
+    ],
+    "result": {
+        "item": "createphotomovement:red_horz_adv_solar_generator"
+    }
 }
-

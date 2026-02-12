@@ -4,7 +4,10 @@ import com.createphotomovement.content.kinetics.solargenerator.SolarGeneratorBlo
 import com.createphotomovement.content.kinetics.solargenerator.HorizontalSolarGeneratorBlock;
 import com.createphotomovement.content.kinetics.solargenerator.AdvSolarGeneratorBlock;
 import com.createphotomovement.content.kinetics.solargenerator.HorzAdvSolarGeneratorBlock;
+import com.createphotomovement.content.kinetics.solarwindmill.SolarSailBlock;
+import com.createphotomovement.content.kinetics.solarwindmill.SolarWindmillBearingBlock;
 import net.minecraft.core.Registry;
+import net.minecraft.world.item.DyeColor;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
@@ -241,12 +244,119 @@ public class AllBlocks {
                         BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_BLACK).strength(2.0F)
                                         .sound(SoundType.METAL).noOcclusion());
 
+        // Solar Windmill Bearing
+        public static final SolarWindmillBearingBlock SOLAR_WINDMILL_BEARING = new SolarWindmillBearingBlock(
+                        BlockBehaviour.Properties.of()
+                                        .mapColor(MapColor.PODZOL)
+                                        .strength(3.0F, 6.0F)
+                                        .sound(SoundType.WOOD));
+
+        // Solar Sails
+        public static final SolarSailBlock SOLAR_SAIL = SolarSailBlock.withCanvas(
+                        BlockBehaviour.Properties.of()
+                                        .mapColor(MapColor.WOOL)
+                                        .strength(0.1F)
+                                        .sound(SoundType.SCAFFOLDING)
+                                        .noOcclusion(),
+                        DyeColor.WHITE);
+
+        public static final SolarSailBlock ORANGE_SOLAR_SAIL = SolarSailBlock.withCanvas(
+                        BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_ORANGE).strength(0.1F)
+                                        .sound(SoundType.SCAFFOLDING)
+                                        .noOcclusion(),
+                        DyeColor.ORANGE);
+
+        public static final SolarSailBlock MAGENTA_SOLAR_SAIL = SolarSailBlock.withCanvas(
+                        BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_MAGENTA).strength(0.1F)
+                                        .sound(SoundType.SCAFFOLDING)
+                                        .noOcclusion(),
+                        DyeColor.MAGENTA);
+
+        public static final SolarSailBlock LIGHT_BLUE_SOLAR_SAIL = SolarSailBlock.withCanvas(
+                        BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_LIGHT_BLUE).strength(0.1F)
+                                        .sound(SoundType.SCAFFOLDING).noOcclusion(),
+                        DyeColor.LIGHT_BLUE);
+
+        public static final SolarSailBlock YELLOW_SOLAR_SAIL = SolarSailBlock.withCanvas(
+                        BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_YELLOW).strength(0.1F)
+                                        .sound(SoundType.SCAFFOLDING)
+                                        .noOcclusion(),
+                        DyeColor.YELLOW);
+
+        public static final SolarSailBlock LIME_SOLAR_SAIL = SolarSailBlock.withCanvas(
+                        BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_LIGHT_GREEN).strength(0.1F)
+                                        .sound(SoundType.SCAFFOLDING).noOcclusion(),
+                        DyeColor.LIME);
+
+        public static final SolarSailBlock PINK_SOLAR_SAIL = SolarSailBlock.withCanvas(
+                        BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PINK).strength(0.1F)
+                                        .sound(SoundType.SCAFFOLDING)
+                                        .noOcclusion(),
+                        DyeColor.PINK);
+
+        public static final SolarSailBlock GRAY_SOLAR_SAIL = SolarSailBlock.withCanvas(
+                        BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_GRAY).strength(0.1F)
+                                        .sound(SoundType.SCAFFOLDING)
+                                        .noOcclusion(),
+                        DyeColor.GRAY);
+
+        public static final SolarSailBlock LIGHT_GRAY_SOLAR_SAIL = SolarSailBlock.withCanvas(
+                        BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_LIGHT_GRAY).strength(0.1F)
+                                        .sound(SoundType.SCAFFOLDING).noOcclusion(),
+                        DyeColor.LIGHT_GRAY);
+
+        public static final SolarSailBlock CYAN_SOLAR_SAIL = SolarSailBlock.withCanvas(
+                        BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_CYAN).strength(0.1F)
+                                        .sound(SoundType.SCAFFOLDING)
+                                        .noOcclusion(),
+                        DyeColor.CYAN);
+
+        public static final SolarSailBlock PURPLE_SOLAR_SAIL = SolarSailBlock.withCanvas(
+                        BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_PURPLE).strength(0.1F)
+                                        .sound(SoundType.SCAFFOLDING)
+                                        .noOcclusion(),
+                        DyeColor.PURPLE);
+
+        public static final SolarSailBlock BLUE_SOLAR_SAIL = SolarSailBlock.withCanvas(
+                        BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_BLUE).strength(0.1F)
+                                        .sound(SoundType.SCAFFOLDING)
+                                        .noOcclusion(),
+                        DyeColor.BLUE);
+
+        public static final SolarSailBlock BROWN_SOLAR_SAIL = SolarSailBlock.withCanvas(
+                        BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_BROWN).strength(0.1F)
+                                        .sound(SoundType.SCAFFOLDING)
+                                        .noOcclusion(),
+                        DyeColor.BROWN);
+
+        public static final SolarSailBlock GREEN_SOLAR_SAIL = SolarSailBlock.withCanvas(
+                        BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_GREEN).strength(0.1F)
+                                        .sound(SoundType.SCAFFOLDING)
+                                        .noOcclusion(),
+                        DyeColor.GREEN);
+
+        public static final SolarSailBlock RED_SOLAR_SAIL = SolarSailBlock.withCanvas(
+                        BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_RED).strength(0.1F)
+                                        .sound(SoundType.SCAFFOLDING)
+                                        .noOcclusion(),
+                        DyeColor.RED);
+
+        public static final SolarSailBlock BLACK_SOLAR_SAIL = SolarSailBlock.withCanvas(
+                        BlockBehaviour.Properties.of().mapColor(MapColor.COLOR_BLACK).strength(0.1F)
+                                        .sound(SoundType.SCAFFOLDING)
+                                        .noOcclusion(),
+                        DyeColor.BLACK);
+
         public static void register() {
                 // Base blocks
                 registerBlock("solar_generator", SOLAR_GENERATOR);
                 registerBlock("horizontal_solar_generator", HORIZONTAL_SOLAR_GENERATOR);
                 registerBlock("adv_solar_generator", ADV_SOLAR_GENERATOR);
                 registerBlock("horz_adv_solar_generator", HORZ_ADV_SOLAR_GENERATOR);
+
+                // Solar Windmill Bearing & Sails
+                registerBlock("solar_windmill_bearing", SOLAR_WINDMILL_BEARING);
+                registerBlock("solar_sail", SOLAR_SAIL);
 
                 // Horizontal Solar Generator Color Variants
                 registerBlock("white_horizontal_solar_generator", WHITE_HORIZONTAL_SOLAR_GENERATOR);
@@ -319,6 +429,23 @@ public class AllBlocks {
                 registerBlock("green_horz_adv_solar_generator", GREEN_HORZ_ADV_SOLAR_GENERATOR);
                 registerBlock("red_horz_adv_solar_generator", RED_HORZ_ADV_SOLAR_GENERATOR);
                 registerBlock("black_horz_adv_solar_generator", BLACK_HORZ_ADV_SOLAR_GENERATOR);
+
+                // Solar Sail Color Variants
+                registerBlock("orange_solar_sail", ORANGE_SOLAR_SAIL);
+                registerBlock("magenta_solar_sail", MAGENTA_SOLAR_SAIL);
+                registerBlock("light_blue_solar_sail", LIGHT_BLUE_SOLAR_SAIL);
+                registerBlock("yellow_solar_sail", YELLOW_SOLAR_SAIL);
+                registerBlock("lime_solar_sail", LIME_SOLAR_SAIL);
+                registerBlock("pink_solar_sail", PINK_SOLAR_SAIL);
+                registerBlock("gray_solar_sail", GRAY_SOLAR_SAIL);
+                registerBlock("light_gray_solar_sail", LIGHT_GRAY_SOLAR_SAIL);
+                registerBlock("cyan_solar_sail", CYAN_SOLAR_SAIL);
+                registerBlock("purple_solar_sail", PURPLE_SOLAR_SAIL);
+                registerBlock("blue_solar_sail", BLUE_SOLAR_SAIL);
+                registerBlock("brown_solar_sail", BROWN_SOLAR_SAIL);
+                registerBlock("green_solar_sail", GREEN_SOLAR_SAIL);
+                registerBlock("red_solar_sail", RED_SOLAR_SAIL);
+                registerBlock("black_solar_sail", BLACK_SOLAR_SAIL);
         }
 
         private static void registerBlock(String name, Block block) {

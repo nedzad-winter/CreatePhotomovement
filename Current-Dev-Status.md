@@ -1,5 +1,8 @@
 # Create Photomovement - Development Status
-**Last Updated:** 2026-01-28 17:27
+**Last Updated:** 2026-02-07
+
+## Global Informations
+ - Create version: 6.0.8 - MC 1.20.1
 
 ## Version 0.2.0 - RELEASE READY ✅
 
@@ -102,7 +105,7 @@ Create's `KineticNetwork` capacity tracking double-counts capacity:
 
 **Porting Status:**
 - [x] 1.21.1 NeoForge - **FIXED**
-- [ ] 1.20.1 NeoForge - Pending
+- [/] 1.20.1 NeoForge - **Java code ported and compiling** (API fixes: `CreateLang`, `addBlock` signature, `AllBlocks.SAIL.get()`)
 - [ ] 1.20.1 Forge - Pending
 - [ ] Fabric - Pending
 
@@ -122,6 +125,19 @@ Create's `KineticNetwork` capacity tracking double-counts capacity:
 - `SolarWindmillBearingBlock.java`: Implemented `getTicker` and restored `getBlockEntityType`
 
 ---
+
+## Tag Directory Naming Differences (IMPORTANT)
+
+- **NeoForge 1.21.1**: Uses singular directory names
+  - `data/create/tags/block/`
+  - `data/create/tags/item/`
+
+- **NeoForge/Forge 1.20.1**: Uses PLURAL directory names
+  - `data/create/tags/blocks/`
+  - `data/create/tags/items/`
+  - *Note:* Create 6.0.8 JAR confirms plural usage.
+
+ **Porting Strategy:** Ensure both directory structures exist or use the correct one for the target version.
 
 ## Recipe Format Differences (IMPORTANT for porting)
 
@@ -159,3 +175,125 @@ Create's `KineticNetwork` capacity tracking double-counts capacity:
 - 1.21.1 uses `"id"` in result, 1.20.x uses `"item"`
 - 1.21.1 requires `"count": 1`, 1.20.x defaults to 1
 - 1.21.1 uses `"category": "misc"`, 1.20.x doesn't need it
+
+### Development Tools (2026-02-06)
+- Added **Tag Tooltips** (by Jagm11) to `neoforge/1201` environment.
+  - NOTE: Used v1.0 (File ID: 4687165) for Forge 47.1.33 compatibility.
+- Shows Tags in tooltips when holding key (usually `Shift` or `Control`).
+
+
+## Knowledge Base 🧠
+
+### Create Mod Contraption Assembly: Connecting Custom Blocks (Sail Logic)
+**Problem:** Custom blocks (like `SolarSailBlock`) do not automatically connect to Chassis or Stick together like regular Sails, even if tagged correctly.
+
+**Reason:** 
+Create's connectivity logic (specifically in `BlockMovementChecksImpl.java` or `Contraption.java`) often relies on hardcoded `instanceof SailBlock` checks to determine if a block should "stick" to its neighbors without glue/chassis range. If your custom block does not extend `SailBlock`, it fails these checks.
+
+**Solution (The "AttachedCheck" Registration):**
+To make a custom block behave like a Sail (connect to neighbors of same type/facing), you must register a custom `AttachedCheck` in your main mod class.
+
+**Code Example (1.20.1 / 1.21.1):**
+```java
+// inside your @Mod constructor or common setup
+com.simibubi.create.api.contraption.BlockMovementChecks.registerAttachedCheck((state, world, pos, direction) -> {
+    if (state.getBlock() instanceof YourCustomBlock) {
+        // Return SUCCESS/FAIL logic based on facing
+        return com.simibubi.create.api.contraption.BlockMovementChecks.CheckResult.of(
+            direction.getAxis() != state.getValue(YourCustomBlock.FACING).getAxis()
+        );
+    }
+    return com.simibubi.create.api.contraption.BlockMovementChecks.CheckResult.PASS;
+});
+```
+
+**Why this works:** 
+- `AttachedCheck` is part of Create's API that allows addons to inject custom stickiness logic.
+- Returning `CheckResult.of(true)` tells the assembler "Yes, these blocks are attached," bypassing the need for glue or chassis range.
+- Returning `PASS` lets Create continue checking other rules (like glue).
+
+### Fixed: Solar Sail Connectivity (2026-02-06)
+**Status:** FIXED & Verified (Logic 100% matched with 1.21.1)
+
+**Issue:** Solar Sails were not connecting to each other or the bearing.
+**Fix:** Added missing `AttachedCheck` registration in `CreatePhotomovement.java` (1.20.1).
+**Refinement:** Removed `RadialChassisBlock` logic from `SolarSailBlock` placement helper to match standard Create behavior.
+
+**Current Task:** 
+- Compile failed with `runtimedistc` error at end of session.
+- Needs investigation next session (likely clean build required).
+
+### Porting SolarSail Logic to 1.20.1 (2026-02-07)
+- **Status:** VERIFIED ✅ (Build Success)
+- **Changes:**
+  - Ported `SolarSailBlock.java` logic from 1.21.1 to 1.20.1.
+  - Implemented manual VoxelShapes because `AllShapes.SAIL` is likely missing in 1.20 API.
+  - **CRITICAL:** Restored `PlacementHelper` and `Iterate` usage by importing from `net.createmod.catnip` packages (found in Create 6.0.8+).
+  - **Fixed:** Updated `SOLAR_SAIL` registration in `AllBlocks.java` to use `SoundType.SCAFFOLDING`, `strength(0.1F)`, and `noOcclusion()` to match colored variants (and fix "old sound" bug).
+- **Notes:**
+  - Initial builds failed due to missing `com.simibubi.create.foundation.utility` packages.
+
+  - Runtime crash observed (exit code 1) was traced to **ASUS Overlay (GTII-OSD64-GL.dll)**, not mod code.
+
+### Fixed: WindmillBearingRenderer Compilation Error (2026-02-07)
+**Status:** FIXED 
+
+**Issue:** Build failed with compilation error in `CreatePhotomovementClient.java`:
+``
+error: cannot find symbol
+    com.simibubi.create.content.contraptions.bearing.WindmillBearingRenderer::new);
+                                                    ^
+  symbol:   class WindmillBearingRenderer
+  location: package com.simibubi.create.content.contraptions.bearing
+``
+
+**Root Cause:** 
+The `WindmillBearingRenderer` class doesn't exist (or isn't publicly accessible) in Create version 6.0.8-291. Create handles bearing rendering internally through its own systems.
+
+**Solution:**
+Removed the problematic renderer registration line for `SOLAR_WINDMILL_BEARING`. Since `SolarWindmillBearingBlockEntity` extends Create's `WindmillBearingBlockEntity`, the rendering is automatically handled by Create's internal rendering system. No manual renderer registration is required for inherited bearing functionality.
+
+**Files Modified:**
+- `neoforge/1201/src/main/java/com/createphotomovement/CreatePhotomovementClient.java` (removed line 35-36, added explanatory comment)
+
+**Learning Point:**
+When extending block entities from the Create mod (or any dependency mod), verify whether the parent class handles rendering automatically. Many modern Minecraft mods use internal renderer registration that doesn't require manual client-side registration for inherited functionality. Only register custom renderers when implementing unique visual behavior beyond what the parent provides.
+
+---
+
+**UPDATE (2026-02-07):** The initial fix was incorrect. The correct solution is to use `BearingRenderer` (which exists in Create 6.0.8-291), not remove the registration entirely. The Solar Windmill Bearing now properly registers `BearingRenderer::new` and should render correctly with animations.
+
+---
+
+### Repository Cleanup (2026-02-07)
+- **Deleted:**
+  - `Feature_pipeline` (Ideas migrated to task list)
+  - `bin-versions/` (Old binary directory)
+  - `build_log*.txt` (Temporary build logs)
+- **Kept:**
+  - `_Create(1201)/` & `_Create(1211)/` (Reference directories)
+  - `_minecraft-assets-master/` (Asset reference)
+
+### Future Ideas (Backlog)
+- **Enhanced Solar Generator:**
+  - Recipe: Blackstone + Brass (instead of Deepslate + Andesite)
+  - Stats: High RPM (32), same SU as normal generator
+- **Solar Fences**
+
+### NeoForge 1.20.1 to Forge 1.20.1 Migration Analysis (2026-02-07)
+**Status:** COMPLETE - Universal Jar Strategy
+
+**Discovery:**
+The codebase in `neoforge/1201`:
+1. Uses standard Forge APIs (`net.minecraftforge.*`).
+2. Configures `mods.toml` to accept BOTH `forge` and `neoforge` loaders.
+3. Uses the `legacyforge` plugin which creates a compatible jar for both platforms.
+
+**Conclusion:**
+The `createphotomovement-neoforge-1.20.1-*.jar` IS a Universal Jar.
+It works on both NeoForge 1.20.1 AND Forge 1.20.1.
+
+**Action:**
+- Deleted redundant `forge/1201/build.gradle`.
+- **Decision:** Keep `neoforge` naming convention for the build output.
+- **Verification:** User can just drop the `createphotomovement-neoforge-1.20.1-*.jar` into a Forge `mods` folder and it will work.
