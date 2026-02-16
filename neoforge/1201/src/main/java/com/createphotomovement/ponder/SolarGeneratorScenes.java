@@ -22,83 +22,47 @@ public class SolarGeneratorScenes {
                 builder.configureBasePlate(0, 0, 5);
                 builder.showBasePlate();
 
-                // Generator in center with shafts on all 4 sides
-                BlockPos generatorPos = util.grid().at(2, 1, 2);
-                Selection generator = util.select().position(generatorPos);
+                // Define coordinates for the generators
+                // Assuming schematic has them at (1, 1, 2) and (3, 1, 2) based on typical
+                // spacing
+                BlockPos standardGenPos = util.grid().at(3, 1, 2);
+                BlockPos advancedGenPos = util.grid().at(1, 1, 2);
 
-                // Shafts on all 4 sides
-                BlockPos shaftNorth = util.grid().at(2, 1, 1);
-                BlockPos shaftSouth = util.grid().at(2, 1, 3);
-                BlockPos shaftEast = util.grid().at(3, 1, 2);
-                BlockPos shaftWest = util.grid().at(1, 1, 2);
-                Selection allShafts = util.select().position(shaftNorth)
-                                .add(util.select().position(shaftSouth))
-                                .add(util.select().position(shaftEast))
-                                .add(util.select().position(shaftWest));
+                Selection standardGen = util.select().position(standardGenPos);
+                Selection advancedGen = util.select().position(advancedGenPos);
+
+                // Select the entire scene to ensure everything is shown
+                Selection wholeScene = util.select().fromTo(0, 0, 0, 5, 5, 5);
 
                 builder.idle(10);
 
                 // === KEYFRAME 1: Introduction ===
                 builder.addKeyframe();
 
-                // Show generator
-                builder.world().showSection(generator, Direction.DOWN);
+                // Show everything
+                builder.world().showSection(wholeScene, Direction.DOWN);
                 builder.idle(20);
 
+                // Explain Standard Generator
                 builder.overlay().showText(60)
-                                .text("The Solar Generator creates rotational force from sunlight")
-                                .pointAt(util.vector().blockSurface(generatorPos, Direction.UP))
+                                .text("The Standard Solar Generator produces 16 RPM resulting in 256 Stress Units per second")
+                                .pointAt(util.vector().blockSurface(standardGenPos, Direction.UP))
                                 .placeNearTarget();
                 builder.idle(70);
 
-                // Show all shafts
-                builder.world().showSection(allShafts, Direction.DOWN);
-                builder.idle(10);
-
-                builder.overlay().showText(50)
-                                .text("Connect shafts to transfer the rotation")
-                                .pointAt(util.vector().centerOf(generatorPos))
-                                .placeNearTarget();
-                builder.idle(60);
-
-                // === KEYFRAME 2: Power Output ===
-                builder.addKeyframe();
-
+                // Explain Advanced Generator
                 builder.overlay().showText(60)
-                                .text("The generator must have direct access to the sky")
-                                .pointAt(util.vector().blockSurface(generatorPos, Direction.UP))
+                                .text("The Advanced Solar Generator produces 32 RPM resulting in 512 Stress Units per second")
+                                .pointAt(util.vector().blockSurface(advancedGenPos, Direction.UP))
                                 .placeNearTarget();
                 builder.idle(70);
 
-                builder.overlay().showText(50)
-                                .text("It generates 16 RPM with 16 SU capacity")
-                                .pointAt(util.vector().centerOf(generatorPos))
-                                .placeNearTarget();
-                builder.idle(60);
-
-                // === KEYFRAME 3: Wrench Rotation ===
-                builder.addKeyframe();
-
                 builder.overlay().showText(60)
-                                .text("Use a Wrench to rotate the block orientation")
-                                .pointAt(util.vector().centerOf(generatorPos))
+                                .text("Both require direct access to the sky")
+                                .pointAt(util.vector().topOf(2, 3, 2))
                                 .placeNearTarget();
                 builder.idle(70);
 
-                // === KEYFRAME 4: Reverse Direction ===
-                builder.addKeyframe();
-
-                builder.overlay().showText(60)
-                                .text("Sneak + Wrench to reverse the rotation direction")
-                                .pointAt(util.vector().centerOf(generatorPos))
-                                .placeNearTarget();
-                builder.idle(70);
-
-                builder.overlay().showText(50)
-                                .text("The rotation now spins in the opposite direction!")
-                                .pointAt(util.vector().centerOf(generatorPos))
-                                .placeNearTarget();
-                builder.idle(60);
         }
 
         /**
@@ -165,7 +129,7 @@ public class SolarGeneratorScenes {
                 builder.idle(70);
 
                 // Point to left generator with solid block
-                BlockPos leftGen = util.grid().at(1, 1, 2);
+                BlockPos leftGen = util.grid().at(5, 1, 2);
                 builder.overlay().showText(60)
                                 .text("Solid blocks completely obstruct sky access - No power!")
                                 .pointAt(util.vector().blockSurface(leftGen, Direction.UP))
@@ -183,7 +147,7 @@ public class SolarGeneratorScenes {
                 builder.idle(70);
 
                 // Point to right generator with snow
-                BlockPos rightGen = util.grid().at(5, 1, 2);
+                BlockPos rightGen = util.grid().at(1, 1, 2);
                 builder.overlay().showText(60)
                                 .text("Snow layers and carpets also block the generator")
                                 .pointAt(util.vector().blockSurface(rightGen, Direction.UP))
@@ -253,4 +217,5 @@ public class SolarGeneratorScenes {
                                 .placeNearTarget();
                 builder.idle(60);
         }
+
 }

@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.3.1] - 2026-02-16
+
+### Added
+- **Ponder**:
+    - Created new Ponder scenes for Horizontal Solar Generator
+    - Created new Ponder scenes for Solar Generator
+    - Created new Ponder scenes for Solar Sails
+
+### Fixed
+- **Ponder**:
+    - Fixed Ponder scene block pointing for obstructions
+
+### General
+- Mod version bumped to 0.3.1
+
 ## [0.3.0] - 2026-02-09
 
 ### Added
