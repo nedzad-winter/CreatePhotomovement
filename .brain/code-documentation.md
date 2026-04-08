@@ -1,92 +1,173 @@
-# Create Photomovement - Complete Code Documentation (NeoForge 1.21.1)
+# Create Photomovement — Code Documentation
 
-**Last Updated:** 2026-02-12
-**Primary Version:** NeoForge 1.21.1
-**Source:** `neoforge/1211/src/main/java/com/createphotomovement/`
+**Last Updated:** 2026-04-08  
+**Versions Covered:** NeoForge 1.21.1, NeoForge 1.20.1, Fabric 1.20.1  
+**Language:** Java
 
-This document covers every Java source file in the mod with per-class, per-method detail.
+This document covers every Java source file in the mod with per-class, per-method detail. All explanations are written to be understood even without prior Minecraft modding experience.
 
 ---
 
 ## Table of Contents
 
-1. [Entry Points](#1-entry-points)
-2. [Registry Classes](#2-registry-classes)
-3. [Configuration System](#3-configuration-system)
-4. [Solar Generator System](#4-solar-generator-system)
-5. [Solar Windmill System](#5-solar-windmill-system)
-6. [Ponder System](#6-ponder-system)
-7. [Version Differences and Porting](#7-version-differences-and-porting)
-8. [Design Decisions](#8-design-decisions)
+1. [Project Overview](#1-project-overview)
+2. [Project Structure](#2-project-structure)
+3. [Entry Points](#3-entry-points)
+4. [Registry Classes](#4-registry-classes)
+5. [Solar Generator System](#5-solar-generator-system)
+6. [Solar Windmill System](#6-solar-windmill-system)
+7. [Configuration System](#7-configuration-system)
+8. [Rendering System](#8-rendering-system)
+9. [Ponder System (In-Game Tutorials)](#9-ponder-system)
+10. [Key Concepts and Learning Guide](#10-key-concepts-and-learning-guide)
+11. [Version Differences and Porting](#11-version-differences-and-porting)
+12. [Troubleshooting](#12-troubleshooting)
 
 ---
 
-## 1. Entry Points
+## 1. Project Overview
 
-### 1.1 CreatePhotomovement.java (38 lines)
+Create Photomovement adds solar-powered kinetic devices to the Create mod:
 
-**File:** Main mod entry point, server-side initialization.
-**Annotation:** `@Mod(CreatePhotomovement.MOD_ID)`
-**Class:** `CreatePhotomovement`
+- **Solar Generators** — vertical blocks that generate 16 RPM / 16 SU from sunlight
+- **Horizontal Solar Generators** — directional variants with time-of-day based capacity scaling
+- **Advanced Solar Generators** — 2x power variants (32 RPM / 32 SU)
+- **Solar Windmill Bearing** — custom bearing that gives Solar Sails a bonus multiplier
+- **Solar Sails** — windmill sail blocks that double stress capacity under full sun
 
-**Fields:**
-- `MOD_ID = "createphotomovement"` -- unique identifier used everywhere.
-
-**Constructor:** `CreatePhotomovement(IEventBus modEventBus, ModContainer modContainer)`
-NeoForge 1.21.1 injects both `IEventBus` and `ModContainer` directly into the constructor. This is different from 1.20.1 which uses `FMLJavaModLoadingContext.get().getModEventBus()`.
-
-What it does, in order:
-1. `AllBlocks.BLOCKS.register(modEventBus)` -- queues all block registrations.
-2. `AllItems.ITEMS.register(modEventBus)` -- queues all item registrations.
-3. `AllCreativeTabs.CREATIVE_MODE_TABS.register(modEventBus)` -- queues creative tab.
-4. `AllBlockEntityTypes.BLOCK_ENTITY_TYPES.register(modEventBus)` -- queues block entity types.
-5. `AllContraptionTypes.register(modEventBus)` -- queues contraption types.
-6. `PMConfigs.register(ModLoadingContext.get(), modContainer)` -- loads config files.
-7. **Registers AttachedCheck for SolarSailBlock.** This is the most important line. Without it, Create will NOT pick up Solar Sails during contraption assembly. The lambda checks: if the block is a `SolarSailBlock`, it returns `CheckResult.of(true)` when the movement direction axis differs from the sail's FACING axis. Otherwise returns `PASS` (let Create handle it).
-
-**Why the AttachedCheck matters:**
-Create's contraption assembly walks outward from the bearing. For each neighboring block, it asks "is this block attached?" Standard Create only does `instanceof SailBlock` checks. Our `SolarSailBlock` extends `WrenchableDirectionalBlock`, not `SailBlock`, so Create ignores it entirely. The AttachedCheck is the API hook that fixes this.
+All blocks have 17 color variants (1 base + 16 dye colors). Total: 86 registered blocks.
 
 ---
 
-### 1.2 CreatePhotomovementClient.java (35 lines)
+## 2. Project Structure
 
-**File:** Client-side initialization for renderers and Ponder.
-**Annotation:** `@EventBusSubscriber(modid = MOD_ID, bus = Bus.MOD, value = Dist.CLIENT)`
-**Class:** `CreatePhotomovementClient`
+### Multi-Loader Layout
 
-This class is never loaded on a dedicated server. `Dist.CLIENT` ensures it only runs on clients.
+```
+neoforge/1211/    NeoForge MC 1.21.1  (primary, most up-to-date)
+neoforge/1201/    NeoForge MC 1.20.1
+fabric/1201/      Fabric MC 1.20.1
+```
+
+All three share the same feature set. The source code is nearly identical — differences are at the mod entry point and NBT read/write signatures only (see [§11](#11-version-differences-and-porting)).
+
+### Source Layout (same for all versions)
+
+```
+src/main/java/com/createphotomovement/
+├── CreatePhotomovement.java           # Main mod entry point (server-side)
+├── CreatePhotomovementClient.java     # Client-side registration
+├── AllBlocks.java                     # All block registrations
+├── AllItems.java                      # All item registrations
+├── AllBlockEntityTypes.java           # Block entity type registrations
+├── AllCreativeTabs.java               # Creative mode tab setup
+├── AllContraptionTypes.java           # Contraption type registrations
+├── content/
+│   └── kinetics/
+│       ├── solargenerator/
+│       │   ├── SolarGeneratorBlock.java
+│       │   ├── SolarGeneratorBlockEntity.java
+│       │   ├── HorizontalSolarGeneratorBlock.java
+│       │   ├── HorizontalSolarGeneratorBlockEntity.java
+│       │   ├── AdvSolarGeneratorBlock.java
+│       │   ├── AdvSolarGeneratorBlockEntity.java
+│       │   ├── HorzAdvSolarGeneratorBlock.java
+│       │   ├── HorzAdvSolarGeneratorBlockEntity.java
+│       │   ├── SolarGeneratorRenderer.java
+│       │   └── HorizontalSolarGeneratorRenderer.java
+│       └── solarwindmill/
+│           ├── SolarWindmillBearingBlock.java
+│           ├── SolarWindmillBearingBlockEntity.java
+│           ├── SolarSailBlock.java
+│           └── SolarBearingContraption.java
+├── infrastructure/
+│   └── config/
+│       ├── PMConfigs.java
+│       └── PMServer.java
+└── ponder/
+    ├── PhotomovementPonderPlugin.java
+    ├── SolarGeneratorScenes.java
+    ├── HorizontalSolarGeneratorScenes.java
+    └── SolarSailScenes.java
+```
+
+---
+
+## 3. Entry Points
+
+### 3.1 CreatePhotomovement.java
+
+**Purpose:** Main mod class. Loaded once at startup. Connects all parts of the mod to Minecraft.
+
+**NeoForge 1.21.1:**
+```java
+@Mod(CreatePhotomovement.MOD_ID)
+public class CreatePhotomovement {
+    public static final String MOD_ID = "createphotomovement";
+
+    public CreatePhotomovement(IEventBus modEventBus, ModContainer modContainer) {
+        AllBlocks.BLOCKS.register(modEventBus);
+        AllItems.ITEMS.register(modEventBus);
+        AllCreativeTabs.CREATIVE_MODE_TABS.register(modEventBus);
+        AllBlockEntityTypes.BLOCK_ENTITY_TYPES.register(modEventBus);
+        AllContraptionTypes.register(modEventBus);
+        PMConfigs.register(ModLoadingContext.get(), modContainer);
+        // ... AttachedCheck for Solar Sails
+    }
+}
+```
+
+What the constructor does, in order:
+1. Queues all block registrations.
+2. Queues all item registrations.
+3. Queues creative tab.
+4. Queues block entity types.
+5. Queues contraption types.
+6. Loads config files.
+7. **Registers `AttachedCheck` for `SolarSailBlock`.** This is the most important line. Without it, Create will NOT pick up Solar Sails during contraption assembly.
+
+**Why the AttachedCheck matters:**  
+Create's contraption assembly walks outward from the bearing and asks each neighboring block "are you attached?" Standard Create only recognizes `SailBlock` subclasses. `SolarSailBlock` extends `WrenchableDirectionalBlock`, not `SailBlock`, so Create ignores it entirely. The `AttachedCheck` lambda fixes this by returning `CheckResult.of(true)` when the movement direction axis differs from the sail's FACING axis — the same logic as a normal sail.
+
+---
+
+### 3.2 CreatePhotomovementClient.java
+
+**Purpose:** Client-side initialization. Only loaded on the client, never on dedicated servers. Handles renderers and Ponder tutorials.
+
+**Key annotation:** `@EventBusSubscriber(modid = MOD_ID, bus = Bus.MOD, value = Dist.CLIENT)`
 
 **Methods:**
 
 `onClientSetup(FMLClientSetupEvent event)`:
-- Annotated with `@SubscribeEvent`.
-- Calls `PonderIndex.addPlugin(new PhotomovementPonderPlugin())` to register in-game tutorials.
+- Annotated `@SubscribeEvent`.
+- Registers the Ponder plugin: `PonderIndex.addPlugin(new PhotomovementPonderPlugin())`.
 
 `registerRenderers(EntityRenderersEvent.RegisterRenderers event)`:
-- Annotated with `@SubscribeEvent`.
+- Annotated `@SubscribeEvent`.
 - Registers 5 block entity renderers:
-  - `SOLAR_GENERATOR` -> `SolarGeneratorRenderer` (renders kinetic shaft on AXIS).
-  - `HORIZONTAL_SOLAR_GENERATOR` -> `HorizontalSolarGeneratorRenderer` (renders half shaft on back side).
-  - `ADV_SOLAR_GENERATOR` -> `SolarGeneratorRenderer` (reuses same renderer, advanced is visually identical shaft-wise).
-  - `HORZ_ADV_SOLAR_GENERATOR` -> `HorizontalSolarGeneratorRenderer` (same reuse).
-  - `SOLAR_WINDMILL_BEARING` -> `BearingRenderer` (uses Create's built-in bearing renderer, no custom rendering needed).
+  - `SOLAR_GENERATOR` → `SolarGeneratorRenderer`
+  - `HORIZONTAL_SOLAR_GENERATOR` → `HorizontalSolarGeneratorRenderer`
+  - `ADV_SOLAR_GENERATOR` → `SolarGeneratorRenderer` (reused — visually identical)
+  - `HORZ_ADV_SOLAR_GENERATOR` → `HorizontalSolarGeneratorRenderer` (reused)
+  - `SOLAR_WINDMILL_BEARING` → `BearingRenderer` (Create's built-in, no custom rendering needed)
+
+**What client/server separation means:**  
+The client handles visuals and sounds. The server handles game logic and world state. This split ensures the mod works in multiplayer — one server, many clients.
 
 ---
 
-## 2. Registry Classes
+## 4. Registry Classes
 
-### 2.1 AllBlocks.java (750 lines)
+### 4.1 AllBlocks.java
 
-**File:** Registers every block in the mod.
-**Class:** `AllBlocks`
+**Purpose:** Registers all 86 blocks.
 
-**Registry:** `DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MOD_ID)`
-
-This file is large because each of the 4 generator types has 17 variants (1 base + 16 colors) = 68 generator blocks, plus 17 solar sails + 1 solar windmill bearing = 86 total blocks.
-
-**Registration pattern (repeated 86 times):**
+**NeoForge pattern** (DeferredRegister):
 ```java
+public static final DeferredRegister.Blocks BLOCKS =
+    DeferredRegister.createBlocks(MOD_ID);
+
 public static final DeferredBlock<SolarGeneratorBlock> SOLAR_GENERATOR =
     BLOCKS.register("solar_generator",
         () -> new SolarGeneratorBlock(BlockBehaviour.Properties.of()
@@ -96,17 +177,34 @@ public static final DeferredBlock<SolarGeneratorBlock> SOLAR_GENERATOR =
             .noOcclusion()));
 ```
 
-**Key properties:**
+`DeferredRegister` is a "waiting list". Blocks are added to it during class load, but are only actually registered into the game when `BLOCKS.register(modEventBus)` is called in the mod constructor. This prevents timing issues.
+
+**Fabric pattern** (direct registration):
+```java
+public static final SolarGeneratorBlock SOLAR_GENERATOR =
+    new SolarGeneratorBlock(BlockBehaviour.Properties.of()
+        .mapColor(MapColor.WOOD).strength(1.5F).sound(SoundType.WOOD).noOcclusion());
+
+public static void register() {
+    Registry.register(BuiltInRegistries.BLOCK,
+        ResourceLocation.fromNamespaceAndPath(MOD_ID, "solar_generator"),
+        SOLAR_GENERATOR);
+}
+```
+
+Fabric does not have `DeferredRegister`. Blocks are instantiated as static fields, then registered via explicit `Registry.register()` calls in a `register()` method.
+
+**Block properties:**
 - Generators: `strength(1.5F)`, `SoundType.WOOD`, `noOcclusion()` (lets light through).
-- Solar Sails: `strength(0.8F)`, `SoundType.WOOL`, `noOcclusion()`. Uses `SolarSailBlock.withCanvas(props, DyeColor)` factory.
+- Advanced Generators: `strength(2.0F)`, `SoundType.METAL`, `MapColor.GOLD`.
+- Solar Sails: `strength(0.8F)`, `SoundType.WOOL`. Uses `SolarSailBlock.withCanvas(props, DyeColor)` factory.
 - Solar Windmill Bearing: `strength(3.5F)`, `SoundType.WOOD`.
-- Colored variants use the appropriate `MapColor` for their dye color (for map display).
 
 **Block count summary:**
 
 | Type | Count |
 |---|---|
-| SolarGeneratorBlock | 17 (1 base + 16 colored) |
+| SolarGeneratorBlock | 17 (1 base + 16 colors) |
 | HorizontalSolarGeneratorBlock | 17 |
 | AdvSolarGeneratorBlock | 17 |
 | HorzAdvSolarGeneratorBlock | 17 |
@@ -116,738 +214,1459 @@ public static final DeferredBlock<SolarGeneratorBlock> SOLAR_GENERATOR =
 
 ---
 
-### 2.2 AllItems.java (358 lines)
+### 4.2 AllItems.java
 
-**File:** Registers the item form of every block.
-**Class:** `AllItems`
+**Purpose:** Registers the item form of every block (so players can hold and place them).
 
-**Registry:** `DeferredRegister.Items ITEMS = DeferredRegister.createItems(MOD_ID)`
-
-**Pattern:**
+**NeoForge pattern:**
 ```java
 public static final DeferredItem<BlockItem> SOLAR_GENERATOR =
     ITEMS.registerSimpleBlockItem("solar_generator", AllBlocks.SOLAR_GENERATOR);
 ```
 
-Every block gets a corresponding `BlockItem` via `registerSimpleBlockItem`. The item name must match the block name exactly. There are 86 items total, one for each block.
+`registerSimpleBlockItem()` automatically creates a `BlockItem` (the inventory item) for a given block. The item name must match the block name exactly.
+
+**Why separate blocks and items?**  
+Blocks exist in the world. Items exist in inventories. They're separate objects in Minecraft's design, even though they're connected. Every block that players can pick up and place needs both.
 
 ---
 
-### 2.3 AllBlockEntityTypes.java (124 lines)
+### 4.3 AllBlockEntityTypes.java
 
-**File:** Registers the 5 block entity types.
-**Class:** `AllBlockEntityTypes`
+**Purpose:** Registers the 5 block entity types. Block Entities are "brains" for blocks that need custom data or tick logic.
 
-**Registry:** `DeferredRegister<BlockEntityType<?>> BLOCK_ENTITY_TYPES`
+**What is a Block Entity?**  
+Normal blocks are stateless — they just exist. Block Entities can store data (like current stress capacity), run code every tick (like checking sunlight), and have custom rendering. Examples in vanilla: chests, furnaces, signs.
 
-Each registration uses `BlockEntityType.Builder.of()` with:
-- A factory lambda: `(pos, state) -> new XBlockEntity(AllBlockEntityTypes.X.get(), pos, state)`
-- A list of ALL blocks that use this block entity type (17 blocks per type for generators).
+**NeoForge registration pattern:**
+```java
+public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<SolarGeneratorBlockEntity>>
+    SOLAR_GENERATOR = BLOCK_ENTITY_TYPES.register("solar_generator",
+        () -> BlockEntityType.Builder.of(
+            (pos, state) -> new SolarGeneratorBlockEntity(
+                AllBlockEntityTypes.SOLAR_GENERATOR.get(), pos, state),
+            AllBlocks.SOLAR_GENERATOR.get(),
+            AllBlocks.WHITE_SOLAR_GENERATOR.get(),
+            // ... all 17 color variants
+        ).build(null));
+```
+
+**Why do all 17 color variants share one block entity type?**  
+Color is purely visual (different block model). The generation logic is identical. Sharing one type saves memory and avoids code duplication.
 
 **Registered types:**
 
-| Name | BE Class | Valid Blocks |
+| Name | BE Class | Blocks |
 |---|---|---|
-| `horizontal_solar_generator` | `HorizontalSolarGeneratorBlockEntity` | 17 horizontal generator blocks |
-| `solar_generator` | `SolarGeneratorBlockEntity` | 17 vertical generator blocks |
-| `adv_solar_generator` | `AdvSolarGeneratorBlockEntity` | 17 advanced vertical blocks |
-| `horz_adv_solar_generator` | `HorzAdvSolarGeneratorBlockEntity` | 17 advanced horizontal blocks |
-| `solar_windmill_bearing` | `SolarWindmillBearingBlockEntity` | 1 bearing block |
-
-**Why all 17 color variants are listed per type:**
-Minecraft validates that a block entity type is only allowed on blocks it was registered for. If you place a `BLUE_SOLAR_GENERATOR` but the BE type only lists `SOLAR_GENERATOR`, you get "Invalid block entity" crashes. All color variants share the same logic, so they share one BE type.
+| `solar_generator` | `SolarGeneratorBlockEntity` | 17 |
+| `horizontal_solar_generator` | `HorizontalSolarGeneratorBlockEntity` | 17 |
+| `adv_solar_generator` | `AdvSolarGeneratorBlockEntity` | 17 |
+| `horz_adv_solar_generator` | `HorzAdvSolarGeneratorBlockEntity` | 17 |
+| `solar_windmill_bearing` | `SolarWindmillBearingBlockEntity` | 1 |
 
 ---
 
-### 2.4 AllContraptionTypes.java (23 lines)
+### 4.4 AllCreativeTabs.java
 
-**File:** Registers the custom contraption type for the solar bearing.
-**Class:** `AllContraptionTypes`
+**Purpose:** Creates and populates the Creative Mode inventory tab.
 
-**Registry:** `DeferredRegister<ContraptionType> CONTRAPTION_TYPES` using `CreateRegistries.CONTRAPTION_TYPE`.
+```java
+public static final DeferredHolder<CreativeModeTab, CreativeModeTab> MAIN_TAB =
+    CREATIVE_MODE_TABS.register("main",
+        () -> CreativeModeTab.builder()
+            .title(Component.translatable("itemGroup.createphotomovement"))
+            .icon(() -> AllItems.SOLAR_GENERATOR.get().getDefaultInstance())
+            .displayItems((parameters, output) -> {
+                output.accept(AllItems.SOLAR_GENERATOR.get());
+                // ... all items in display order
+            })
+            .build());
+```
 
-**Registration:**
+Item order: basic generators first → advanced generators → color variants → solar sails.
+
+---
+
+### 4.5 AllContraptionTypes.java
+
+**Purpose:** Registers the custom `SolarBearingContraption` type with Create's contraption system.
+
 ```java
 public static final DeferredHolder<ContraptionType, ContraptionType> SOLAR_BEARING =
     CONTRAPTION_TYPES.register("solar_bearing",
         () -> new ContraptionType(SolarBearingContraption::new));
 ```
 
-`SolarBearingContraption::new` is the factory that Create calls when deserializing a saved contraption. Without this registration, a saved contraption would be deserialized as a generic `BearingContraption`, losing all solar sail data.
-
-**Method:** `register(IEventBus)` -- called from main class to attach to event bus.
+`SolarBearingContraption::new` is a constructor reference. It tells Create how to instantiate this contraption type when loading from disk or spawning a new entity.
 
 ---
 
-### 2.5 AllCreativeTabs.java (121 lines)
+## 5. Solar Generator System
 
-**File:** Defines the creative mode tab for the mod.
-**Class:** `AllCreativeTabs`
+This section explains how solar generators work, from the block you place to the power they generate.
 
-**Registry:** `DeferredRegister<CreativeModeTab> CREATIVE_MODE_TABS`
+### 5.1 SolarGeneratorBlock.java
 
-Creates one tab with:
-- Title: `Component.translatable("itemGroup.createphotomovement")` (localized).
-- Icon: `AllItems.SOLAR_GENERATOR.get().getDefaultInstance()`.
-- Items: All 86 items added via `output.accept()`, ordered as:
-  1. Base generators (solar, horizontal, adv, horz_adv).
-  2. Colored generators in Minecraft dye order (white, orange, magenta...).
-  3. Solar windmill bearing.
-  4. Solar sails (base + 16 colors).
+**Purpose:** Defines the block class for vertical solar generators.
 
----
+**Class hierarchy:**
+```java
+public class SolarGeneratorBlock extends RotatedPillarKineticBlock
+        implements IBE<SolarGeneratorBlockEntity>, IWrenchable
+```
 
-## 3. Configuration System
+- `RotatedPillarKineticBlock` — Create's base for rotation-generating blocks that can be oriented along an axis (like logs).
+- `IBE<T>` — marks this block as having an associated Block Entity of type T.
+- `IWrenchable` — allows players to rotate/configure this block with a wrench.
 
-### 3.1 PMConfigs.java (67 lines)
+**Key features:**
 
-**File:** Central config manager.
-**Class:** `PMConfigs`
-**Annotation:** `@EventBusSubscriber(modid = MOD_ID, bus = Bus.MOD)`
+**1. Color Mapping System:**
+```java
+private static final Map<DyeColor, Supplier<Block>> COLOR_TO_BLOCK = new HashMap<>();
 
-**Fields:**
-- `CONFIGS`: `EnumMap<ModConfig.Type, ConfigBase>` -- stores all config categories.
-- `server`: `PMServer` -- the server-side config instance.
+static {
+    COLOR_TO_BLOCK.put(DyeColor.WHITE, () -> AllBlocks.WHITE_SOLAR_GENERATOR.get());
+    COLOR_TO_BLOCK.put(DyeColor.ORANGE, () -> AllBlocks.ORANGE_SOLAR_GENERATOR.get());
+    // ... all 16 colors
+}
+```
+`static { }` is a static initializer — runs once when the class loads. The map is a lookup table: "for this dye, use this block."
 
-**Methods:**
+**2. Shaft Connection Logic:**
+```java
+@Override
+public boolean hasShaftTowards(LevelReader world, BlockPos pos, BlockState state, Direction face) {
+    return face.getAxis() == state.getValue(AXIS);
+}
+```
+Called by Create to determine which faces can connect to shafts. Only the two faces aligned with the block's rotation axis are valid connection points.
 
-`server()` -- returns the `PMServer` singleton.
+**3. Placement Logic:**
+```java
+@Override
+public BlockState getStateForPlacement(BlockPlaceContext context) {
+    if (context.getPlayer() != null && context.getPlayer().isShiftKeyDown())
+        return defaultBlockState().setValue(AXIS,
+            context.getHorizontalDirection().getClockWise().getAxis());
+    return defaultBlockState().setValue(AXIS,
+        context.getHorizontalDirection().getAxis());
+}
+```
+Normal placement: axis faces the player. Shift + place: axis rotated 90° clockwise.
 
-`register(Supplier<T> factory, ModConfig.Type side)`:
-- Uses `ModConfigSpec.Builder` to build a NeoForge config spec from our `ConfigBase`.
-- `config.registerAll(builder)` iterates all `ConfigInt`/`ConfigBool` fields and adds them to the spec.
-- Stores the result in `CONFIGS`.
+**4. Dye Interaction:**
+```java
+@Override
+protected ItemInteractionResult useItemOn(ItemStack stack, BlockState state, Level level,
+        BlockPos pos, Player player, InteractionHand hand, BlockHitResult hitResult) {
 
-`register(ModLoadingContext, ModContainer)`:
-- Called from main class.
-- Creates the `PMServer` config.
-- Iterates `CONFIGS` and calls `container.registerConfig()` for each.
+    if (stack.getItem() instanceof DyeItem dyeItem) {
+        DyeColor color = dyeItem.getDyeColor();
+        Block targetBlock = COLOR_TO_BLOCK.get(color).get();
 
-`onLoad(ModConfigEvent.Loading)` / `onReload(ModConfigEvent.Reloading)`:
-- `@SubscribeEvent` handlers.
-- Match the event's config spec to our stored configs and call `onLoad()`/`onReload()`.
+        if (state.getBlock() == targetBlock)
+            return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
 
-### 3.2 PMServer.java (16 lines)
+        if (!level.isClientSide) {
+            Direction.Axis currentAxis = state.getValue(AXIS);
+            BlockState newState = targetBlock.defaultBlockState().setValue(AXIS, currentAxis);
+            level.setBlock(pos, newState, 3);
+            level.playSound(null, pos, SoundEvents.DYE_USE, SoundSource.BLOCKS, 1.0F, 1.0F);
+            if (!player.isCreative()) stack.shrink(1);
+        }
+        return ItemInteractionResult.sidedSuccess(level.isClientSide);
+    }
+    return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+}
+```
+Step-by-step: check if holding a dye → look up target block → if already that color do nothing → server-side only: preserve axis, set new colored block, play sound, consume dye.
 
-**File:** Server-side config values.
-**Class:** `PMServer extends ConfigBase`
+`!level.isClientSide` — world changes must only happen server-side. The client displays the result via sync packets.
 
-**Fields:**
-- `generationSpeed`: `ConfigInt`, default `16`, min `1`. Controls RPM output of all solar generators.
-- `stressCapacity`: `ConfigInt`, default `16`, min `1`. Controls SU per RPM of solar generators.
+**5. Wrench Interaction:**
+```java
+@Override
+public InteractionResult onWrenched(BlockState state, UseOnContext context) {
+    if (level.isClientSide) return InteractionResult.SUCCESS;
 
-**Method:** `getName()` returns `"server"` (used for file naming: `createphotomovement-server.toml`).
+    Direction.Axis currentAxis = state.getValue(AXIS);
+    Direction.Axis newAxis = currentAxis == Direction.Axis.X ?
+        Direction.Axis.Z : Direction.Axis.X;
 
----
-
-## 4. Solar Generator System
-
-### 4.1 SolarGeneratorBlock.java (154 lines)
-
-**File:** Block class for vertical solar generators.
-**Class:** `SolarGeneratorBlock extends RotatedPillarKineticBlock implements IBE<SolarGeneratorBlockEntity>, IWrenchable`
-
-**Inheritance explained:**
-- `RotatedPillarKineticBlock`: Create's base for blocks that rotate on an axis (like shafts). The block has an `AXIS` property (X, Y, or Z).
-- `IBE<T>`: Create's interface that links a block to its block entity class and type.
-- `IWrenchable`: Create's interface that enables wrench interaction.
-
-**Fields:**
-- `COLOR_TO_BLOCK`: `Map<DyeColor, Supplier<Block>>` -- maps all 16 dye colors to their colored block variant. Populated in a `static {}` initializer block.
-
-**Methods:**
-
-`SolarGeneratorBlock(Properties)` -- constructor, passes to super.
-
-`getBlockEntityType()` -- returns `AllBlockEntityTypes.SOLAR_GENERATOR.get()`. Required by `IBE`.
-
-`getBlockEntityClass()` -- returns `SolarGeneratorBlockEntity.class`. Required by `IBE`.
-
-`hasShaftTowards(LevelReader, BlockPos, BlockState, Direction)`:
-- Returns `true` when `face.getAxis() == state.getValue(AXIS)`.
-- This means the block has shafts on BOTH ends of its axis. If AXIS is X, shafts on EAST and WEST.
-
-`getStateForPlacement(BlockPlaceContext)`:
-- Normal: AXIS = player's horizontal direction axis (face the player).
-- Shift held: AXIS = clockwise of that (90 degrees rotated).
-- Never sets Y axis -- keeps the panel facing upward.
-
-`useItemOn(ItemStack, BlockState, Level, BlockPos, Player, InteractionHand, BlockHitResult)`:
-- **Dye interaction.** If the held item is a `DyeItem`:
-  1. Look up the target block from `COLOR_TO_BLOCK`.
-  2. If already that color, return `PASS_TO_DEFAULT_BLOCK_INTERACTION`.
-  3. Server-side only (`!level.isClientSide`):
-     - Read current AXIS, create new blockstate preserving AXIS.
-     - `level.setBlock(pos, newState, 3)` -- flag 3 = update neighbors + send to clients.
-     - Play `DYE_USE` sound.
-     - Consume 1 dye (unless creative).
-  4. Return `sidedSuccess(level.isClientSide)`.
-
-`getRotationAxis(BlockState)` -- returns `state.getValue(AXIS)`. Used by Create's kinetic system.
-
-`onWrenched(BlockState, UseOnContext)`:
-- Server-side only.
-- Toggles AXIS between X and Z (never Y).
-- Plays `ITEM_FRAME_ROTATE_ITEM` sound.
-
-`getShape(BlockState, BlockGetter, BlockPos, CollisionContext)` -- returns `Shapes.block()` (full cube).
+    level.setBlock(pos, state.setValue(AXIS, newAxis), 3);
+    return InteractionResult.SUCCESS;
+}
+```
+Only rotates between X and Z — never Y. This keeps the solar panel facing upward at all times.
 
 ---
 
-### 4.2 SolarGeneratorBlockEntity.java (97 lines)
+### 5.2 SolarGeneratorBlockEntity.java
 
-**File:** Block entity (the "brain") for vertical solar generators.
-**Class:** `SolarGeneratorBlockEntity extends GeneratingKineticBlockEntity`
+**Purpose:** The "brain" of the vertical solar generator. Checks sunlight conditions and feeds power into Create's kinetic network.
 
-`GeneratingKineticBlockEntity` is Create's base for blocks that produce rotational power. It handles network integration, speed propagation, and stress capacity reporting.
+**Class hierarchy:**
+```java
+public class SolarGeneratorBlockEntity extends GeneratingKineticBlockEntity
+```
+`GeneratingKineticBlockEntity` is Create's base for blocks that generate rotational power. It provides the framework — subclasses just override `getGeneratedSpeed()` and `calculateAddedStressCapacity()`.
 
-**Constructor:** `(BlockEntityType<?>, BlockPos, BlockState)` -- standard, passes to super.
+**Key methods:**
 
-**Methods:**
+**`onLoad()`:**
+```java
+@Override
+public void onLoad() {
+    super.onLoad();
+    if (level != null && !level.isClientSide) {
+        updateGeneratedRotation();
+    }
+}
+```
+Called when the block entity loads (world start or chunk load). Forces an immediate network update to prevent "ghost power" after server restarts.
 
-`onLoad()`:
-- Called when chunk loads.
-- Forces `updateGeneratedRotation()` on server side.
-- This syncs the block with the kinetic network immediately, preventing "ghost power" where the network thinks the generator is off.
+**`getGeneratedSpeed()`:**
+```java
+@Override
+public float getGeneratedSpeed() {
+    if (!canGeneratePower()) return 0;
+    float speed = PMConfigs.server().generationSpeed.get();  // default: 16
+    if (level != null && level.isRainingAt(worldPosition.above())) {
+        speed = speed / 2;
+    }
+    return speed;
+}
+```
+Called every tick. Returns 0 if conditions aren't met. Rain halves the speed (8 RPM instead of 16).
 
-`getGeneratedSpeed()`:
-- Returns `0` if `canGeneratePower()` is false.
-- Otherwise returns `PMConfigs.server().generationSpeed.get()` (default 16 RPM).
-- If raining at `worldPosition.above()`, halves the speed (8 RPM).
-- Rain check uses `level.isRainingAt()` which considers biome + exposure.
+**`calculateAddedStressCapacity()`:**
+```java
+@Override
+public float calculateAddedStressCapacity() {
+    return PMConfigs.server().stressCapacity.get();  // default: 16 SU
+}
+```
+Returns how much load capacity this generator provides. The advanced variant overrides this to return 2x.
 
-`calculateAddedStressCapacity()`:
-- Returns `PMConfigs.server().stressCapacity.get()` (default 16 SU).
-- This is SU per RPM. Create multiplies by speed internally.
+**`canGeneratePower()`:**
+```java
+protected boolean canGeneratePower() {
+    if (level == null) return false;
 
-`canGeneratePower()` -- the core environmental check:
-1. `level.canSeeSky(worldPosition.above())` -- must have unbroken vertical path to sky. Glass passes this check, solid blocks fail.
-2. Sky light - sky darken >= 12. `getBrightness(LightLayer.SKY, pos)` returns raw sky light (15 in open air). `getSkyDarken()` returns 0 at noon, rises to 11 at midnight. So effective light drops below 12 at roughly 6 PM and rises above 12 at roughly 6 AM. Thunder also increases sky darken.
-3. Block directly above must NOT be: `SnowLayerBlock`, `CarpetBlock`, `Blocks.MOSS_CARPET`, `Blocks.SNOW`. These are special cases because they pass `canSeeSky` but still physically cover the panel.
-4. Block above must have `getLightBlock() == 0`. This catches any remaining light-blocking blocks. Glass = 0, stone = 15.
+    // Must see sky
+    if (!level.canSeeSky(worldPosition.above())) return false;
 
-`tick()`:
-- Called 20 times per second.
-- Server-side only.
-- Compares current `speed` with `getGeneratedSpeed()`. If they differ (magnitude or sign), calls `updateGeneratedRotation()`.
-- The sign check (`Math.signum`) detects direction reversal.
+    // Need skylight level 12+ (daytime only)
+    int skyLight = level.getBrightness(LightLayer.SKY, worldPosition.above());
+    int currentSkyLight = skyLight - level.getSkyDarken();
+    if (currentSkyLight < 12) return false;
+
+    // Specific block obstructions
+    BlockPos abovePos = worldPosition.above();
+    BlockState aboveState = level.getBlockState(abovePos);
+    Block aboveBlock = aboveState.getBlock();
+    if (aboveBlock instanceof SnowLayerBlock) return false;
+    if (aboveBlock instanceof CarpetBlock) return false;
+    if (aboveBlock == Blocks.MOSS_CARPET) return false;
+    if (aboveBlock == Blocks.SNOW) return false;
+
+    // Any light-blocking block stops generation
+    if (aboveState.getLightBlock(level, abovePos) > 0) return false;
+
+    return true;
+}
+```
+
+The four checks explained:
+1. **Sky visibility** — `canSeeSky()` returns false if any solid block is above. Glass returns true.
+2. **Skylight level** — Raw sky brightness minus the day-cycle darkening value. At noon = 15, at night = 4. Threshold 12 means roughly 6 AM–6 PM. Thunder also lowers skylight.
+3. **Specific blocks** — Snow layers, carpets, and moss carpet don't block sky visibility but physically obstruct the panel.
+4. **Opacity check** — `.getLightBlock()` returns 0 for transparent blocks (air, glass) and 15 for solid blocks.
+
+**`tick()`:**
+```java
+@Override
+public void tick() {
+    super.tick();
+    if (!level.isClientSide) {
+        float targetSpeed = getGeneratedSpeed();
+        if (Math.abs(speed) != Math.abs(targetSpeed)
+                || (targetSpeed != 0 && Math.signum(speed) != Math.signum(targetSpeed))) {
+            updateGeneratedRotation();
+        }
+    }
+}
+```
+Runs 20 times per second. Only recalculates when the target speed changes — this is an optimization. `Math.signum()` catches direction reversals even at the same absolute speed.
 
 ---
 
-### 4.3 HorizontalSolarGeneratorBlock.java (151 lines)
+### 5.3 HorizontalSolarGeneratorBlock.java
 
-**File:** Block class for horizontal solar generators.
-**Class:** `HorizontalSolarGeneratorBlock extends HorizontalKineticBlock implements IBE<HorizontalSolarGeneratorBlockEntity>, IWrenchable`
-
-Structurally identical pattern to `SolarGeneratorBlock` but uses `HORIZONTAL_FACING` (Direction) instead of `AXIS`.
+**Purpose:** Horizontal variant that faces sideways. Connects to shafts on one side only.
 
 **Key differences from vertical:**
 
-`hasShaftTowards()` -- returns `true` only for `face == state.getValue(HORIZONTAL_FACING).getOpposite()`. Only ONE shaft connection (the back side), not two.
+```java
+public class HorizontalSolarGeneratorBlock extends HorizontalKineticBlock
+```
+`HorizontalKineticBlock` — Create's base for blocks that rotate around a horizontal axis (like water wheels).
 
-`getRotationAxis()` -- returns `state.getValue(HORIZONTAL_FACING).getAxis()`.
+**Shaft connection (back side only):**
+```java
+@Override
+public boolean hasShaftTowards(LevelReader world, BlockPos pos, BlockState state, Direction face) {
+    return face == state.getValue(HORIZONTAL_FACING).getOpposite();
+}
+```
+Only the back side connects. The shaft comes out opposite the panel face.
 
-`getStateForPlacement()`:
-- Normal: faces toward the player (panel visible from front).
-- Shift: faces away from player.
+**Placement:**
+- Normal: Panel faces toward player.
+- Shift + place: Panel faces away from player.
 
-`rotate(BlockState, Rotation)` -- rotates the HORIZONTAL_FACING by the given rotation (used by structure blocks, etc).
-
-`useItemOn()` -- same dye logic as vertical, but preserves `HORIZONTAL_FACING` instead of `AXIS`. Falls through to `super.useItemOn()` instead of `PASS_TO_DEFAULT_BLOCK_INTERACTION` (lets Create handle wrench via super).
-
-`onPlace(BlockState, Level, BlockPos, BlockState, boolean)`:
-- After placement, calls `withBlockEntityDo(level, pos, HorizontalSolarGeneratorBlockEntity::forceUpdate)`.
-- This triggers an immediate capacity recalculation so the generator starts working instantly.
+**Force update on place:**
+```java
+@Override
+public void onPlace(BlockState state, Level level, BlockPos pos, BlockState oldState, boolean movedByPiston) {
+    super.onPlace(state, level, pos, oldState, movedByPiston);
+    if (!level.isClientSide && state.getBlock() == this) {
+        withBlockEntityDo(level, pos, HorizontalSolarGeneratorBlockEntity::forceUpdate);
+    }
+}
+```
+Immediately triggers power calculation when the block is placed. Prevents the initial delay before generation starts.
 
 ---
 
-### 4.4 HorizontalSolarGeneratorBlockEntity.java (209 lines)
+### 5.4 HorizontalSolarGeneratorBlockEntity.java
 
-**File:** Block entity for horizontal solar generators with time-of-day capacity scaling.
-**Class:** `HorizontalSolarGeneratorBlockEntity extends GeneratingKineticBlockEntity`
+**Purpose:** Horizontal generator with time-of-day based power scaling.
 
-This is significantly more complex than the vertical version because capacity changes dynamically based on facing direction and time of day.
+**Key differences from vertical:**
+
+```java
+private float currentStressCapacity;
+private int updateTimer;
+private int warmup = 10;
+```
+Unlike vertical generators (fixed 16 SU), horizontal generators have variable capacity. It's checked every 10 seconds, not every tick.
+
+**`getGeneratedSpeed()` — rain check position:**
+```java
+if (level != null && level.isRainingAt(
+        worldPosition.relative(getBlockState().getValue(HORIZONTAL_FACING)))) {
+    speed = speed / 2;
+}
+```
+Checks rain at the block in *front* of the panel, not above — because the panel faces horizontally.
+
+**`canGeneratePower()` — skylight in front:**
+```java
+BlockPos frontPos = worldPosition.relative(facing);
+int skyLight = level.getBrightness(LightLayer.SKY, frontPos);
+int currentSkyLight = skyLight - level.getSkyDarken();
+if (currentSkyLight < 12) return false;
+
+BlockState frontState = level.getBlockState(frontPos);
+if (frontState.getLightBlock(level, frontPos) > 0) return false;
+```
+Checks the block immediately in front of the panel. A solid block 1 block away stops all power.
+
+**`updateStressCapacity()` — the complex part:**
+```java
+private void updateStressCapacity() {
+    if (!canGeneratePower()) {
+        if (currentStressCapacity != 0) {
+            currentStressCapacity = 0;
+            updateGeneratedRotation();
+            notifyUpdate();
+        }
+        return;
+    }
+
+    Direction facing = getBlockState().getValue(HORIZONTAL_FACING);
+    float base = PMConfigs.server().stressCapacity.get();  // 16
+    float min = 8;
+    float newCapacity = min;
+
+    // Check for distant obstructions (2–10 blocks away)
+    boolean distantObstruction = false;
+    for (int i = 2; i <= 10; i++) {
+        BlockPos checkPos = worldPosition.relative(facing, i);
+        if (level.getBlockState(checkPos).getLightBlock(level, checkPos) > 0) {
+            distantObstruction = true;
+            break;
+        }
+    }
+
+    if (!distantObstruction) {
+        long time = level.getDayTime() % 24000;
+        float peak = 4 * base;  // 64 SU
+        long daylightTime = Math.min(time, 12000);
+        float ratio = (float) daylightTime / 12000.0f;
+        ratio = Mth.clamp(ratio, 0f, 1f);
+
+        if (facing == Direction.EAST) {
+            float factor = (1 - ratio) * (1 - ratio);   // Quadratic falloff
+            newCapacity = min + (peak - min) * factor;
+        } else if (facing == Direction.WEST) {
+            float factor = ratio * ratio;                // Quadratic increase
+            newCapacity = min + (peak - min) * factor;
+        }
+        // North/South: stays at min (8 SU)
+    }
+
+    newCapacity = Math.round(newCapacity);
+    if (Math.abs(newCapacity - currentStressCapacity) > 0.01f) {
+        currentStressCapacity = newCapacity;
+        updateGeneratedRotation();
+        notifyUpdate();
+    }
+}
+```
+
+**Time-of-day system:**
+- Minecraft day cycle = 24000 ticks = 20 min real time
+- Tick 0 = 6 AM (sunrise), 6000 = noon, 12000 = 6 PM (sunset)
+
+**Capacity ranges:**
+- Minimum: 8 SU (when obstructed or facing north/south)
+- Maximum: 64 SU (4× the base 16, at peak sun angle)
+
+**Directional behavior:**
+- East-facing: Best at sunrise, worst at sunset. Formula: `(1−ratio)²` → smooth falloff.
+- West-facing: Worst at sunrise, best at sunset. Formula: `ratio²` → smooth increase.
+- North/South: Constant 8 SU — sun never hits from these directions.
+- Quadratic (`x²`) curves feel natural vs linear. `(1−x)²` decelerates, `x²` accelerates.
+
+**Obstructions:**
+- 1 block away: No power at all (from `canGeneratePower()`).
+- 2–10 blocks away: Power but only minimum capacity (8 SU).
+- Nothing within 10 blocks: Full time-based capacity.
+
+**Tick pattern:**
+```java
+@Override
+public void tick() {
+    super.tick();
+    if (level == null || level.isClientSide) return;
+    if (warmup > 0) { warmup--; if (warmup == 0) updateStressCapacity(); return; }
+    if (updateTimer++ >= 200) { updateTimer = 0; updateStressCapacity(); }
+}
+```
+10-tick warmup prevents recalculation on chunk load before the network is ready. After warmup, recalculates every 200 ticks (10 seconds). Gradual capacity changes aren't noticeable at 10-second intervals.
+
+**NBT serialization** (NeoForge 1.21.1 signature):
+```java
+@Override
+protected void write(CompoundTag compound, HolderLookup.Provider registries, boolean clientPacket) {
+    super.write(compound, registries, clientPacket);
+    if (clientPacket) compound.putFloat("CurrentStressCapacity", currentStressCapacity);
+}
+```
+Only syncs capacity to clients (for Engineer's Goggles display). Server recalculates from scratch on load.
+
+---
+
+### 5.5 Advanced Generator Variants
+
+`AdvSolarGeneratorBlockEntity` extends `SolarGeneratorBlockEntity` and only overrides one method:
+
+```java
+@Override
+public float getGeneratedSpeed() {
+    if (!canGeneratePower()) return 0;
+    float generatedSpeed = PMConfigs.server().generationSpeed.get() * 2;  // 32 RPM
+    if (level != null && level.isRainingAt(worldPosition.above())) {
+        generatedSpeed = generatedSpeed / 2;  // 16 RPM during rain
+    }
+    return generatedSpeed;
+}
+```
+
+Everything else (sky check, SU capacity, NBT) is inherited. `HorzAdvSolarGeneratorBlockEntity` does the same for the horizontal variant.
+
+---
+
+## 6. Solar Windmill System
+
+The windmill system is more complex than generators because it involves moving contraptions — structures that become a single entity and rotate together.
+
+### 6.1 SolarWindmillBearingBlock.java
+
+**Purpose:** The block players place to create a solar windmill contraption.
+
+```java
+public class SolarWindmillBearingBlock extends WindmillBearingBlock
+```
+
+**Custom ticker:**
+```java
+@Override
+public <T extends BlockEntity> BlockEntityTicker<T> getTicker(Level level, BlockState state, BlockEntityType<T> type) {
+    return (l, p, s, be) -> {
+        if (be instanceof SolarWindmillBearingBlockEntity solarBe) {
+            solarBe.tick();        // Standard windmill logic
+            solarBe.solarTick();   // Solar bonus logic
+        }
+    };
+}
+```
+The dual-tick pattern separates concerns: standard windmill rotation from solar capacity multipliers. The `(l, p, s, be) -> { }` is a lambda expression — an inline function.
+
+---
+
+### 6.2 SolarWindmillBearingBlockEntity.java
+
+**Purpose:** Tracks two types of sails separately and applies solar bonus to stress capacity.
+
+> This class took 5 days to implement correctly. The main problem was the SU doubling bug — see §6.2.6.
 
 **Fields:**
-- `currentStressCapacity`: `float` -- the current SU value, changes over time.
-- `updateTimer`: `int` -- counts ticks between capacity recalculations.
-- `warmup`: `int = 10` -- delay before first capacity check after load.
-
-**Constructor:** Initializes `currentStressCapacity` from config.
-
-**Methods:**
-
-`forceUpdate()` -- resets timer and calls `updateStressCapacity()`. Called by the block on placement.
-
-`getGeneratedSpeed()`:
-- Same logic as vertical but checks rain at `worldPosition.relative(HORIZONTAL_FACING)` (the front face position, not above).
-
-`calculateAddedStressCapacity()`:
-- Returns `currentStressCapacity` (dynamic, not static config value).
-- Sets `this.lastCapacityProvided = capacity` -- this is vital. Create's `KineticNetwork` uses `lastCapacityProvided` to calculate delta when capacity changes. If this is not set, the network does not properly update.
-
-`tick()`:
-- Server-side only.
-- Warmup countdown: decrements `warmup`, calls `updateStressCapacity()` when it hits 0, returns early until then.
-- After warmup: increments `updateTimer`, calls `updateStressCapacity()` every 200 ticks (10 seconds).
-
-`updateStressCapacity()` -- the core time-based logic:
-1. If `canGeneratePower()` is false, sets capacity to 0 and updates network.
-2. Gets the block's `HORIZONTAL_FACING`.
-3. Reads config base capacity and sets minimum at 8 SU.
-4. **Distant obstruction check**: scans blocks 2-10 away in the facing direction. If any has `getLightBlock() > 0`, caps capacity at minimum. This simulates "something is blocking the sun's path at an angle."
-5. **Time-of-day curve** (if no distant obstruction):
-   - Gets `level.getDayTime() % 24000`.
-   - Clamps to `[0, 12000]` for the daylight half.
-   - Calculates `ratio = daylightTime / 12000.0` (0.0 = sunrise, 1.0 = sunset).
-   - **EAST facing**: `factor = (1 - ratio)^2` -- quadratic curve, peaks at sunrise (64 SU), minimum at sunset (8 SU).
-   - **WEST facing**: `factor = ratio^2` -- quadratic curve, peaks at sunset, minimum at sunrise.
-   - **NORTH/SOUTH**: always minimum (8 SU). These directions never face the sun path.
-   - Capacity = `min + (peak - min) * factor` where peak = `4 * base` (default 64 SU).
-6. Rounds to nearest integer.
-7. If capacity changed (delta > 0.01), calls `updateGeneratedRotation()` and `notifyUpdate()`.
-
-`canGeneratePower()`:
-- Checks `HORIZONTAL_FACING`'s front position.
-- Sky light - sky darken >= 12 at front position.
-- Front block must have `getLightBlock() == 0`.
-- Does NOT check `canSeeSky` -- horizontal generators only need light, not direct sky line.
-- Does NOT check for snow/carpet (those are above-block issues).
-
-`write()` / `read()`:
-- **Client packets only**: saves/loads `currentStressCapacity` as `"CurrentStressCapacity"` float.
-- Server side: does NOT save `currentStressCapacity` to disk. On reload, it starts at 0 and recalculates after warmup. This prevents stale capacity values from persisting.
-
----
-
-### 4.5 AdvSolarGeneratorBlock.java (103 lines)
-
-**File:** Advanced vertical solar generator block.
-**Class:** `AdvSolarGeneratorBlock extends SolarGeneratorBlock`
-
-Extends `SolarGeneratorBlock` and overrides:
-- `COLOR_TO_BLOCK` -- maps to `AllBlocks.*_ADV_SOLAR_GENERATOR` variants.
-- `getBlockEntityType()` -- returns `AllBlockEntityTypes.ADV_SOLAR_GENERATOR.get()`.
-- `useItemOn()` -- identical dye logic but uses the advanced color map.
-
-All other methods (shaft, placement, wrench) are inherited from `SolarGeneratorBlock`.
-
-### 4.6 AdvSolarGeneratorBlockEntity.java (28 lines)
-
-**File:** Advanced vertical solar generator block entity.
-**Class:** `AdvSolarGeneratorBlockEntity extends SolarGeneratorBlockEntity`
-
-Only overrides `getGeneratedSpeed()`:
-- Returns `PMConfigs.server().generationSpeed.get() * 2` (default 32 RPM).
-- Still halves during rain (16 RPM).
-- `canGeneratePower()` is inherited unchanged.
-- `calculateAddedStressCapacity()` is inherited unchanged (same 16 SU).
-
-### 4.7 HorzAdvSolarGeneratorBlock.java (105 lines)
-
-**File:** Advanced horizontal solar generator block.
-**Class:** `HorzAdvSolarGeneratorBlock extends HorizontalSolarGeneratorBlock`
-
-Same pattern as `AdvSolarGeneratorBlock`: overrides `COLOR_TO_BLOCK`, `getBlockEntityType()`, and `useItemOn()` to point to advanced horizontal variants.
-
-### 4.8 HorzAdvSolarGeneratorBlockEntity.java (29 lines)
-
-**File:** Advanced horizontal solar generator block entity.
-**Class:** `HorzAdvSolarGeneratorBlockEntity extends HorizontalSolarGeneratorBlockEntity`
-
-Only overrides `getGeneratedSpeed()`:
-- Returns `PMConfigs.server().generationSpeed.get() * 2` (default 32 RPM).
-- Rain check uses `worldPosition.relative(HORIZONTAL_FACING)`.
-
----
-
-### 4.9 SolarGeneratorRenderer.java (27 lines)
-
-**File:** Client-side renderer for vertical solar generators.
-**Class:** `SolarGeneratorRenderer extends KineticBlockEntityRenderer<SolarGeneratorBlockEntity>`
-
-**Method:** `renderSafe()`:
-1. `shaft(getRotationAxisOf(be))` -- gets the shaft model for the block's rotation axis.
-2. `CachedBuffers.block(shaftState)` -- gets a cached render buffer for the shaft.
-3. `standardKineticRotationTransform(superBuffer, be, light)` -- applies Create's rotation animation based on speed and partial ticks.
-4. `superBuffer.renderInto(ms, buffer.getBuffer(RenderType.solid()))` -- renders the shaft in the solid render layer.
-
-### 4.10 HorizontalSolarGeneratorRenderer.java (36 lines)
-
-**File:** Client-side renderer for horizontal solar generators.
-**Class:** `HorizontalSolarGeneratorRenderer extends KineticBlockEntityRenderer<HorizontalSolarGeneratorBlockEntity>`
-
-**Method:** `renderSafe()`:
-1. Gets `HORIZONTAL_FACING` from blockstate.
-2. `shaftDirection = facing.getOpposite()` -- shaft comes out the back.
-3. `CachedBuffers.partialFacing(AllPartialModels.SHAFT_HALF, blockState, shaftDirection)` -- gets a HALF shaft model (not full shaft, only one side visible).
-4. Applies kinetic rotation and renders.
-
----
-
-## 5. Solar Windmill System
-
-### 5.1 SolarSailBlock.java (341 lines)
-
-**File:** Solar Sail block, the primary sail type for the Solar Windmill Bearing.
-**Class:** `SolarSailBlock extends WrenchableDirectionalBlock`
-
-**Why not extend Create's SailBlock?** Create's `SailBlock` has internal behaviors, instanceof checks, and tag logic that would conflict with our separate counting system. `WrenchableDirectionalBlock` gives us the `FACING` property and wrench support without baggage.
-
-**Inner enum: `GlassColor`** (17 values):
-- `CLEAR, WHITE, ORANGE, MAGENTA, LIGHT_BLUE, YELLOW, LIME, PINK, GRAY, LIGHT_GRAY, CYAN, PURPLE, BLUE, BROWN, GREEN, RED, BLACK`
-- Implements `StringRepresentable` for blockstate serialization.
-- Static method `fromDyeColor(DyeColor)` maps Minecraft dye colors to glass colors.
-
-**Blockstate property:** `GLASS_COLOR` -- `EnumProperty<GlassColor>`. Stored in blockstate JSON.
-
-**Fields:**
-- `placementHelperId` -- static int from `PlacementHelpers.register(new PlacementHelper())`. Enables click-to-extend sail arrays.
-- `color` -- the `DyeColor` this sail was created with.
-
-**Factory:** `withCanvas(Properties, DyeColor)` -- static factory used in `AllBlocks`.
-
-**Constructor:** Sets default state with `FACING = UP`, `GLASS_COLOR = CLEAR`.
-
-**Methods:**
-
-`createBlockStateDefinition()` -- adds `GLASS_COLOR` to the state definition (on top of `FACING` from super).
-
-`getStateForPlacement()` -- gets super's state and flips the facing to opposite. This means the sail faces AWAY from the surface you click.
-
-`useItemOn()`:
-- If holding a `DyeItem`: plays DYE_USE sound and calls `applyDye()`.
-- Otherwise returns `PASS_TO_DEFAULT_BLOCK_INTERACTION`.
-
-`useWithoutItem()`:
-- If not sneaking, checks the PlacementHelper. If holding a SolarSailBlock item, extends the sail array via `PlacementOffset`.
-
-`applyDye(BlockState, Level, BlockPos, Vec3, DyeColor)` -- **three-tier dye system:**
-1. **Tier 1: Dye self.** Gets the colored sail block via `getSolarSailForColor()`, copies blockstate properties. If the clicked block changes color, done.
-2. **Tier 2: Dye adjacent.** If self is already the target color, find the nearest adjacent SolarSailBlock with the same facing but different color. Dye that one block. Uses `orderedByDistanceExceptAxis()` to prioritize closer neighbors.
-3. **Tier 3: BFS flood-fill.** If no adjacent block changed, flood-fill ALL connected sails of the same facing. Uses a `List<BlockPos>` frontier and `Set<BlockPos>` visited. Timeout at 100 blocks to prevent lag on massive structures.
-
-`getSolarSailForColor(DyeColor)` -- switch expression mapping 16 dye colors to their `AllBlocks.*_SOLAR_SAIL.get()`.
-
-`getShape()` -- returns `AllShapes.SAIL.get(facing)`. Uses Create's built-in thin sail shape.
-
-`getCollisionShape()` -- delegates to `getShape()`.
-
-`getCloneItemStack()` -- picks the base `SOLAR_SAIL` if super returns empty (for colored variants that might not have items registered with the right metadata).
-
-`fallOn()` -- passes `0` fall distance to super, implementing soft landing.
-
-`updateEntityAfterFallOn()` -- if entity is NOT suppressing bounce, calls `bounce()`.
-
-`bounce(Entity)` -- reverses Y velocity * 0.26 * (1.0 for living entities, 0.8 for others). Mimics bed bounce.
-
-`isPathfindable()` -- returns `false`. Mobs cannot pathfind through sails.
-
-`getColor()` -- returns the `DyeColor` field.
-
-**Inner class: `PlacementHelper` implements `IPlacementHelper`:**
-- `getItemPredicate()` -- matches any `BlockItem` whose block is `SolarSailBlock`.
-- `getStatePredicate()` -- matches any blockstate that is `SolarSailBlock`.
-- `getOffset()` -- finds the nearest replaceable neighbor along a direction perpendicular to the sail's FACING axis.
-
----
-
-### 5.2 SolarBearingContraption.java (225 lines)
-
-**File:** Custom contraption that tracks solar vs regular sails separately.
-**Class:** `SolarBearingContraption extends BearingContraption`
-
-**Fields:**
-- `solarSailBlocks = 0` -- count of SolarSailBlock blocks.
-- `regularSailBlocks = 0` -- count of regular sail blocks (Create's sails).
-- `hasSkyAccess = false` -- cached sky check from assembly.
-- `LOGGER` -- SLF4J logger for debug output.
-
-**Methods:**
-
-`getType()` -- returns `AllContraptionTypes.SOLAR_BEARING.get()`. This is what Create uses to serialize/deserialize the contraption. Without this, reloading maps the contraption to generic `BearingContraption`.
-
-`assemble(Level, BlockPos)`:
-1. Resets counters.
-2. Calls `super.assemble()` which walks the structure and calls `addBlock()` for each block.
-3. If successful, calls `checkSkyAccess()` and caches result.
-4. Logs final counts.
-
-`addBlock(Level, BlockPos, Pair<StructureBlockInfo, BlockEntity>)`:
-1. Computes `localPos = pos.subtract(anchor)`.
-2. Checks `isNew = !getBlocks().containsKey(localPos)`.
-3. If new and `instanceof SolarSailBlock`, increments `solarSailBlocks`.
-4. If new and `isSail(state)` (but not solar), increments `regularSailBlocks`.
-5. Calls `super.addBlock()` which handles the actual block storage.
-
-`checkSkyAccess(Level, BlockPos)`:
-- Scans 5x5 grid centered on bearing at Y+1 (25 positions).
-- Returns `true` if ANY position passes `world.canSeeSky()`.
-- Tolerates shaft/support blocks directly above the bearing.
-
-`writeNBT(HolderLookup.Provider, boolean spawnPacket)`:
-- **CRITICAL: Sets `this.sailBlocks = 0` BEFORE calling `super.writeNBT()`.** This makes the parent class serialize 0 sails to NBT, preventing double-counting.
-- After super, appends: `SolarSails` (int), `RegularSails` (int), `HasSkyAccess` (boolean).
-- Logs on disk save (`!spawnPacket`).
-
-`readNBT(Level, CompoundTag, boolean spawnData)`:
-- Calls `super.readNBT()` first (populates the blocks map).
-- **RECALCULATES** sail counts by iterating ALL blocks in `getBlocks().values()`:
-  - If `instanceof SolarSailBlock` -> solar.
-  - Else if `isSail(state)` -> regular.
-- Sets `this.sailBlocks = 0` again.
-- Reads `HasSkyAccess` from tag.
-- **Why recalculate instead of trusting stored integers?** NBT can desync if a crash interrupted saving, or if a block was added/removed externally. Iterating blocks is ground truth.
-
-`isSail(BlockState)`:
-- Returns `true` for `instanceof SolarSailBlock`.
-- Returns `true` for blocks tagged `AllTags.AllBlockTags.WINDMILL_SAILS.tag`.
-- This mirrors Create's internal check.
-
-Getters: `getSolarSailBlocks()`, `getRegularSailBlocks()`, `hasSkyAccess()`.
-Setter: `setSailBlocks(int)` -- exposes the parent's `sailBlocks` field for zeroing.
-
----
-
-### 5.3 SolarWindmillBearingBlock.java (41 lines)
-
-**File:** The bearing block itself.
-**Class:** `SolarWindmillBearingBlock extends WindmillBearingBlock`
-
-**Methods:**
-
-`getBlockEntityType()` -- returns `AllBlockEntityTypes.SOLAR_WINDMILL_BEARING.get()`.
-
-`getTicker(Level, BlockState, BlockEntityType<T>)`:
-- Returns a custom lambda that:
-  1. Casts `be` to `SolarWindmillBearingBlockEntity`.
-  2. Calls `solarBe.tick()` (standard kinetic tick from `SmartBlockEntity`).
-  3. Calls `solarBe.solarTick()` (our custom solar condition check).
-- This double-call pattern is necessary because `WindmillBearingBlock`'s default ticker only calls `tick()`. We need `solarTick()` as well.
-
----
-
-### 5.4 SolarWindmillBearingBlockEntity.java (400 lines)
-
-**File:** The most complex class in the mod. Handles all solar power calculation, network integration, and persistence.
-**Class:** `SolarWindmillBearingBlockEntity extends WindmillBearingBlockEntity`
-
-**Fields:**
-- `regularSailCount = 0` -- cached count of regular sails from contraption.
-- `solarSailCount = 0` -- cached count of solar sails from contraption.
-- `hasSkyAccess = false` -- cached from contraption at assembly.
-- `lastSolarMultiplier = -1` -- previous multiplier value, for change detection.
-- `warmup = 10` -- ticks to wait after load before recalculating.
-
-**Methods (in logical order):**
-
-`tick()` -- override adds `solarTick()` call on server side (also called from `getTicker`).
-
-`solarTick()`:
-- Exits early on client or if level is null.
-- Warmup countdown: decrements, calls `updateGeneratedRotation()` when warmup reaches 0.
-- After warmup: gets `getSolarMultiplier()`. If it differs from `lastSolarMultiplier` by > 0.001, updates the kinetic network.
-
-`assemble()` -- the full assembly override:
-1. Validates bearing block.
-2. Gets facing direction.
-3. Creates `SolarBearingContraption(true, direction)`.
-4. Calls `contraption.assemble(level, worldPosition)`.
-5. Caches `solarSailCount`, `regularSailCount`, `hasSkyAccess` from contraption.
-6. Awards Create's WINDMILL and WINDMILL_MAXED advancements.
-7. Removes blocks from world, creates `ControlledContraptionEntity`, positions it, sets rotation axis, adds to world.
-8. Sets `running = true`, `angle = 0`, sends data, updates rotation.
-
-`updateGeneratedRotation()`:
-- If `movedContraption` exists and is a `SolarBearingContraption`:
-  - Updates cached counts from contraption.
-  - **Zeros `sbc.setSailBlocks(0)`** to prevent parent's capacity contribution.
-- If regular `BearingContraption`: uses parent's `getSailBlocks()` as regular count, no solar.
-- If no contraption: resets all counts to 0.
-- Calls `super.updateGeneratedRotation()`.
-
-`getGeneratedSpeed()`:
-- Returns 0 if `!running` or `movedContraption == null`.
-- `totalSails = regularSailCount + solarSailCount`.
-- `rpm = totalSails / sailsPerRPM` (from Create config, default 8).
-- Clamped to [1, 16].
-- Multiplied by `getAngleSpeedDirection()` for direction.
-- **RPM is NOT affected by solar conditions.** Solar only affects SU.
-
-`getSolarMultiplier()`:
-
-| Condition | Multiplier | Why |
+```java
+private int regularSailCount = 0;
+private int solarSailCount = 0;
+private boolean hasSkyAccess = false;
+private float lastSolarMultiplier = -1;
+private int warmup = 10;
+```
+
+**6.2.1 Solar Multiplier:**
+```java
+private float getSolarMultiplier() {
+    if (!hasSkyAccess) return 1.0f;
+    if (isNight()) return 1.0f;
+    if (isThundering()) return 1.0f;
+    if (isRaining()) return 1.5f;
+    return 2.0f;
+}
+```
+
+| Condition | Multiplier | Reason |
 |---|---|---|
-| `!hasSkyAccess` | 1.0 | Cannot benefit from sun |
-| `isNight()` (13000-23000 ticks) | 1.0 | No sunlight |
-| `isThundering()` | 1.0 | Sky completely dark |
-| `isRaining()` (no thunder) | 1.5 | Reduced sunlight |
-| Clear day + sky | 2.0 | Full solar bonus |
+| No sky access | 1.0x | Trees/buildings blocking sky |
+| Night | 1.0x | No sunlight |
+| Thunder | 1.0x | Dark clouds |
+| Rain | 1.5x | Some light still gets through |
+| Clear day | 2.0x | Maximum solar power |
 
-`calculateAddedStressCapacity()`:
-- Returns 0 if `!running` or no contraption.
-- `sailsPerBracket = AllConfigs.server().kinetics.windmillSailsPerRPM.get()` (default 8).
-- `normalBrackets = regularSailCount / sailsPerBracket`, `normalSU = normalBrackets * 512`.
-- `solarBrackets = solarSailCount / sailsPerBracket`, `solarSU = solarBrackets * 512 * getSolarMultiplier()`.
-- `totalSU = normalSU + solarSU`.
-- `rpm = max(1, totalSails / sailsPerBracket)`.
-- Returns `totalSU / rpm`. Create multiplies this by speed internally, so dividing by RPM ensures the displayed SU matches.
-- Sets `lastCapacityProvided = result`.
+This multiplier only affects SU (stress capacity), not RPM (speed).
 
-`write(CompoundTag, HolderLookup.Provider, boolean clientPacket)`:
-- **Client packets:** Saves `RegularSails`, `SolarSails`, `HasSkyAccess` for display.
-- **Server save:** Zeros `this.capacity` and `this.lastCapacityProvided` BEFORE `super.write()`. This ensures NBT stores 0 for capacity, preventing the double-counting bug on reload.
+**6.2.2 Assembly:**
+```java
+@Override
+public void assemble() {
+    Direction direction = getBlockState().getValue(BearingBlock.FACING);
+    SolarBearingContraption contraption = new SolarBearingContraption(true, direction);
 
-`read(CompoundTag, HolderLookup.Provider, boolean clientPacket)`:
-- Calls `super.read()` first.
-- **Client:** Loads sail counts and sky access.
-- **Server:** Resets all counts to 0. Zeros `lastCapacityProvided` and `capacity`. Sail counts will be re-populated from the contraption during warmup.
+    try {
+        if (!contraption.assemble(level, worldPosition)) return;
+    } catch (AssemblyException e) {
+        lastException = e; sendData(); return;
+    }
 
-`initialize()`:
-- If on a network and server-side: sets `network.initialized = false` before `super.initialize()`.
-- This forces the `KineticNetwork` to call `initFromTE()` again with our zeroed values instead of stale cached values.
+    // Cache counts from contraption
+    this.solarSailCount = contraption.getSolarSailBlocks();
+    this.regularSailCount = contraption.getRegularSailBlocks();
+    this.hasSkyAccess = contraption.hasSkyAccess();
 
-`updateFromNetwork(float maxStress, float currentStress, int networkSize)`:
-- Calculates `correctTotalSU = calculateAddedStressCapacity() * abs(getGeneratedSpeed())`.
-- Passes `correctTotalSU` as `maxStress` to super instead of the network's potentially wrong value.
+    // Remove blocks and create moving entity
+    contraption.removeBlocksFromWorld(level, BlockPos.ZERO);
+    movedContraption = ControlledContraptionEntity.create(level, this, contraption);
+    BlockPos anchor = worldPosition.relative(direction);
+    movedContraption.setPos(anchor.getX(), anchor.getY(), anchor.getZ());
+    movedContraption.setRotationAxis(direction.getAxis());
+    level.addFreshEntity(movedContraption);
 
-`addToGoggleTooltip()`:
-- If not running and super did not add anything, shows "0su" generator stats so the goggles display is not blank.
+    running = true;
+    sendData();
+    updateGeneratedRotation();
+}
+```
 
-Helper methods: `isNight()`, `isRaining()`, `isThundering()`, getters for counts/multiplier.
+What happens: create custom contraption → assemble (walks the block structure) → cache sail counts → remove blocks from world → spawn contraption entity → mark running.
+
+The key is using `SolarBearingContraption` instead of the standard `BearingContraption`. This custom class counts solar vs regular sails separately.
+
+**6.2.3 Speed Calculation:**
+```java
+@Override
+public float getGeneratedSpeed() {
+    if (!running || movedContraption == null) return 0;
+
+    int totalSails = regularSailCount + solarSailCount;
+    int sailsPerRPM = AllConfigs.server().kinetics.windmillSailsPerRPM.get();  // 8
+    int rpm = totalSails / sailsPerRPM;
+    return Mth.clamp(rpm, 1, 16) * getAngleSpeedDirection();
+}
+```
+Both sail types count equally toward RPM. 8 sails = 1 RPM, max 16 RPM at 128 sails. `getAngleSpeedDirection()` returns +1 or -1 for rotation direction.
+
+**6.2.4 Stress Capacity Calculation:**
+```java
+@Override
+public float calculateAddedStressCapacity() {
+    if (!running || movedContraption == null) return 0;
+
+    int sailsPerBracket = AllConfigs.server().kinetics.windmillSailsPerRPM.get();  // 8
+    float suPerBracket = 512f;
+
+    int normalBrackets = regularSailCount / sailsPerBracket;
+    float normalSU = normalBrackets * suPerBracket;
+
+    int solarBrackets = solarSailCount / sailsPerBracket;
+    float solarSU = solarBrackets * suPerBracket * getSolarMultiplier();
+
+    float totalSU = normalSU + solarSU;
+
+    int totalSails = regularSailCount + solarSailCount;
+    int rpm = Math.max(1, totalSails / sailsPerBracket);
+    float result = totalSU / rpm;
+
+    this.lastCapacityProvided = result;
+    return result;
+}
+```
+
+**The bracket system (Create windmills):**
+- Every 8 sails = 1 bracket
+- Each bracket = 512 SU
+- Formula: `(sailCount / 8) × 512`
+- Solar sails get this multiplied by the solar multiplier
+
+**Example — 32 regular + 32 solar sails, clear day (2.0x):**
+1. Regular: `(32/8) × 512 = 2048 SU`
+2. Solar: `(32/8) × 512 × 2.0 = 4096 SU`
+3. Total: `6144 SU`
+4. RPM: `64 / 8 = 8`
+5. Per-RPM value: `6144 / 8 = 768`
+
+During rain (1.5x): solar → 3072, total → 5120, per-RPM → 640  
+At night (1.0x): solar → 2048, total → 4096, per-RPM → 512
+
+**6.2.5 Data Persistence:**
+```java
+// NeoForge 1.21.1 / 1.20.1 signature differs — see §11
+public void write(CompoundTag compound, ..., boolean clientPacket) {
+    if (clientPacket) {
+        compound.putInt("RegularSails", regularSailCount);
+        compound.putInt("SolarSails", solarSailCount);
+        compound.putBoolean("HasSkyAccess", hasSkyAccess);
+    } else {
+        // CRITICAL: Zero both capacity fields BEFORE super.write()
+        this.capacity = 0;
+        this.lastCapacityProvided = 0;
+    }
+    super.write(compound, ...);
+}
+
+protected void read(CompoundTag compound, ..., boolean clientPacket) {
+    super.read(compound, ...);
+    if (clientPacket) {
+        regularSailCount = compound.getInt("RegularSails");
+        solarSailCount = compound.getInt("SolarSails");
+        hasSkyAccess = compound.getBoolean("HasSkyAccess");
+    } else {
+        // Server resets everything and recalculates from scratch
+        regularSailCount = 0; solarSailCount = 0; hasSkyAccess = false;
+        this.lastCapacityProvided = 0; this.capacity = 0;
+    }
+}
+```
+
+Why zero fields on disk save? Prevents "ghost SU" on world reload. Server resets to zero and recalculates everything fresh.
+
+**6.2.6 The Double-Counting Bug Fix:**
+```java
+@Override
+public void updateGeneratedRotation() {
+    if (movedContraption != null) {
+        Contraption c = movedContraption.getContraption();
+        if (c instanceof SolarBearingContraption sbc) {
+            this.solarSailCount = sbc.getSolarSailBlocks();
+            this.regularSailCount = sbc.getRegularSailBlocks();
+            this.hasSkyAccess = sbc.hasSkyAccess();
+            // CRITICAL: Zero out parent's sailBlocks to prevent double-counting
+            sbc.setSailBlocks(0);
+        }
+    }
+    super.updateGeneratedRotation();
+}
+```
+
+Why this is necessary:
+- Parent class (`WindmillBearingBlockEntity`) has its own `sailBlocks` field.
+- Parent uses this field in its own capacity calculation.
+- We calculate capacity ourselves via `calculateAddedStressCapacity()`.
+- If parent's `sailBlocks` isn't zeroed, capacity gets counted twice — once by parent, once by us.
+- Setting it to 0 tells parent "don't add capacity yourself."
+
+**6.2.7 Network Initialization:**
+```java
+@Override
+public void initialize() {
+    if (hasNetwork() && !level.isClientSide) {
+        KineticNetwork net = getOrCreateNetwork();
+        if (net.initialized) net.initialized = false;
+    }
+    super.initialize();
+}
+```
+Forces the kinetic network to recalculate from scratch, preventing it from using cached (possibly wrong) capacity values.
 
 ---
 
-## 6. Ponder System
+### 6.3 SolarSailBlock.java
 
-### 6.1 PhotomovementPonderPlugin.java (44 lines)
+**Purpose:** The solar sail block. Works like Create's standard sails but participates in the solar bonus system.
 
-**Class:** `PhotomovementPonderPlugin implements PonderPlugin`
+**Color system:**
+```java
+public enum GlassColor implements StringRepresentable {
+    CLEAR("clear"), WHITE("white"), ORANGE("orange"), // ... all 16
+}
 
-`getModId()` -- returns `CreatePhotomovement.MOD_ID`.
+public static final EnumProperty<GlassColor> GLASS_COLOR =
+    EnumProperty.create("glass_color", GlassColor.class);
+```
+`StringRepresentable` allows the enum to be stored as a string in block states and NBT. `EnumProperty` is a block state property (like `FACING` or `AXIS`).
 
-`registerScenes(PonderSceneRegistrationHelper<ResourceLocation>)`:
-- Creates a `HELPER` that converts `DeferredBlock` to `ResourceLocation` via `DeferredBlock::getId`.
-- Registers 4 scenes for `AllBlocks.SOLAR_GENERATOR`:
-  - `solar_generator/basics` -> `SolarGeneratorScenes::basics` (tagged `KINETIC_SOURCES`).
-  - `solar_generator/weather` -> `SolarGeneratorScenes::weather`.
-  - `solar_generator/obstructions` -> `SolarGeneratorScenes::obstructions`.
-  - `solar_generator/dyeing` -> `SolarGeneratorScenes::dyeing`.
+**Factory method:**
+```java
+public static SolarSailBlock withCanvas(Properties properties, DyeColor color) {
+    return new SolarSailBlock(properties, color);
+}
+```
+All sails are created via this factory. No frameless/framed distinction — all solar sails have a canvas.
 
-`registerTags()` -- empty, uses Create's existing tags.
+**Dye interaction — three-tier system:**
+```java
+public void applyDye(BlockState state, Level world, BlockPos pos, Vec3 hit, DyeColor dyeColor) {
+    BlockState newState = getSolarSailForColor(dyeColor).defaultBlockState();
+    newState = BlockHelper.copyProperties(state, newState);
 
-### 6.2 SolarGeneratorScenes.java (257 lines)
+    // Tier 1: Dye the clicked block (if it's not already that color)
+    if (state != newState) { world.setBlockAndUpdate(pos, newState); return; }
 
-**Class:** `SolarGeneratorScenes` -- 4 static methods, each a Ponder storyboard.
+    // Tier 2: Dye the nearest adjacent sail of a different color
+    List<Direction> directions = IPlacementHelper.orderedByDistanceExceptAxis(
+        pos, hit, state.getValue(FACING).getAxis());
+    for (Direction d : directions) {
+        BlockPos offset = pos.relative(d);
+        BlockState adj = world.getBlockState(offset);
+        if (!(adj.getBlock() instanceof SolarSailBlock)) continue;
+        if (state.getValue(FACING) != adj.getValue(FACING)) continue;
+        if (state == adj) continue;
+        world.setBlockAndUpdate(offset, newState); return;
+    }
 
-`basics(SceneBuilder, SceneBuildingUtil)`:
-- 5x5 base plate.
-- Generator at center with shafts on 4 sides.
-- 4 keyframes: intro, power output, wrench rotation, reverse direction.
-- Text overlays explain sky access, RPM/SU output, wrench usage.
+    // Tier 3: Flood-fill all connected sails
+    List<BlockPos> frontier = new ArrayList<>();
+    Set<BlockPos> visited = new HashSet<>();
+    frontier.add(pos);
+    int timeout = 100;
+    while (!frontier.isEmpty()) {
+        if (timeout-- < 0) break;
+        BlockPos curr = frontier.remove(0);
+        visited.add(curr);
+        for (Direction d : Iterate.directions) {
+            if (d.getAxis() == state.getValue(FACING).getAxis()) continue;
+            BlockPos offset = curr.relative(d);
+            if (visited.contains(offset)) continue;
+            BlockState adj = world.getBlockState(offset);
+            if (!(adj.getBlock() instanceof SolarSailBlock)) continue;
+            if (adj.getValue(FACING) != state.getValue(FACING)) continue;
+            if (state != adj) world.setBlockAndUpdate(offset, newState);
+            frontier.add(offset); visited.add(offset);
+        }
+    }
+}
+```
 
-`weather(SceneBuilder, SceneBuildingUtil)`:
-- 5x5 base plate, single generator.
-- Explains: clear = 16 RPM, rain = 8 RPM, thunder = 0, night = 0.
+The three tiers: dye clicked block first → if already correct color, dye nearest adjacent sail → if no adjacent sail, flood-fill the entire connected structure.
 
-`obstructions(SceneBuilder, SceneBuildingUtil)`:
-- 7x5 base plate, 3 generators in a row.
-- Shows everything at once, then explains: solid block = no power, glass = power, snow/carpet = no power.
-- Uses `indicateRedstone()` for visual highlight.
+Flood-fill uses BFS (breadth-first search). `visited` prevents infinite loops. Timeout at 100 blocks caps performance cost. Only follows perpendicular directions (not along the facing axis) to avoid leaking across panels.
 
-`dyeing(SceneBuilder, SceneBuildingUtil)`:
-- 5x5 base plate, single generator.
-- Animates color changes: blue -> red -> yellow -> lime.
-- Uses `world.setBlock()` with AXIS preserved to show inline color change.
+**Bounce physics:**
+```java
+@Override
+public void fallOn(Level level, BlockState state, BlockPos pos, Entity entity, float fallDistance) {
+    super.fallOn(level, state, pos, entity, 0);  // 0 = no fall damage
+}
+
+private void bounce(Entity entity) {
+    Vec3 velocity = entity.getDeltaMovement();
+    if (velocity.y < 0.0D) {
+        double d0 = entity instanceof LivingEntity ? 1.0D : 0.8D;
+        entity.setDeltaMovement(velocity.x, -velocity.y * 0.26F * d0, velocity.z);
+    }
+}
+```
+Solar Sails negate fall damage and bounce entities like a trampoline at 26% efficiency. Living entities get full bounce (1.0), non-living get 80% (0.8).
 
 ---
 
-## 7. Version Differences and Porting
+### 6.4 SolarBearingContraption.java
 
-### 7.1 Registration API
+**Purpose:** Custom contraption type that counts solar vs regular sails separately and checks sky access at assembly time.
 
-| Aspect | NeoForge 1.21.1 | NeoForge 1.20.1 | Fabric 1.20.1 |
-|---|---|---|---|
-| Block holders | `DeferredBlock<T>` | `RegistryObject<T>` | Direct `static final T` |
-| Item holders | `DeferredItem<T>` | `RegistryObject<T>` | Direct `static final T` |
-| BE holders | `DeferredHolder<..., BlockEntityType<T>>` | `RegistryObject<BlockEntityType<T>>` | Direct field |
-| Block register | `DeferredRegister.createBlocks(MOD_ID)` | `DeferredRegister.create(ForgeRegistries.BLOCKS, MOD_ID)` | `Registry.register()` |
-| Event bus | `modEventBus` param in constructor | `FMLJavaModLoadingContext.get().getModEventBus()` | N/A |
-| Entry point | `@Mod` with `(IEventBus, ModContainer)` constructor | `@Mod` with no-arg constructor | `implements ModInitializer` |
+```java
+public class SolarBearingContraption extends BearingContraption
+```
 
-### 7.2 Method Signature Changes
+**Fields:**
+```java
+protected int solarSailBlocks = 0;
+protected int regularSailBlocks = 0;
+protected boolean hasSkyAccess = false;
+```
 
-| Method | NeoForge 1.21.1 | 1.20.1 (both) |
+**Assembly:**
+```java
+@Override
+public boolean assemble(Level world, BlockPos pos) throws AssemblyException {
+    solarSailBlocks = 0; regularSailBlocks = 0;
+    boolean result = super.assemble(world, pos);
+    if (result) hasSkyAccess = checkSkyAccess(world, pos);
+    return result;
+}
+```
+Resets counters, calls parent (which walks the block structure and calls `addBlock()` for each found block), then checks sky access.
+
+**Block counting:**
+```java
+@Override
+public void addBlock(Level level, BlockPos pos, Pair<StructureBlockInfo, BlockEntity> capture) {
+    BlockPos localPos = pos.subtract(anchor);
+    boolean isNew = !getBlocks().containsKey(localPos);
+
+    if (isNew) {
+        BlockState state = capture.getKey().state();
+        if (state.getBlock() instanceof SolarSailBlock)
+            solarSailBlocks++;
+        else if (isSail(state))
+            regularSailBlocks++;
+    }
+
+    super.addBlock(level, pos, capture);
+}
+```
+`isNew` guard prevents counting blocks that were already added by the parent's assembly walk.
+
+**Sky access check:**
+```java
+private boolean checkSkyAccess(Level world, BlockPos pos) {
+    for (int x = -2; x <= 2; x++)
+        for (int z = -2; z <= 2; z++)
+            if (world.canSeeSky(pos.offset(x, 1, z)))
+                return true;
+    return false;
+}
+```
+Checks a 5×5 area (25 positions) one block above the bearing. Only one position needs sky access — this tolerates shafts and structural supports.
+
+**Sail detection:**
+```java
+protected boolean isSail(BlockState state) {
+    if (state.getBlock() instanceof SolarSailBlock) return true;
+    if (state.is(com.simibubi.create.AllTags.AllBlockTags.WINDMILL_SAILS.tag)) return true;
+    return false;
+}
+```
+Two ways to identify sails: our custom class or Create's windmill sail block tag. Allows both types to work in the same contraption.
+
+**NBT serialization:**
+```java
+@Override
+public CompoundTag writeNBT(HolderLookup.Provider registries, boolean spawnPacket) {
+    this.sailBlocks = 0;  // CRITICAL — zero before super writes it
+
+    CompoundTag tag = super.writeNBT(registries, spawnPacket);
+    tag.putInt("SolarSails", solarSailBlocks);
+    tag.putInt("RegularSails", regularSailBlocks);
+    tag.putBoolean("HasSkyAccess", hasSkyAccess);
+    return tag;
+}
+
+@Override
+public void readNBT(Level world, CompoundTag tag, boolean spawnData) {
+    super.readNBT(world, tag, spawnData);
+
+    // Recalculate from actual block data — don't trust saved integers
+    int recalcSolar = 0, recalcTotal = 0;
+    for (StructureBlockInfo info : getBlocks().values()) {
+        BlockState state = info.state();
+        if (state.getBlock() instanceof SolarSailBlock) { recalcSolar++; recalcTotal++; }
+        else if (isSail(state)) recalcTotal++;
+    }
+
+    this.solarSailBlocks = recalcSolar;
+    this.regularSailBlocks = recalcTotal - recalcSolar;
+    this.sailBlocks = 0;  // CRITICAL — zero after super loads it
+
+    hasSkyAccess = tag.getBoolean("HasSkyAccess");
+}
+```
+
+Key principle: **always recalculate from actual blocks on load**, don't trust the saved integers. The only thing trusted from NBT is `hasSkyAccess` (sky access can't be easily recalculated from block data).
+
+---
+
+## 7. Configuration System
+
+### 7.1 PMConfigs.java
+
+**Purpose:** Central configuration manager.
+
+```java
+@EventBusSubscriber(modid = MOD_ID, bus = EventBusSubscriber.Bus.MOD)
+public class PMConfigs {
+    private static final Map<ModConfig.Type, ConfigBase> CONFIGS = new EnumMap<>(ModConfig.Type.class);
+    private static PMServer server;
+
+    public static PMServer server() { return server; }
+}
+```
+
+Config types:
+- `SERVER` — synced to clients, affects gameplay. This mod only uses SERVER config.
+- `CLIENT` — local only, affects visuals/UI.
+- `COMMON` — shared.
+
+**Registration (NeoForge 1.21.1):**
+```java
+public static void register(ModLoadingContext context, ModContainer container) {
+    server = register(PMServer::new, ModConfig.Type.SERVER);
+    for (Entry<ModConfig.Type, ConfigBase> pair : CONFIGS.entrySet())
+        container.registerConfig(pair.getKey(), pair.getValue().specification);
+}
+```
+
+**Event handlers:**
+```java
+@SubscribeEvent
+public static void onLoad(ModConfigEvent.Loading event) { ... }
+
+@SubscribeEvent
+public static void onReload(ModConfigEvent.Reloading event) { ... }
+```
+Listen for config load/reload events and notify config objects to update their cached values.
+
+---
+
+### 7.2 PMServer.java
+
+**Purpose:** Defines the two configurable gameplay values.
+
+```java
+public class PMServer extends ConfigBase {
+    public final ConfigInt generationSpeed = i(16, 1, "generationSpeed",
+        "Speed of the Solar Generator in RPM");
+
+    public final ConfigInt stressCapacity = i(16, 1, "stressCapacity",
+        "Stress Capacity of the Solar Generator in SU per RPM");
+}
+```
+
+**Config file location:** `config/createphotomovement-server.toml`
+
+```toml
+[server]
+    #Speed of the Solar Generator in RPM
+    #Range: > 1
+    generationSpeed = 16
+
+    #Stress Capacity of the Solar Generator in SU per RPM
+    #Range: > 1
+    stressCapacity = 16
+```
+
+`generationSpeed` defaults to 16 RPM (advanced generators multiply this by 2 in code).  
+`stressCapacity` defaults to 16 SU (horizontal and windmill generators also use this as a base).
+
+---
+
+## 8. Rendering System
+
+### 8.1 SolarGeneratorRenderer.java
+
+**Purpose:** Custom renderer for vertical solar generators — draws the rotating shaft.
+
+```java
+public class SolarGeneratorRenderer extends KineticBlockEntityRenderer<SolarGeneratorBlockEntity> {
+
+    @Override
+    protected void renderSafe(SolarGeneratorBlockEntity be, float partialTicks, PoseStack ms,
+            MultiBufferSource buffer, int light, int overlay) {
+
+        BlockState shaftState = shaft(getRotationAxisOf(be));
+        SuperByteBuffer superBuffer = CachedBuffers.block(shaftState);
+        standardKineticRotationTransform(superBuffer, be, light);
+        superBuffer.renderInto(ms, buffer.getBuffer(RenderType.solid()));
+    }
+}
+```
+
+`partialTicks` — fraction between game ticks (0.0–1.0). Used to interpolate position for smooth 60 FPS animation on 20 TPS game logic.  
+`PoseStack` — matrix stack tracking position and rotation transformations.  
+`standardKineticRotationTransform()` — Create's helper that applies rotation based on the block entity's current speed.
+
+---
+
+### 8.2 HorizontalSolarGeneratorRenderer.java
+
+**Purpose:** Same as above but renders only the back half-shaft.
+
+```java
+@Override
+protected void renderSafe(HorizontalSolarGeneratorBlockEntity be, float partialTicks, PoseStack ms,
+        MultiBufferSource buffer, int light, int overlay) {
+
+    Direction facing = be.getBlockState().getValue(HORIZONTAL_FACING);
+    Direction shaftDirection = facing.getOpposite();  // Shaft on back side
+    SuperByteBuffer halfShaft = CachedBuffers.partialFacing(
+        AllPartialModels.SHAFT_HALF, be.getBlockState(), shaftDirection);
+    standardKineticRotationTransform(halfShaft, be, light);
+    halfShaft.renderInto(ms, buffer.getBuffer(RenderType.solid()));
+}
+```
+
+Uses `SHAFT_HALF` (a partial model) instead of a full shaft. Only renders on the back side. Advanced variants reuse these same two renderers.
+
+---
+
+## 9. Ponder System
+
+Ponder is Create's built-in in-game tutorial system. Scenes are scripted sequences that run in a mini-world.
+
+### 9.1 PhotomovementPonderPlugin.java
+
+**Purpose:** Registers Ponder scenes for this mod's blocks.
+
+```java
+public class PhotomovementPonderPlugin implements PonderPlugin {
+
+    @Override
+    public void registerScenes(PonderSceneRegistrationHelper<ResourceLocation> helper) {
+        PonderSceneRegistrationHelper<DeferredBlock<?>> HELPER =
+            helper.withKeyFunction(DeferredBlock::getId);
+
+        HELPER.forComponents(AllBlocks.SOLAR_GENERATOR)
+            .addStoryBoard("solar_generator/basics", SolarGeneratorScenes::basics,
+                AllCreatePonderTags.KINETIC_SOURCES)
+            .addStoryBoard("solar_generator/weather", SolarGeneratorScenes::weather)
+            .addStoryBoard("solar_generator/obstructions", SolarGeneratorScenes::obstructions)
+            .addStoryBoard("solar_generator/dyeing", SolarGeneratorScenes::dyeing);
+    }
+}
+```
+
+`KINETIC_SOURCES` tag makes the scene appear in Create's Ponder index under "Kinetic Sources."
+
+---
+
+### 9.2 SolarGeneratorScenes.java
+
+**Purpose:** The actual Ponder scene content — scripted tutorial sequences.
+
+**Scene structure:**
+```java
+public static void basics(SceneBuilder builder, SceneBuildingUtil util) {
+    builder.title("solar_generator_basics", "Solar Generator Basics");
+    builder.configureBasePlate(0, 0, 5);
+    builder.showBasePlate();
+
+    BlockPos generatorPos = util.grid().at(2, 1, 2);
+    builder.idle(10);
+    builder.addKeyframe();
+
+    builder.world().showSection(util.select().position(generatorPos), Direction.DOWN);
+    builder.idle(20);
+
+    builder.overlay().showText(60)
+        .text("The Solar Generator creates rotational force from sunlight")
+        .pointAt(util.vector().blockSurface(generatorPos, Direction.UP))
+        .placeNearTarget();
+    builder.idle(70);
+}
+```
+
+**Key Ponder APIs:**
+
+| Call | Effect |
+|---|---|
+| `builder.title()` | Sets scene title |
+| `builder.configureBasePlate(x, z, size)` | Defines world size |
+| `builder.idle(ticks)` | Waits N ticks |
+| `builder.addKeyframe()` | Creates chapter marker (players can skip to these) |
+| `builder.world().showSection()` | Reveals blocks |
+| `builder.world().setBlock()` | Changes a block |
+| `builder.overlay().showText(duration)` | Shows text overlay |
+| `.pointAt(vec)` | Adds arrow pointing to a location |
+| `.placeNearTarget()` | Positions text near the arrow |
+
+**Scenes in this mod:**
+1. **basics** — shaft connections, rotation, wrench usage
+2. **weather** — day/night cycle, rain effects, thunder
+3. **obstructions** — sky access, glass vs solid, snow/carpet
+4. **dyeing** — color changing with dye items
+
+---
+
+## 10. Key Concepts and Learning Guide
+
+### 10.1 Object-Oriented Programming
+
+**Inheritance:** Child class reuses and extends parent's behavior.
+```java
+// AdvSolarGeneratorBlockEntity gets all solar generator logic for free
+// and only overrides speed to be 2x
+public class AdvSolarGeneratorBlockEntity extends SolarGeneratorBlockEntity {
+    @Override
+    public float getGeneratedSpeed() {
+        return super.getGeneratedSpeed() * 2;  // Not exactly, but conceptually
+    }
+}
+```
+
+**Interfaces:** Define a required contract.
+```java
+public class SolarGeneratorBlock extends RotatedPillarKineticBlock
+        implements IBE<SolarGeneratorBlockEntity>, IWrenchable {
+    // Must implement IBE's getBlockEntityClass() and IWrenchable's onWrenched()
+}
+```
+
+---
+
+### 10.2 Registry System
+
+**DeferredRegister** (NeoForge): A waiting list for game objects.
+```java
+// 1. Create a register
+DeferredRegister.Blocks BLOCKS = DeferredRegister.createBlocks(MOD_ID);
+
+// 2. Add entries (doesn't register yet)
+DeferredBlock<SolarGeneratorBlock> SOLAR_GENERATOR =
+    BLOCKS.register("solar_generator", () -> new SolarGeneratorBlock(props));
+
+// 3. Register all entries when mod loads
+BLOCKS.register(modEventBus);
+```
+
+**Fabric:** Direct registration in a `register()` method.
+```java
+static void register() {
+    Registry.register(BuiltInRegistries.BLOCK,
+        ResourceLocation.fromNamespaceAndPath(MOD_ID, "solar_generator"), SOLAR_GENERATOR);
+}
+```
+
+---
+
+### 10.3 Block States
+
+Block states store a block's current configuration (facing, axis, powered, etc.).
+
+```java
+// Read a property
+Direction.Axis axis = state.getValue(AXIS);
+
+// Create new state with changed property (states are immutable)
+BlockState newState = state.setValue(AXIS, Direction.Axis.X);
+
+// Set a block in the world
+level.setBlock(pos, newState, 3);  // 3 = update flags (notify neighbors + send to clients)
+```
+
+---
+
+### 10.4 Block Entities
+
+Block entities add "intelligence" to blocks. They can store data and run per-tick logic.
+
+```java
+@Override
+public void tick() {
+    super.tick();
+    // Called 20 times per second on both sides
+    if (!level.isClientSide) {
+        // Server-only logic
+    }
+}
+```
+
+Pattern for reading/writing custom data:
+```java
+@Override
+protected void write(CompoundTag tag, ...) {
+    super.write(tag, ...);
+    tag.putInt("MySavedValue", myValue);
+}
+
+@Override
+protected void read(CompoundTag tag, ...) {
+    super.read(tag, ...);
+    myValue = tag.getInt("MySavedValue");
+}
+```
+
+---
+
+### 10.5 Client vs Server
+
+| | Server | Client |
 |---|---|---|
-| Block interaction | `useItemOn(ItemStack, BlockState, Level, BlockPos, Player, InteractionHand, BlockHitResult)` returns `ItemInteractionResult` | `use(BlockState, Level, BlockPos, Player, InteractionHand, BlockHitResult)` returns `InteractionResult` |
-| BE write | `write(CompoundTag, HolderLookup.Provider, boolean)` | `write(CompoundTag, boolean)` |
-| BE read | `read(CompoundTag, HolderLookup.Provider, boolean)` | `read(CompoundTag, boolean)` |
-| Contraption writeNBT | `writeNBT(HolderLookup.Provider, boolean)` | `writeNBT(boolean)` |
-| Contraption readNBT | `readNBT(Level, CompoundTag, HolderLookup.Provider, boolean)` | `readNBT(Level, CompoundTag, boolean)` |
-| getCloneItemStack | `(BlockState, HitResult, LevelReader, BlockPos, Player)` | `(BlockState, HitResult, BlockGetter, BlockPos, Player)` |
-| isPathfindable | `(BlockState, PathComputationType)` | `(BlockState, BlockGetter, BlockPos, PathComputationType)` |
+| Authority | Yes — source of truth | No — receives updates |
+| World changes | Yes | Never |
+| Rendering | No | Yes |
+| Check: | `!level.isClientSide` | `level.isClientSide` |
 
-### 7.3 Other Differences
-
-| Aspect | NeoForge 1.21.1 | 1.20.1 |
-|---|---|---|
-| SolarSail strength | `0.8F` | `0.1F` |
-| SolarSail sound | `SoundType.WOOL` | `SoundType.SCAFFOLDING` |
-| SWBBE warmup | 10 ticks | 20 ticks |
-| Contraption type access | `.get()` (deferred) | `.get()` (Forge) / direct (Fabric) |
-| Fabric render layers | N/A | `BlockRenderLayerMap.INSTANCE.putBlock()` for each block |
-| Fabric contraption registry | N/A | `CreateBuiltInRegistries.CONTRAPTION_TYPE` |
-| Tag dirs | `data/*/tags/block/` (singular) | `data/*/tags/blocks/` (plural) |
-| Recipe result | `"id": "...", "count": 1` | `"item": "..."` |
-
-### 7.4 Porting Checklist (1.21.1 -> 1.20.1 NeoForge)
-
-- [ ] `DeferredBlock` -> `RegistryObject`
-- [ ] `DeferredItem` -> `RegistryObject`
-- [ ] `DeferredHolder` -> `RegistryObject`
-- [ ] Imports: `net.neoforged` -> `net.minecraftforge`
-- [ ] NBT: add/remove `HolderLookup.Provider` parameter
-- [ ] Interaction: `useItemOn` -> `use`, `ItemInteractionResult` -> `InteractionResult`
-- [ ] `PASS_TO_DEFAULT_BLOCK_INTERACTION` -> `InteractionResult.PASS`
-- [ ] `getCloneItemStack`: `LevelReader` -> `BlockGetter`
-- [ ] `isPathfindable`: add `BlockGetter, BlockPos` params
-- [ ] Tag directories: singular -> plural
-- [ ] Recipe format: `id` -> `item`, remove `count: 1`
-
-### 7.5 Porting Checklist (NeoForge 1.20.1 -> Fabric 1.20.1)
-
-- [ ] All above plus:
-- [ ] Remove all `net.minecraftforge` imports
-- [ ] Replace `DeferredRegister` with `Registry.register()` calls
-- [ ] Replace `RegistryObject` with direct fields
-- [ ] Entry: `@Mod` -> `implements ModInitializer`
-- [ ] Client: `@EventBusSubscriber` -> `implements ClientModInitializer`
-- [ ] Renderers: event-based -> `BlockEntityRenderers.register()` direct
-- [ ] Add `BlockRenderLayerMap` calls for all non-default render types
-- [ ] Contraption: `AllContraptionTypes.X.get()` -> `AllContraptionTypes.X`
-- [ ] Registry: `CreateRegistries` -> `CreateBuiltInRegistries`
+The most common pattern:
+```java
+if (!level.isClientSide) {
+    // Make the actual change
+    level.setBlock(pos, newState, 3);
+} else {
+    // Play feedback sounds/particles
+}
+```
 
 ---
 
-## 8. Design Decisions
+### 10.6 Create's Kinetic System
 
-**Why `sailBlocks = 0`?**
-If we do not zero this in the contraption, `WindmillBearingBlockEntity` (parent) reads `getSailBlocks()` and adds its OWN capacity calculation. Combined with our custom calculation, this effectively double or quadruple-counts SU. By zeroing, the parent sees 0 sails and contributes 0 SU, leaving our `calculateAddedStressCapacity()` as the sole authority.
+**RPM** — rotation speed. Positive = clockwise, negative = counter-clockwise.
 
-**Why `warmup`?**
-On world load, the contraption entity (a Minecraft entity with a UUID) may not be loaded when the block entity first ticks. Checking sails immediately would see null contraption / 0 sails and reset the network to 0 SU. The warmup (10-20 ticks) gives the world time to load and link entities.
+**SU (Stress Units)** — capacity/load measure. Generators provide SU. Machines consume SU. If consumption exceeds capacity, the network stops.
 
-**Why recalculate sails in `readNBT`?**
-Stored integer values can desync if a crash corrupted the save, if a mod updated, or if blocks were externally edited. Iterating `getBlocks()` is the definitive source of truth.
+**Kinetic networks** — groups of connected kinetic blocks that share RPM and track total capacity vs stress.
 
-**Why not extend `SailBlock`?**
-Create's `SailBlock` has `instanceof` checks in multiple places. Extending it would make Create count our sails in its own capacity calculation (via `WindmillBearingBlockEntity`), bypassing our custom logic. Using `WrenchableDirectionalBlock` gives us full control.
+**Implementing a generator:**
+```java
+public class MyGenerator extends GeneratingKineticBlockEntity {
 
-**Why `initialize()` forces `network.initialized = false`?**
-Create's `KineticNetwork.initFromTE()` sets `unloadedCapacity` from the block entity's saved capacity. Then `addSilently()` adds the live capacity. If both contain the same value, capacity is doubled. By forcing re-init with our zeroed values, the network starts clean.
+    @Override
+    public float getGeneratedSpeed() {
+        // return RPM, or 0 if not active
+        return 16f;
+    }
 
-**Why does Fabric need `BlockRenderLayerMap`?**
-NeoForge/Forge set render types via blockstate JSON properties or model configuration. Fabric API does not support this mechanism. Every block that needs `cutout()` (clear glass) or `translucent()` (stained glass) rendering must be explicitly registered via `BlockRenderLayerMap.INSTANCE.putBlock()`. This is why the Fabric client class is 120 lines.
+    @Override
+    public float calculateAddedStressCapacity() {
+        // return SU per RPM
+        return 16f;
+    }
+}
+```
 
-**Why horizontal generators do not check `canSeeSky`?**
-Horizontal generators face sideways. The sun's rays come at an angle, not straight down. Checking `canSeeSky` on a horizontal face does not make physical sense. Instead, they check sky light level at the front face and scan for distant obstructions 2-10 blocks away.
+**Windmill bracket system:**
+- Every 8 sails = 1 bracket
+- Each bracket = 512 SU
+- `totalSU = (sailCount / 8) × 512`
+- Create divides by RPM internally: `capacity_per_RPM = totalSU / RPM`
+
+---
+
+### 10.7 NBT Serialization
+
+NBT (Named Binary Tag) is Minecraft's data serialization format for saving/loading block entity data.
+
+```java
+// Saving (called on disk write and client sync)
+compound.putInt("SolarSails", solarSailCount);
+compound.putFloat("Capacity", currentCapacity);
+compound.putBoolean("HasSkyAccess", hasSkyAccess);
+
+// Loading
+solarSailCount = compound.getInt("SolarSails");
+currentCapacity = compound.getFloat("Capacity");
+hasSkyAccess = compound.getBoolean("HasSkyAccess");
+```
+
+`clientPacket = true` — syncing to client (for goggles display, etc.)  
+`clientPacket = false` — saving to disk
+
+---
+
+## 11. Version Differences and Porting
+
+This section documents every known difference between the three supported versions.
+
+### 11.1 Mod Entry Point
+
+| Version | Pattern |
+|---|---|
+| NeoForge 1.21.1 | Constructor receives `IEventBus` and `ModContainer` directly via injection |
+| NeoForge 1.20.1 | No-arg constructor; bus retrieved via `FMLJavaModLoadingContext.get().getModEventBus()` |
+| Fabric 1.20.1 | Implements `ModInitializer`; registration done via `onInitialize()` with static `register()` calls |
+
+**NeoForge 1.21.1:**
+```java
+@Mod(CreatePhotomovement.MOD_ID)
+public class CreatePhotomovement {
+    public CreatePhotomovement(IEventBus modEventBus, ModContainer modContainer) {
+        AllBlocks.BLOCKS.register(modEventBus);
+        PMConfigs.register(ModLoadingContext.get(), modContainer);
+    }
+}
+```
+
+**NeoForge 1.20.1:**
+```java
+@Mod(CreatePhotomovement.MOD_ID)
+public class CreatePhotomovement {
+    public CreatePhotomovement() {
+        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+        AllBlocks.BLOCKS.register(modEventBus);
+        PMConfigs.register(ModLoadingContext.get());  // No ModContainer parameter
+        MinecraftForge.EVENT_BUS.register(this);
+    }
+}
+```
+
+**Fabric 1.20.1:**
+```java
+public class CreatePhotomovement implements ModInitializer {
+    @Override
+    public void onInitialize() {
+        AllBlocks.register();    // Static register() methods instead of DeferredRegister
+        AllItems.register();
+        AllBlockEntityTypes.register();
+        AllCreativeTabs.register();
+        AllContraptionTypes.register();
+        PMConfigs.register();
+    }
+}
+```
+
+---
+
+### 11.2 Block Registration
+
+| Version | Pattern |
+|---|---|
+| NeoForge 1.21.1 | `DeferredRegister.Blocks` → `DeferredBlock<T>` |
+| NeoForge 1.20.1 | `DeferredRegister.Blocks` → `DeferredBlock<T>` (same) |
+| Fabric 1.20.1 | Direct static fields + `Registry.register()` calls |
+
+Fabric `AllBlocks.java` declares blocks as plain static fields (not `DeferredBlock<T>`) and calls `Registry.register(BuiltInRegistries.BLOCK, ...)` directly in the `register()` method.
+
+---
+
+### 11.3 NBT Read/Write Signatures
+
+This is the most common porting mistake.
+
+| Version | Signature |
+|---|---|
+| NeoForge 1.21.1 | `write(CompoundTag tag, HolderLookup.Provider registries, boolean clientPacket)` |
+| NeoForge 1.20.1 | `write(CompoundTag tag, boolean clientPacket)` |
+| Fabric 1.20.1 | `write(CompoundTag tag, boolean clientPacket)` |
+
+**NeoForge 1.21.1:**
+```java
+@Override
+protected void write(CompoundTag compound, HolderLookup.Provider registries, boolean clientPacket) {
+    super.write(compound, registries, clientPacket);
+    compound.putInt("MySavedValue", myValue);
+}
+
+@Override
+protected void read(CompoundTag compound, HolderLookup.Provider registries, boolean clientPacket) {
+    super.read(compound, registries, clientPacket);
+    myValue = compound.getInt("MySavedValue");
+}
+```
+
+**NeoForge 1.20.1 and Fabric 1.20.1:**
+```java
+@Override
+public void write(CompoundTag compound, boolean clientPacket) {
+    super.write(compound, clientPacket);
+    compound.putInt("MySavedValue", myValue);
+}
+
+@Override
+protected void read(CompoundTag compound, boolean clientPacket) {
+    super.read(compound, clientPacket);
+    myValue = compound.getInt("MySavedValue");
+}
+```
+
+---
+
+### 11.4 Config Registration
+
+| Version | `PMConfigs.register()` signature |
+|---|---|
+| NeoForge 1.21.1 | `register(ModLoadingContext context, ModContainer container)` |
+| NeoForge 1.20.1 | `register(ModLoadingContext context)` — no `ModContainer` |
+| Fabric 1.20.1 | `register()` — no parameters, uses Fabric's AutoConfig or direct file access |
+
+---
+
+### 11.5 ContraptionType NBT (writeNBT/readNBT)
+
+**NeoForge 1.21.1** — `writeNBT` receives `HolderLookup.Provider`:
+```java
+@Override
+public CompoundTag writeNBT(HolderLookup.Provider registries, boolean spawnPacket) { ... }
+
+@Override
+public void readNBT(Level world, CompoundTag tag, boolean spawnData) { ... }
+```
+
+**NeoForge 1.20.1 and Fabric 1.20.1** — no `HolderLookup.Provider`:
+```java
+@Override
+public CompoundTag writeNBT(boolean spawnPacket) { ... }
+
+@Override
+public void readNBT(Level world, CompoundTag tag, boolean spawnData) { ... }
+```
+
+---
+
+### 11.6 Summary Checklist for Porting 1.20.1 → 1.21.1
+
+- [ ] Change constructor signature to receive `IEventBus` and `ModContainer`.
+- [ ] Remove `FMLJavaModLoadingContext.get()`.
+- [ ] Remove `MinecraftForge.EVENT_BUS.register(this)`.
+- [ ] Add `HolderLookup.Provider registries` parameter to all `write()` / `read()` overrides.
+- [ ] Add `HolderLookup.Provider registries` parameter to `writeNBT()` in contraption classes.
+- [ ] Update `PMConfigs.register()` to accept `ModContainer`.
+
+---
+
+## 12. Troubleshooting
+
+**Generator not producing power:**
+- Check sky access (F3 screen, or remove roof blocks and test).
+- Verify it's daytime (`/time set day`).
+- Remove obstructions — including snow, carpet, and moss carpet.
+- Check kinetic network with Engineer's Goggles.
+
+**Windmill capacity wrong:**
+- Check if it's day vs night vs rain — multiplier changes.
+- Reload the world (ghost SU fix clears on load).
+- Read server logs at assembly — they show sail counts and hasSkyAccess.
+
+**Windmill capacity doubled:**
+- Ensure `SolarBearingContraption` is being used (not standard `BearingContraption`).
+- Verify `sbc.setSailBlocks(0)` is called in `updateGeneratedRotation()`.
+- Verify `this.capacity = 0` is set before `super.write()` on disk save.
+
+**Solar sails not picked up by bearing:**
+- Verify `AttachedCheck` is registered in the mod constructor.
+- The check must return `CheckResult.of(true)` when `direction.getAxis() != FACING.getAxis()`.
+
+**Code changes not applying:**
+- Run `./gradlew build` then restart the game.
+- Check that you're editing the correct version's source folder.
+
+**Crash on startup:**
+- Check that Create and NeoForge/Fabric versions match `gradle.properties`.
+- Read the crash log — it always has a root cause at the bottom.
