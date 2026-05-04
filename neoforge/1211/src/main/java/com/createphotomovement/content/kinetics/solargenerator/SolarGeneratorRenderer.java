@@ -20,7 +20,8 @@ public class SolarGeneratorRenderer extends KineticBlockEntityRenderer<SolarGene
             int light, int overlay) {
         BlockState shaftState = shaft(getRotationAxisOf(be));
         SuperByteBuffer superBuffer = CachedBuffers.block(shaftState);
-        standardKineticRotationTransform(superBuffer, be, light);
+        if (be.canGeneratePower())
+            standardKineticRotationTransform(superBuffer, be, light);
         superBuffer.renderInto(ms, buffer.getBuffer(RenderType.solid()));
     }
 }

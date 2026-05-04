@@ -3,6 +3,7 @@ package com.createphotomovement;
 import com.createphotomovement.content.kinetics.solargenerator.SolarGeneratorRenderer;
 import com.createphotomovement.content.kinetics.solargenerator.HorizontalSolarGeneratorRenderer;
 import com.createphotomovement.ponder.PhotomovementPonderPlugin;
+import com.simibubi.create.content.contraptions.bearing.BearingRenderer;
 
 import net.createmod.ponder.foundation.PonderIndex;
 import net.fabricmc.api.ClientModInitializer;
@@ -33,6 +34,7 @@ public class CreatePhotomovementClient implements ClientModInitializer {
                 context -> new SolarGeneratorRenderer(context));
         BlockEntityRenderers.register(AllBlockEntityTypes.HORZ_ADV_SOLAR_GENERATOR,
                 context -> new HorizontalSolarGeneratorRenderer(context));
+        BlockEntityRenderers.register(AllBlockEntityTypes.SOLAR_WINDMILL_BEARING, BearingRenderer::new);
     }
 
     private static void registerRenderTypes() {

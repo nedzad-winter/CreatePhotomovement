@@ -29,7 +29,8 @@ public class HorizontalSolarGeneratorRenderer extends KineticBlockEntityRenderer
         Direction shaftDirection = facing.getOpposite();
         SuperByteBuffer halfShaft = CachedBuffers.partialFacing(AllPartialModels.SHAFT_HALF, blockState,
                 shaftDirection);
-        standardKineticRotationTransform(halfShaft, be, light);
+        if (be.canGeneratePower())
+            standardKineticRotationTransform(halfShaft, be, light);
         halfShaft.renderInto(ms, buffer.getBuffer(RenderType.solid()));
     }
 }
