@@ -23,7 +23,6 @@ import com.simibubi.create.content.contraptions.bearing.BearingContraption;
 import com.simibubi.create.content.contraptions.bearing.WindmillBearingBlockEntity;
 import com.simibubi.create.content.kinetics.KineticNetwork;
 import com.simibubi.create.foundation.advancement.AllAdvancements;
-import com.simibubi.create.foundation.blockEntity.behaviour.BlockEntityBehaviour;
 import com.simibubi.create.infrastructure.config.AllConfigs;
 
 import net.minecraft.core.BlockPos;
@@ -63,16 +62,8 @@ public class SolarWindmillBearingBlockEntity extends WindmillBearingBlockEntity 
     }
 
     @Override
-    public void addBehaviours(List<BlockEntityBehaviour> behaviours) {
-        super.addBehaviours(behaviours);
-    }
-
-    @Override
     public void tick() {
         super.tick();
-        if (!level.isClientSide) {
-            solarTick();
-        }
     }
 
     public void solarTick() {

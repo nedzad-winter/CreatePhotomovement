@@ -53,8 +53,7 @@ public class SolarBearingContraption extends BearingContraption {
         if (result) {
             // Check sky access for the bearing position at assembly time
             hasSkyAccess = checkSkyAccess(world, pos);
-            LOGGER.info(
-                    "[SolarBearingContraption] assemble FINISHED: SolarSails={}, TotalSails (super)={}, TotalBlocks={}",
+            LOGGER.debug("[SolarBearingContraption] assemble FINISHED: SolarSails={}, TotalSails={}, TotalBlocks={}",
                     solarSailBlocks, getSailBlocks(), getBlocks().size());
         }
         return result;
@@ -78,13 +77,6 @@ public class SolarBearingContraption extends BearingContraption {
         }
 
         super.addBlock(level, pos, capture);
-
-        if (isNew) {
-            // Verify if super counted it
-            // We can't access super.sailBlocks directly, but we can infer if total sail
-            // count increased?
-            // Not easily during the loop without tracking previous.
-        }
     }
 
     /**
@@ -114,11 +106,6 @@ public class SolarBearingContraption extends BearingContraption {
         tag.putInt("SolarSails", solarSailBlocks);
         tag.putInt("RegularSails", regularSailBlocks); // Save our separately tracked count
         tag.putBoolean("HasSkyAccess", hasSkyAccess);
-        if (!spawnPacket) {
-            LOGGER.info(
-                    "[SolarBearingContraption] writeNBT (DISK SAVE): solarSails={}, regularSails={}, hasSkyAccess={}, SUPER.Sails={}",
-                    solarSailBlocks, regularSailBlocks, hasSkyAccess, getSailBlocks());
-        }
         return tag;
     }
 
@@ -171,8 +158,7 @@ public class SolarBearingContraption extends BearingContraption {
         // Restore SkyAccess
         hasSkyAccess = tag.getBoolean("HasSkyAccess");
 
-        LOGGER.info(
-                "[SolarBearingContraption] readNBT: solarSails={}, regularSails={}, recalcTotal={}, sailBlocks SET TO 0, hasSkyAccess={}",
+        LOGGER.debug("[SolarBearingContraption] readNBT: solarSails={}, regularSails={}, recalcTotal={}, hasSkyAccess={}",
                 solarSailBlocks, regularSailBlocks, recalcTotal, hasSkyAccess);
     }
 
