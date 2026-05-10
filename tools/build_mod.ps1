@@ -25,7 +25,6 @@ if (-not $Version) {
 
 # Mapping of project to game profile folder
 $GameProfileMapping = @{
-    "forge/1201" = "Dev-CreatePM-Forge-1201"
     "neoforge/1201" = "Dev-CreatePM-NeoForge-1201"
     "neoforge/1211" = "Dev-CreatePM-NeoForge-1211"
     "fabric/1201" = "Dev-CreatePM-Fabric-1201"
@@ -139,14 +138,11 @@ function Build-StandaloneProject {
     Write-Host ""
 }
 
-# Build Forge 1.20.1
-Build-RootProject -ProjectName "Forge 1.20.1" -ProjectPath "forge/1201" -GradleTask ":forge:1201:build"
-
 # Build NeoForge 1.20.1
-Build-RootProject -ProjectName "NeoForge 1.20.1" -ProjectPath "neoforge/1201" -GradleTask ":neoforge:1201:build"
+Build-StandaloneProject -ProjectName "NeoForge 1.20.1" -ProjectPath "neoforge/1201"
 
 # Build NeoForge 1.21.1
-Build-RootProject -ProjectName "NeoForge 1.21.1" -ProjectPath "neoforge/1211" -GradleTask ":neoforge:1211:build"
+Build-StandaloneProject -ProjectName "NeoForge 1.21.1" -ProjectPath "neoforge/1211"
 
 # Build Fabric 1.20.1 (standalone project)
 Build-StandaloneProject -ProjectName "Fabric 1.20.1" -ProjectPath "fabric/1201"

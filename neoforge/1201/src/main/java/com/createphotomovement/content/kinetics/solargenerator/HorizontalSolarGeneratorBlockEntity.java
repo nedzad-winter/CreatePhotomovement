@@ -92,6 +92,14 @@ public class HorizontalSolarGeneratorBlockEntity extends GeneratingKineticBlockE
             return;
         }
 
+        // Per-tick poll: react instantly when canGeneratePower() flips
+        // (front-face obstruction). Otherwise the 200-tick cycle below would
+        // delay shaft start/stop by up to 10 seconds.
+        float targetSpeed = getGeneratedSpeed();
+        if (Math.abs(speed) != Math.abs(targetSpeed)) {
+            updateGeneratedRotation();
+        }
+
         // Check every 10 seconds (200 ticks)
         if (updateTimer++ >= 200) {
             updateTimer = 0;
