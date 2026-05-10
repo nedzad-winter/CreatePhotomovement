@@ -1,5 +1,23 @@
 # Changelog
 
+## [0.3.2] - 2026-05-09
+
+### Fixed
+- **Solar Windmill Bearing**: Fixed [#11](https://github.com/nedzad-winter/CreatePhotomovement/issues/11) — multiple visual issues with the bearing block:
+    - Bearing top and back-shaft were invisible while Flywheel was active (Flywheel default). Registered Create's `BearingVisual` as the Flywheel visualization for `SOLAR_WINDMILL_BEARING`, mirroring Create's own `WindmillBearingBlockEntity` setup.
+    - Bearing top showed a static "ghost" while the contraption rotated. Removed the static `Top` cuboid from `solar_windmill_bearing.json` — that Y 12-16 slot is reserved for the dynamic partial model.
+    - Bearing top and shaft rendered nearly black even with open sky overhead. Added `.noOcclusion()` and overrode `propagatesSkylightDown` / `getLightBlock` on `SolarWindmillBearingBlock` so sky light reaches the bearing's position.
+
+### Removed
+- **Forge 1.20.1**: Removed the empty `forge/` build target. NeoForge 1.20.1 is a near-drop-in fork of Forge 1.20.1, so users on Forge can use the NeoForge 1.20.1 jar.
+
+### Supported Platforms
+- NeoForge 1.21.1
+- NeoForge 1.20.1
+- Fabric 1.20.1
+
+---
+
 ## [0.3.1] - 2026-02-16
 
 ### Added

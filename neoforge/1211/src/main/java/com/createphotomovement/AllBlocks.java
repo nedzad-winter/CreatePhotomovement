@@ -745,5 +745,6 @@ public class AllBlocks {
                                                         BlockBehaviour.Properties.of()
                                                                         .mapColor(MapColor.PODZOL)
                                                                         .strength(3.0F, 6.0F)
-                                                                        .sound(SoundType.WOOD)));
+                                                                        .sound(SoundType.WOOD)
+                                                                        .noOcclusion()));
 }

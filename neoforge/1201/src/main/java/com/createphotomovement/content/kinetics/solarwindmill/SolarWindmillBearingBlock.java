@@ -4,6 +4,8 @@ import com.createphotomovement.AllBlockEntityTypes;
 import com.simibubi.create.content.contraptions.bearing.WindmillBearingBlock;
 import com.simibubi.create.content.contraptions.bearing.WindmillBearingBlockEntity;
 
+import net.minecraft.core.BlockPos;
+import net.minecraft.world.level.BlockGetter;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -24,6 +26,18 @@ public class SolarWindmillBearingBlock extends WindmillBearingBlock {
     @Override
     public BlockEntityType<? extends WindmillBearingBlockEntity> getBlockEntityType() {
         return AllBlockEntityTypes.SOLAR_WINDMILL_BEARING.get();
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public boolean propagatesSkylightDown(BlockState state, BlockGetter level, BlockPos pos) {
+        return true;
+    }
+
+    @Override
+    @SuppressWarnings("deprecation")
+    public int getLightBlock(BlockState state, BlockGetter level, BlockPos pos) {
+        return 0;
     }
 
     @Override

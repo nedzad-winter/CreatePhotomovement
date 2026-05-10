@@ -4,7 +4,9 @@ import com.createphotomovement.content.kinetics.solargenerator.SolarGeneratorRen
 import com.createphotomovement.content.kinetics.solargenerator.HorizontalSolarGeneratorRenderer;
 import com.createphotomovement.ponder.PhotomovementPonderPlugin;
 import com.simibubi.create.content.contraptions.bearing.BearingRenderer;
+import com.simibubi.create.content.contraptions.bearing.BearingVisual;
 
+import dev.engine_room.flywheel.lib.visualization.SimpleBlockEntityVisualizer;
 import net.createmod.ponder.foundation.PonderIndex;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
@@ -20,6 +22,15 @@ public class CreatePhotomovementClient implements ClientModInitializer {
 
         // Register block entity renderers
         registerRenderers();
+
+        // Register Flywheel visualization for the solar windmill bearing — mirrors
+        // Create's own registration for WindmillBearingBlockEntity. Without this,
+        // BearingRenderer early-returns when Flywheel is active and the bearing
+        // top + shaft never render.
+        SimpleBlockEntityVisualizer
+                .builder(AllBlockEntityTypes.SOLAR_WINDMILL_BEARING)
+                .factory(BearingVisual::new)
+                .apply();
 
         // Register render types for transparent blocks
         registerRenderTypes();
