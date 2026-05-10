@@ -12,7 +12,9 @@
       "Bash(cd /tmp/jar_check && javap -p -c com/createphotomovement/AllBlocks.class 2>/dev/null | grep -c \"noOcclusion\")",
       "Read(//tmp/**)",
       "PowerShell(& \"c:\\\\Users\\\\nedza\\\\Desktop\\\\CreatePhotomovement\\\\tools\\\\build_mod.ps1\" 2>&1)",
-      "WebFetch(domain:modrinth.com)"
+      "WebFetch(domain:modrinth.com)",
+      "WebFetch(domain:www.curseforge.com)",
+      "PowerShell(& \"c:\\\\Users\\\\nedza\\\\Desktop\\\\CreatePhotomovement\\\\tools\\\\publish_mod.ps1\" -Modrinth 2>&1)"
     ]
   }
 }

@@ -11,6 +11,9 @@
 ### Removed
 - **Forge 1.20.1**: Removed the empty `forge/` build target. NeoForge 1.20.1 is a near-drop-in fork of Forge 1.20.1, so users on Forge can use the NeoForge 1.20.1 jar.
 
+### Internal
+- **Publish script**: Fixed `tools/publish_mod.ps1` so Modrinth uploads use the same per-loader naming as CurseForge (`createphotomovement-{loader}-{mc}-{version}`). The previous script sent the same `version_number` (`0.3.2`) for all three jars, which Modrinth rejects as a duplicate after the first upload — this is why only 2 of 3 jars made it onto Modrinth for v0.3.1.
+
 ### Supported Platforms
 - NeoForge 1.21.1
 - NeoForge 1.20.1
