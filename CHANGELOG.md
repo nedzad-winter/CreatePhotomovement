@@ -1,5 +1,20 @@
 # Changelog
 
+## [0.3.3] - 2026-05-12
+
+### Fixed
+- **Modded dye crash**: Fixed [#13](https://github.com/nedzad-winter/CreatePhotomovement/issues/13) — using a modded dye (e.g. from *Dye Depot*, *El and L's Dye mod*, *Delicate Dyes*) on solar generators or solar sails would crash the game and corrupt the world. The dye → block lookup now safely ignores colors the mod doesn't have variants for, so right-clicking with a modded dye is a no-op instead of a crash. Affected blocks: Solar Generator and Advanced Solar Generator (vertical and horizontal variants), and Solar Sails.
+
+### Internal
+- **Version bump tool**: Added `tools/bump_version.ps1` to update `mod_version` across the root and all three per-loader `gradle.properties` files in one go.
+
+### Supported Platforms
+- NeoForge 1.21.1
+- NeoForge 1.20.1
+- Fabric 1.20.1
+
+---
+
 ## [0.3.2] - 2026-05-09
 
 ### Fixed
