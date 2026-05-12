@@ -456,6 +456,10 @@ public class SolarGeneratorBlock extends RotatedPillarKineticBlock
        
        if (stack.getItem() instanceof DyeItem dyeItem) {
            DyeColor color = dyeItem.getDyeColor();
+           // Skip modded dye colors that aren't in our color map to avoid NPEs / world corruption
+           if (!COLOR_TO_BLOCK.containsKey(color)) {
+               return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+           }
            Block targetBlock = COLOR_TO_BLOCK.get(color).get();
            
            if (state.getBlock() == targetBlock) {
@@ -483,6 +487,7 @@ public class SolarGeneratorBlock extends RotatedPillarKineticBlock
    **Step-by-step breakdown:**
    - Check if player is holding a dye: `stack.getItem() instanceof DyeItem`
    - Get which color: `dyeItem.getDyeColor()`
+   - Check we recognize this color: `COLOR_TO_BLOCK.containsKey(color)` — bail out with `PASS_TO_DEFAULT_BLOCK_INTERACTION` if not (modded dye)
    - Look up the target block: `COLOR_TO_BLOCK.get(color).get()`
    - If already that color, do nothing (early return)
    - `!level.isClientSide` means "only on server"  

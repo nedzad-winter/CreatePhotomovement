@@ -68,6 +68,10 @@ public class AdvSolarGeneratorBlock extends SolarGeneratorBlock {
                 // Check if the player is holding a dye
                 if (stack.getItem() instanceof DyeItem dyeItem) {
                         net.minecraft.world.item.DyeColor color = dyeItem.getDyeColor();
+                        // Skip modded dye colors that aren't in our color map to avoid NPEs / world corruption
+                        if (!COLOR_TO_BLOCK.containsKey(color)) {
+                                return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+                        }
                         net.minecraft.world.level.block.Block targetBlock = COLOR_TO_BLOCK.get(color).get();
 
                         // Don't change if already this color
