@@ -106,6 +106,13 @@ public class SolarSailBlock extends WrenchableDirectionalBlock {
 
     private static final int placementHelperId = PlacementHelpers.register(new PlacementHelper());
 
+    // Vanilla dye colors we have sail variants for; modded dyes will skip the dyeing flow
+    private static final Set<DyeColor> SUPPORTED_DYE_COLORS = Set.of(
+            DyeColor.WHITE, DyeColor.ORANGE, DyeColor.MAGENTA, DyeColor.LIGHT_BLUE,
+            DyeColor.YELLOW, DyeColor.LIME, DyeColor.PINK, DyeColor.GRAY,
+            DyeColor.LIGHT_GRAY, DyeColor.CYAN, DyeColor.PURPLE, DyeColor.BLUE,
+            DyeColor.BROWN, DyeColor.GREEN, DyeColor.RED, DyeColor.BLACK);
+
     protected final DyeColor color;
 
     protected SolarSailBlock(Properties properties, @Nullable DyeColor color) {
@@ -136,6 +143,10 @@ public class SolarSailBlock extends WrenchableDirectionalBlock {
         // Check for dye -> sail dyeing
         if (stack.getItem() instanceof net.minecraft.world.item.DyeItem dyeItem) {
             DyeColor dyeColor = dyeItem.getDyeColor();
+            // Skip modded dye colors we don't have sails for, to avoid crashing on the switch
+            if (!SUPPORTED_DYE_COLORS.contains(dyeColor)) {
+                return InteractionResult.PASS;
+            }
 
             if (!world.isClientSide) {
                 world.playSound(null, pos, SoundEvents.DYE_USE, SoundSource.BLOCKS, 1.0f,
