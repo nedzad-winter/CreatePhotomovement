@@ -8,6 +8,9 @@ pluginManagement {
 
 rootProject.name = 'create-photomovement'
 
+// Headless tests for the shared logic. Not a mod target -- see common/build.gradle.
+include 'common'
+
 include 'neoforge:1201'
 include 'neoforge:1211'
 // include 'forge:1201'

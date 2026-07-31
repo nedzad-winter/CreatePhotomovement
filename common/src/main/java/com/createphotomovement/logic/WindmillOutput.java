@@ -75,11 +75,17 @@ public final class WindmillOutput {
      * in the README.
      *
      * <p>
-     * The RPM used for that division is floored at {@link #MIN_RPM} but is
-     * <em>not</em> capped at {@link #MAX_RPM}, unlike
-     * {@link #generatedSpeed}. Above the cap the division therefore keeps
-     * shrinking the per-RPM figure while the actual speed stays at 16, which is
-     * what keeps the total SU growing linearly with the sail count.
+     * For regular sails this works out to a flat {@link #SU_PER_BRACKET} per RPM
+     * at every sail count, because the bracket count appears in both the
+     * numerator and the divisor. The total the player sees grows only because the
+     * <em>speed</em> grows with the sail count.
+     *
+     * <p>
+     * That has a consequence worth knowing: {@link #generatedSpeed} caps at
+     * {@link #MAX_RPM}, so the total stress capacity saturates once the sails fill
+     * 16 brackets (128 sails at Create's default). Sails beyond that add nothing
+     * at all. Whether that cap is intended is an open question -- see
+     * {@code docs/common-code-analysis.md}.
      */
     public static float stressCapacityPerRpm(int regularSails, int solarSails, int sailsPerBracket,
             float solarMultiplier) {
