@@ -1,8 +1,5 @@
-# Gradle
-gradle
+# Gradle caches (the wrapper itself -- gradle/, gradlew, gradlew.bat -- is tracked)
 .gradle
-gradlew
-gradlew.bat
 
 # Build outputs
 build
@@ -16,20 +13,26 @@ run
 *.iml
 
 # Log and error files
-*.txt
 *.log
+assemble_log.txt
+compile_log.txt
+build_output.txt
+build_log.txt
+compile_errors.txt
 
 # OS files
 .DS_Store
 Thumbs.db
+
+# Local scratch / reference copies, not part of the mod
 port_advanced_generators.ps1
-Current-Dev-Status.md
 _Create*
 _minecraft-assets-master
-tools/*
 .brain*
-.claude*
-.agent*
+
+# Agent working directories
+.claude/
+.agent/
 
 # Publish script (contains API tokens)
 tools/publish_mod.ps1

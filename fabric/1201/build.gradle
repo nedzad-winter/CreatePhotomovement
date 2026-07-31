@@ -16,8 +16,7 @@ repositories {
     maven { url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven" } // Forge Config API Port
     maven { url = "https://maven.jamieswhiteshirt.com/libs-release" } // Reach Entity Attributes
     maven { url = "https://maven.blamejared.com" } // JEI
-    maven { url = "https://api.modrinth.com/maven" } // LazyDFU
-    maven { url = "https://cursemaven.com" } // Jade
+    maven { url = "https://api.modrinth.com/maven" } // LazyDFU, Jade
 }
 
 loom {

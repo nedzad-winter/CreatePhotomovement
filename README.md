@@ -95,8 +95,12 @@ Specialized sails that harness sunlight for boosted power.
 |----------|-----------|--------|
 | NeoForge | 1.21.1 | ✅ |
 | NeoForge | 1.20.1 | ✅ |
-| Forge | 1.20.1 | ✅ |
 | Fabric | 1.20.1 | ✅ |
+| Forge | 1.20.1 | 📋 planned |
+
+> The NeoForge 1.20.1 build targets the Forge 1.20.1 API and may load under Forge,
+> but there is no dedicated Forge build and it is not tested. Treat it as unsupported
+> until a `forge/1201` target exists.
 
 ## Requirements
 
