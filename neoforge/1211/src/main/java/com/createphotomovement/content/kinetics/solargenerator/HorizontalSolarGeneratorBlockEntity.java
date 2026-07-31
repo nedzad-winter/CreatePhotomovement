@@ -1,17 +1,14 @@
 package com.createphotomovement.content.kinetics.solargenerator;
 
 import com.createphotomovement.infrastructure.config.PMConfigs;
+import com.createphotomovement.logic.HorizontalSolarOutput;
+import com.createphotomovement.logic.SolarGeneratorOutput;
 import com.simibubi.create.content.kinetics.base.GeneratingKineticBlockEntity;
 
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.Mth;
 import net.minecraft.world.level.LightLayer;
-import net.minecraft.world.level.block.Block;
-import net.minecraft.world.level.block.Blocks;
-import net.minecraft.world.level.block.CarpetBlock;
-import net.minecraft.world.level.block.SnowLayerBlock;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -19,7 +16,7 @@ public class HorizontalSolarGeneratorBlockEntity extends GeneratingKineticBlockE
 
     private float currentStressCapacity;
     private int updateTimer;
-    private int warmup = 10;
+    private boolean firstTick = true;
 
     public HorizontalSolarGeneratorBlockEntity(BlockEntityType<?> type, BlockPos pos, BlockState state) {
         super(type, pos, state);
@@ -30,6 +27,15 @@ public class HorizontalSolarGeneratorBlockEntity extends GeneratingKineticBlockE
     @Override
     public void onLoad() {
         super.onLoad();
+        // Force recalculation and network update on chunk load
+        if (level != null && !level.isClientSide) {
+            // Reset firstTick to ensure we update on next tick
+            firstTick = true;
+            // Force immediate stress recalculation
+            updateStressCapacity();
+            // Always force network update on load to sync with kinetic network
+            updateGeneratedRotation();
+        }
     }
 
     /**
@@ -49,13 +55,15 @@ public class HorizontalSolarGeneratorBlockEntity extends GeneratingKineticBlockE
         if (!canGeneratePower()) {
             return 0;
         }
-        float speed = PMConfigs.server().generationSpeed.get();
-        // Reduce speed by half during rain
-        if (level != null && level.isRainingAt(
-                worldPosition.relative(getBlockState().getValue(HorizontalSolarGeneratorBlock.HORIZONTAL_FACING)))) {
-            speed = speed / 2;
-        }
-        return speed;
+        boolean raining = level != null && level.isRainingAt(
+                worldPosition.relative(getBlockState().getValue(HorizontalSolarGeneratorBlock.HORIZONTAL_FACING)));
+        return SolarGeneratorOutput.generatedSpeed(PMConfigs.server().generationSpeed.get(), speedMultiplier(),
+                raining);
+    }
+
+    /** Speed multiplier over the basic generator. Overridden by the advanced variant. */
+    protected int speedMultiplier() {
+        return SolarGeneratorOutput.BASIC_MULTIPLIER;
     }
 
     @Override
@@ -72,12 +80,13 @@ public class HorizontalSolarGeneratorBlockEntity extends GeneratingKineticBlockE
         if (level == null || level.isClientSide)
             return;
 
-        if (warmup > 0) {
-            warmup--;
-            if (warmup == 0) {
-                // Initial update after placement/load delay
-                updateStressCapacity();
-            }
+        // Immediate update on first tick (handles placement)
+        if (firstTick) {
+            firstTick = false;
+            updateStressCapacity();
+            // Force network update even if capacity didn't change
+            updateGeneratedRotation();
+            notifyUpdate();
             return;
         }
 
@@ -111,59 +120,30 @@ public class HorizontalSolarGeneratorBlockEntity extends GeneratingKineticBlockE
         BlockState state = getBlockState();
         Direction facing = state.getValue(HorizontalSolarGeneratorBlock.HORIZONTAL_FACING);
 
-        // Base config capacity
-        float base = PMConfigs.server().stressCapacity.get();
-        float min = 8;
-        float newCapacity = min;
+        float newCapacity = HorizontalSolarOutput.stressCapacity(SolarFacings.of(facing), level.getDayTime(),
+                PMConfigs.server().stressCapacity.get(), hasDistantObstruction(facing));
 
-        // Check if the block is 2 to 10 blocks away we set the RPM to the minimum
-        boolean distantObstruction = false;
-        for (int i = 2; i <= 10; i++) {
-            BlockPos checkPos = worldPosition.relative(facing, i);
-            BlockState checkState = level.getBlockState(checkPos);
-            // only for solid blocks
-            if (checkState.getLightBlock(level, checkPos) > 0) {
-                distantObstruction = true;
-                break;
-            }
-        }
-
-        if (distantObstruction) {
-            newCapacity = min;
-        } else {
-            long time = level.getDayTime() % 24000;
-            float peak = 4 * base;
-
-            // Clamp time to 0-12000 for curve calculation.
-            long daylightTime = Math.min(time, 12000);
-            float ratio = (float) daylightTime / 12000.0f; // 0.0 to 1.0
-            ratio = Mth.clamp(ratio, 0f, 1f);
-
-            if (facing == Direction.EAST) {
-                // Starts high, goes low
-                float factor = (1 - ratio) * (1 - ratio);
-                newCapacity = min + (peak - min) * factor;
-            } else if (facing == Direction.WEST) {
-                // Starts low, goes high
-                float factor = ratio * ratio;
-                newCapacity = min + (peak - min) * factor;
-            } else {
-                // North/South - Default to min
-                newCapacity = min;
-            }
-        }
-
-        // Round to nearest integer to avoid floating point numbers
-        newCapacity = Math.round(newCapacity);
-
-        // If capacity changes OR if it's our first real check after 0-init, update.
-        // Math.abs handles normal changes.
-        // If current is 0 (Clean Start) and new is 200, we update.
         if (Math.abs(newCapacity - currentStressCapacity) > 0.01f) {
             currentStressCapacity = newCapacity;
             updateGeneratedRotation();
             notifyUpdate();
         }
+    }
+
+    /**
+     * Whether a solid block stands in the panel's line of sight, between
+     * {@link HorizontalSolarOutput#OBSTRUCTION_SCAN_FROM} and
+     * {@link HorizontalSolarOutput#OBSTRUCTION_SCAN_TO} blocks away. The block
+     * directly in front is handled by {@link #canGeneratePower()} instead.
+     */
+    private boolean hasDistantObstruction(Direction facing) {
+        for (int i = HorizontalSolarOutput.OBSTRUCTION_SCAN_FROM; i <= HorizontalSolarOutput.OBSTRUCTION_SCAN_TO; i++) {
+            BlockPos checkPos = worldPosition.relative(facing, i);
+            BlockState checkState = level.getBlockState(checkPos);
+            if (checkState.getLightBlock(level, checkPos) > 0)
+                return true;
+        }
+        return false;
     }
 
     protected boolean canGeneratePower() {
@@ -175,10 +155,9 @@ public class HorizontalSolarGeneratorBlockEntity extends GeneratingKineticBlockE
         BlockPos frontPos = worldPosition.relative(facing);
 
         // Check if skylight can reach the block
-        // Using light threshold of 12
         int skyLight = level.getBrightness(LightLayer.SKY, frontPos);
         int currentSkyLight = skyLight - level.getSkyDarken();
-        if (currentSkyLight < 12) {
+        if (currentSkyLight < SolarGeneratorOutput.MIN_SKY_LIGHT) {
             return false;
         }
 

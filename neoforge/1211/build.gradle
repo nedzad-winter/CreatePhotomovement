@@ -7,6 +7,12 @@ group = 'com.createphotomovement'
 version = mod_version
 base.archivesName = "createphotomovement-neoforge-${minecraft_version}"
 
+// Code shared by all three targets. Each target compiles these same files against its
+// own Minecraft version and loader, so anything loader-specific here breaks the other
+// builds immediately -- that is the point.
+sourceSets.main.java.srcDir rootProject.file('common/src/main/java')
+sourceSets.main.resources.srcDir rootProject.file('common/src/main/resources')
+
 repositories {
     mavenLocal()
     mavenCentral()

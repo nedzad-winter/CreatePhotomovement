@@ -292,7 +292,70 @@ Override entfernen oder auf die Solar-Variante korrigieren? Sie gibt aktuell
 
 ---
 
-## Vorschlag für Phase 2b/2c
+---
+
+## Ergebnis von Phase 2b/2c (nachgetragen)
+
+Umgesetzt. Jedes Ziel ging von **27 auf 21** eigene Java-Dateien; `common/` enthält
+13 Dateien, davon 6 reine Rechenklassen ohne jeden Minecraft-Import.
+
+### Nach `common/` verschoben
+
+| Datei | Anmerkung |
+|---|---|
+| `logic/DayCycle` | Tageszeit, Nacht, Tageslichtquotient, `clamp` ohne `Mth` |
+| `logic/Weather` | `CLEAR` / `RAIN` / `THUNDER` aus Minecrafts zwei Booleans |
+| `logic/SolarFacing` | `EAST` / `WEST` / `OTHER` ohne `Direction` |
+| `logic/SolarGeneratorOutput` | Drehzahl, Multiplikatoren, `MIN_SKY_LIGHT` |
+| `logic/HorizontalSolarOutput` | Ertragskurve, Verdeckungs-Scanbereich |
+| `logic/WindmillOutput` | Segel → Drehzahl und SU, Solar-Multiplikator |
+| `content/.../SolarFacings` | Brücke `Direction` → `SolarFacing` (einziger MC-Import dieser Kette) |
+| `content/.../SolarGeneratorBlockEntity` | vereinheitlicht, siehe E1 und E2 |
+| `content/.../AdvSolarGeneratorBlockEntity` | nur noch ein Multiplikator-Override |
+| `content/.../HorzAdvSolarGeneratorBlockEntity` | dito |
+| `content/.../SolarGeneratorRenderer` | unbenutzter Import entfernt |
+| `content/.../HorizontalSolarGeneratorRenderer` | Property-Name vereinheitlicht |
+| `infrastructure/config/PMServer` | war bereits identisch |
+
+Die `.floatValue()`-Frage aus C2 ist damit **empirisch beantwortet**: die
+vereinheitlichte Fassung kompiliert für alle drei Ziele, es war (C) und nicht (B).
+
+### Getroffene Entscheidungen
+
+| # | Entscheidung | Umgesetzt in |
+|---|---|---|
+| E1 | Lichtdurchlässige Blöcke blockieren **nicht** (Fabric-Verhalten) | `getLightBlock`-Prüfung aus beiden NeoForge-Zielen entfernt |
+| E2 | Drehzahlvergleich **und** `firstTick` kombiniert | gemeinsame `SolarGeneratorBlockEntity.tick()` |
+| E3 | `firstTick` statt `warmup`-Zähler | nf1211 an nf1201/Fabric angeglichen |
+| E5 | `solarTick()` nur serverseitig | nf1211 an nf1201/Fabric angeglichen |
+| E6 | Fabrics `getBlockEntityClass()` bleibt unverändert | — |
+
+### Blieb dreifach — und warum
+
+- **9 Klassen (A)**: `AllBlocks`, `AllItems`, `AllBlockEntityTypes`,
+  `AllContraptionTypes`, `AllCreativeTabs`, `CreatePhotomovement`,
+  `CreatePhotomovementClient`, `PMConfigs`, `PhotomovementPonderPlugin`
+- **5 Block-Klassen (B + D)**: `use()`/`useItemOn()` **und** die
+  `AllBlocks.X.get()`-Form
+- **3 BlockEntities/Contraption (B)**: `HolderLookup.Provider` in `read`/`write`.
+  Ihre Rechenlogik ruft jetzt aber `common/logic` auf, die Drift sitzt also nur
+  noch im NBT-Gerüst.
+- **3 Ponder-Scene-Klassen (D)**: nur wegen `AllBlocks.X.get()`
+- **`SolarWindmillBearingBlock` (D)**: dito
+
+### Weiterhin offen
+
+- **E4** — Segelzahlen beim Abbau der Contraption: bewusst nicht angefasst,
+  weil beide Varianten einen echten, aber unterschiedlichen Fall lösen.
+- `HorizontalSolarGeneratorBlockEntity`: nf1211 setzt in
+  `calculateAddedStressCapacity()` weiterhin `lastCapacityProvided` statt die
+  Kapazität bei 0 zu klemmen, und schreibt NBT nur bei `clientPacket`. Beides nicht
+  angetastet — der Kommentar nennt es »vital for correct Network Delta updates«, und
+  ohne GameTest lässt sich nicht belegen, dass ein Angleichen 1211 nicht bricht.
+
+---
+
+## Ursprünglicher Vorschlag für Phase 2b/2c
 
 Das Ergebnis der Analyse verschiebt den Schwerpunkt: **direkt verschiebbar sind nur
 6 Klassen**, davon 5 mit offenen Fragen. Der große Gewinn liegt woanders —

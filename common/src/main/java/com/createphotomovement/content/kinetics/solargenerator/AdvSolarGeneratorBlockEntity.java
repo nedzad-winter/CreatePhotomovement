@@ -1,6 +1,7 @@
 package com.createphotomovement.content.kinetics.solargenerator;
 
-import com.createphotomovement.infrastructure.config.PMConfigs;
+import com.createphotomovement.logic.SolarGeneratorOutput;
+
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
@@ -12,16 +13,7 @@ public class AdvSolarGeneratorBlockEntity extends SolarGeneratorBlockEntity {
     }
 
     @Override
-    public float getGeneratedSpeed() {
-        if (!canGeneratePower())
-            return 0;
-
-        float generatedSpeed = PMConfigs.server().generationSpeed.get() * 2;
-
-        // Reduce speed by half during rain
-        if (level != null && level.isRainingAt(worldPosition.above())) {
-            generatedSpeed = generatedSpeed / 2;
-        }
-        return generatedSpeed;
+    protected int speedMultiplier() {
+        return SolarGeneratorOutput.ADVANCED_MULTIPLIER;
     }
 }
