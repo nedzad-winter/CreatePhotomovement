@@ -18,6 +18,17 @@ repositories {
     mavenCentral()
     maven { url = "https://maven.createmod.net" } // Create, Ponder, Flywheel
     maven { url = "https://maven.ithundxr.dev/snapshots" } // Registrate
+
+    // Needed for Create's transitive RUNTIME dependencies, not for compiling. A plain
+    // `gradlew build` resolves only the compile classpath and stays green without
+    // these; the run configurations resolve the runtime classpath and do not.
+    maven { url = "https://maven.theillusivec4.top/" } // Curios
+    maven { url = "https://maven.blamejared.com" } // JEI
+    maven { url = "https://api.modrinth.com/maven" } // Modrinth
+    maven { url = "https://maven.architectury.dev/" } // Architectury
+    maven { url = "https://maven.saps.dev/minecraft" } // FTB Mods
+    maven { url = "https://maven.squiddev.cc" } // CC: Tweaked
+    maven { url = "https://cursemaven.com" } // CurseMaven
 }
 
 dependencies {
