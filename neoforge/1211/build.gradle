@@ -61,6 +61,14 @@ neoForge {
             data()
             programArguments.addAll '--mod', mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
         }
+
+        // Headless in-game tests. Boots a dedicated server, runs every @GameTest in
+        // our namespace and exits with a non-zero code if any of them fail.
+        //   gradlew :neoforge:1211:runGameTestServer
+        gameTestServer {
+            type = "gameTestServer"
+            systemProperty 'neoforge.enabledGameTestNamespaces', mod_id
+        }
     }
 }
 

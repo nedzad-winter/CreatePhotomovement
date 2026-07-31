@@ -38,6 +38,15 @@ legacyForge {
             gameDirectory = project.file('run/server')
         }
 
+        // Headless in-game tests. NeoForge 20.1 still uses the Forge package and
+        // property names, hence `forge.` rather than `neoforge.` here.
+        //   gradlew :neoforge:1201:runGameTestServer
+        gameTestServer {
+            type = "gameTestServer"
+            gameDirectory = project.file('run/gametest')
+            systemProperty 'forge.enabledGameTestNamespaces', mod_id
+        }
+
         data {
             data()
             gameDirectory = project.file('run')

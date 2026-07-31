@@ -40,6 +40,18 @@ loom {
             ideConfigGenerated(true)
             runDir("run/server")
         }
+
+        // Headless in-game tests, the Fabric API equivalent of NeoForge's
+        // gameTestServer run.
+        //   gradlew :fabric:1201:runGametest
+        gametest {
+            server()
+            setConfigName("Game Test")
+            ideConfigGenerated(false)
+            runDir("build/gametest")
+            vmArg("-Dfabric-api.gametest")
+            vmArg("-Dfabric-api.gametest.report-file=${project.layout.buildDirectory.get()}/gametest-report.xml")
+        }
     }
 }
 

@@ -1,6 +1,7 @@
 # Create Photomovement
 
 <p align="center">
+  <a href="../../actions/workflows/build.yml"><img src="../../actions/workflows/build.yml/badge.svg" alt="Build"></a>
   <img src="https://img.shields.io/badge/Minecraft-1.20.1%20|%201.21.1-green" alt="Minecraft Versions">
   <img src="https://img.shields.io/badge/Forge%20|%20NeoForge%20|%20Fabric-orange" alt="Mod Loaders">
   <img src="https://img.shields.io/badge/Create-6.0+-blue" alt="Create Mod">
