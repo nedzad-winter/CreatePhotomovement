@@ -143,17 +143,70 @@ public class SolarGeneratorGameTests {
         SolarAssertions.setClear(helper);
         helper.setBlock(GENERATOR, basic());
 
+        // One linear sequence. Nesting a second startSequence inside a thenExecute
+        // would let the outer one succeed before the inner check ever ran.
+        float[] whenClear = new float[1];
+
         helper.startSequence()
                 .thenIdle(SETTLE)
-                .thenExecuteAfter(1, () -> {
-                    float clear = Math.abs(SolarAssertions.generatedSpeedAt(helper, GENERATOR));
-                    SolarAssertions.setRaining(helper);
-                    helper.startSequence()
-                            .thenIdle(SETTLE)
-                            .thenExecute(() -> SolarAssertions.assertSpeed(helper, GENERATOR, clear / 2f,
-                                    "Rain should halve the output"))
-                            .thenSucceed();
-                })
+                .thenExecute(() -> whenClear[0] = Math.abs(SolarAssertions.generatedSpeedAt(helper, GENERATOR)))
+                .thenExecute(() -> SolarAssertions.setRaining(helper))
+                .thenIdle(SETTLE)
+                .thenExecute(() -> SolarAssertions.assertSpeed(helper, GENERATOR, whenClear[0] / 2f,
+                        "Rain should halve the output"))
+                .thenSucceed();
+    }
+
+    /**
+     * The regression from an earlier version: stress capacity accumulating across
+     * loads instead of staying put. A server restart cannot be driven from a game
+     * test; the day/night cycle can, and that is where it showed. The manual restart
+     * checks are in {@code docs/test-world.md}.
+     */
+    @GameTest(template = PLATFORM, timeoutTicks = 400)
+    public static void capacitySurvivesDayNightCycles(GameTestHelper helper) {
+        SolarAssertions.setDayTime(helper, SolarAssertions.MIDDAY);
+        SolarAssertions.setClear(helper);
+        helper.setBlock(GENERATOR, basic());
+
+        float[] baseline = new float[1];
+
+        helper.startSequence()
+                .thenIdle(SETTLE)
+                .thenExecute(() -> baseline[0] = SolarAssertions.stressCapacityAt(helper, GENERATOR))
+                .thenExecute(() -> SolarAssertions.setDayTime(helper, SolarAssertions.MIDNIGHT))
+                .thenIdle(SETTLE)
+                .thenExecute(() -> SolarAssertions.setDayTime(helper, SolarAssertions.MIDDAY))
+                .thenIdle(SETTLE)
+                .thenExecute(() -> SolarAssertions.assertCapacity(helper, GENERATOR, baseline[0],
+                        "Capacity after one night/day cycle"))
+                .thenExecute(() -> SolarAssertions.setDayTime(helper, SolarAssertions.MIDNIGHT))
+                .thenIdle(SETTLE)
+                .thenExecute(() -> SolarAssertions.setDayTime(helper, SolarAssertions.MIDDAY))
+                .thenIdle(SETTLE)
+                .thenExecute(() -> SolarAssertions.assertCapacity(helper, GENERATOR, baseline[0],
+                        "Capacity after two night/day cycles -- if it has grown, the stress capacity "
+                                + "is accumulating instead of being replaced"))
+                .thenSucceed();
+    }
+
+    @GameTest(template = PLATFORM, timeoutTicks = 400)
+    public static void advancedCapacitySurvivesDayNightCycles(GameTestHelper helper) {
+        SolarAssertions.setDayTime(helper, SolarAssertions.MIDDAY);
+        SolarAssertions.setClear(helper);
+        helper.setBlock(GENERATOR, advanced());
+
+        float[] baseline = new float[1];
+
+        helper.startSequence()
+                .thenIdle(SETTLE)
+                .thenExecute(() -> baseline[0] = SolarAssertions.stressCapacityAt(helper, GENERATOR))
+                .thenExecute(() -> SolarAssertions.setDayTime(helper, SolarAssertions.MIDNIGHT))
+                .thenIdle(SETTLE)
+                .thenExecute(() -> SolarAssertions.setDayTime(helper, SolarAssertions.MIDDAY))
+                .thenIdle(SETTLE)
+                .thenExecute(() -> SolarAssertions.assertCapacity(helper, GENERATOR, baseline[0],
+                        "Advanced generator capacity after a night/day cycle"))
                 .thenSucceed();
     }
 

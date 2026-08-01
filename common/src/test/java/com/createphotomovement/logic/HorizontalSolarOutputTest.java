@@ -117,6 +117,32 @@ class HorizontalSolarOutputTest {
     }
 
     @Test
+    @DisplayName("an obstruction drops output to the floor, NOT to half")
+    void obstructionIsTheFloorNotAHalving() {
+        // Decided 2026-08-01: shading pins the output at MIN_CAPACITY rather than
+        // halving whatever the panel would otherwise make. At dawn an east-facing
+        // panel therefore falls from 64 to 8, not to 32. Spelled out here because
+        // "reduced output" in the README reads like a halving and someone will
+        // eventually try to implement it that way.
+        float unobstructedDawn = capacity(SolarFacing.EAST, 0);
+        float obstructedDawn = HorizontalSolarOutput.stressCapacity(SolarFacing.EAST, 0, BASE, true);
+
+        assertEquals(64f, unobstructedDawn, 1e-6);
+        assertEquals(8f, obstructedDawn, 1e-6);
+        assertTrue(obstructedDawn < unobstructedDawn / 2f,
+                "an obstruction should cost more than half the output");
+    }
+
+    @Test
+    @DisplayName("an obstructed panel makes the same as one facing north")
+    void obstructedMatchesNonTrackingFacing() {
+        for (long t = 0; t <= DayCycle.DAYLIGHT_END; t += 1500)
+            assertEquals(capacity(SolarFacing.OTHER, t),
+                    HorizontalSolarOutput.stressCapacity(SolarFacing.EAST, t, BASE, true), 1e-6,
+                    "obstructed east should match north at dayTime " + t);
+    }
+
+    @Test
     @DisplayName("after dusk the curve freezes rather than reversing")
     void nightFreezesTheCurve() {
         // daylightRatio clamps at 1, so a west-facing panel still reports its peak all

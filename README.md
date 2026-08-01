@@ -28,8 +28,11 @@ A directional variant that tracks the sun's position.
   - **East Facing**: Peak generation in the morning
   - **West Facing**: Peak generation in the evening
 - **Smart Obstruction System**:
-  - **Block touching face**: Stops generation (0 RPM)
-  - **Block within 2-10 blocks**: Reduced output
+  - **Block touching face**: Stops generation entirely
+  - **Block within 2-10 blocks**: Output drops to the minimum of 8 SU/RPM —
+    the same as a panel facing north or south. Not a halving.
+  - **Blocks 11 or more away**: No effect
+  - **Clear glass never obstructs**; tinted glass, leaves and ice do
 - **Weather**: Speed is halved during rain
 
 ### Advanced Solar Generator (NEW in 0.2.0!)

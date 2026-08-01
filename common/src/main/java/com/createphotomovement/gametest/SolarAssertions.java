@@ -105,6 +105,24 @@ public final class SolarAssertions {
                     + " RPM");
     }
 
+    /**
+     * Asserts the stress capacity contributed at a position.
+     *
+     * <p>
+     * Mainly used to check that the value stays put across day/night cycles. An
+     * earlier version accumulated it instead of replacing it, so a capacity that
+     * has <em>grown</em> is called out separately -- that is the shape the bug had.
+     */
+    public static void assertCapacity(GameTestHelper helper, BlockPos relativePos, float expected, String why) {
+        float actual = stressCapacityAt(helper, relativePos);
+        if (Math.abs(actual - expected) <= 0.01f)
+            return;
+        String direction = actual > expected
+                ? " (it grew -- capacity is accumulating rather than being replaced)"
+                : "";
+        throw new GameTestAssertException(why + ": expected " + expected + " SU/RPM but got " + actual + direction);
+    }
+
     public static void assertSpeed(GameTestHelper helper, BlockPos relativePos, float expected, String why) {
         float actual = generatedSpeedAt(helper, relativePos);
         if (Math.abs(actual - expected) > 0.001f)

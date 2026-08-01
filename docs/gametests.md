@@ -4,6 +4,10 @@ Die Tests aus Phase 3 laufen ohne Minecraft und prüfen Rechenlogik und Ressourc
 Diese hier prüfen das, was wirklich eine Welt braucht: echte Himmelssicht, echte
 Blockplatzierung, Contraption-Zusammenbau.
 
+> **Bauanleitung für die Testwelt und die manuelle Prüfliste:
+> [docs/test-world.md](test-world.md).** Dieses Dokument hier beschreibt Aufbau und
+> Stand der Tests; dort steht, was du im Client tun musst.
+
 ## Was du tun musst: die Strukturvorlage bauen
 
 **Das ist der einzige Schritt, den ich nicht für dich erledigen kann.** Eine
@@ -38,10 +42,13 @@ sie also genau einmal.
 3. **Testbereich erzeugen**
 
    ```
-   /test create solar_platform 9 5 9
+   /test create solar_platform 16 8 9
    ```
 
-   Das setzt einen Strukturblock und markiert einen 9×5×9-Bereich.
+   16 lang, 8 hoch, 9 breit. Die Länge ist nötig, weil die Beschattungstests des
+   horizontalen Generators eine freie Bahn von 11 Blöcken vor dem Panel brauchen —
+   nur so lässt sich auch prüfen, dass ein Block in Abstand 11 *keine* Wirkung mehr
+   hat.
 
 4. **Boden legen**
 
@@ -137,9 +144,16 @@ Alle im Repo gegen die tatsächlichen Artefakte geprüft, nicht aus der Erinneru
 
 ## Stand
 
-Umgesetzt für **neoforge/1211**: neun Szenarien für die vertikalen Generatoren —
-freier Himmel, Stein, Glas, Teppich, Schneeschicht, Nacht, Regen, Advanced gegen
-Basis, und eine Farbvariante gegen die ungefärbte.
+Umgesetzt für **neoforge/1211**: 24 Szenarien in zwei Klassen.
+
+`SolarGeneratorGameTests` — vertikale Generatoren: freier Himmel, Stein, Glas,
+Teppich, Schneeschicht, Nacht, Regen, Advanced gegen Basis, Farbvariante gegen
+ungefärbte, und SU-Stabilität über zwei Tag-Nacht-Zyklen.
+
+`HorizontalSolarGameTests` — horizontale Generatoren: freier Himmel, Nacht,
+Block direkt davor, Glas direkt davor, Verdeckung in Abstand 2 und 8, Abstand 11
+ohne Wirkung, Glas in Abstand 8 ohne Wirkung, Ost-Peak am Morgen, West-Peak am
+Abend, Nord immer am Minimum, Advanced-Multiplikator, und SU-Stabilität.
 
 Der Glas-Test ist der interessante: er schreibt die Entscheidung fest, dass
 lichtdurchlässige Blöcke die Erzeugung **nicht** blockieren. Das war der Punkt, an
@@ -155,13 +169,12 @@ Vorlage:
 
 ```
 [GameTestHooks]: Enabled Gametest Namespaces: [createphotomovement]
-[GameTestServer]: Started game test server
-[GameTestServer]: 9 tests are now running at position -9176360, -59, 2380497!
+[GameTestServer]: 24 tests are now running at position 505834, -59, 6357728!
 java.lang.IllegalStateException: Missing test structure: createphotomovement:solar_platform
 ```
 
 Run-Konfiguration, Namespace-Property, Annotationen und Testerkennung sind damit
-bestätigt. Sobald die `.nbt` liegt, laufen die neun Tests durch.
+bestätigt. Sobald die `.nbt` liegt, laufen die 24 Tests durch.
 
 ### Noch offen
 
