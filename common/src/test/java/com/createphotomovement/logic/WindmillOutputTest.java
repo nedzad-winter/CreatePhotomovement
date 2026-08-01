@@ -72,6 +72,78 @@ class WindmillOutputTest {
         void zeroSailsReversed() {
             assertEquals(-WindmillOutput.MIN_RPM, WindmillOutput.generatedSpeed(0, 0, BRACKET, REVERSE), 1e-6);
         }
+
+    }
+
+    /**
+     * At night a solar windmill bearing is an ordinary windmill bearing. It loses the
+     * solar bonus, not its rotation.
+     *
+     * <p>
+     * This is the one place where the bearing differs from the solar generators, which
+     * do stop at night, so it is worth its own group.
+     */
+    @Nested
+    @DisplayName("at night")
+    class AtNight {
+
+        private static final long NOON = 6000L;
+        private static final long MIDNIGHT = 18000L;
+
+        private float speed(int regular, int solar) {
+            return WindmillOutput.generatedSpeed(regular, solar, BRACKET, FORWARD);
+        }
+
+        private float totalSu(int regular, int solar, long dayTime) {
+            float multiplier = WindmillOutput.solarMultiplier(true, dayTime, Weather.CLEAR);
+            float perRpm = WindmillOutput.stressCapacityPerRpm(regular, solar, BRACKET, multiplier);
+            return perRpm * Math.abs(speed(regular, solar));
+        }
+
+        @Test
+        @DisplayName("the bearing keeps turning")
+        void keepsTurning() {
+            assertTrue(speed(0, 32) > 0, "a solar bearing must not stop at night");
+            assertEquals(4f, speed(0, 32), 1e-6);
+        }
+
+        @Test
+        @DisplayName("32 solar sails: 4096 SU by day, 2048 SU at night, same 4 RPM")
+        void losesTheBonusButNotTheSpeed() {
+            assertEquals(4096f, totalSu(0, 32, NOON), 1e-3);
+            assertEquals(2048f, totalSu(0, 32, MIDNIGHT), 1e-3);
+        }
+
+        @Test
+        @DisplayName("solar sails are worth exactly as much as regular sails")
+        void behavesLikeAPlainWindmill() {
+            // The defining statement: at night the whole thing is a normal windmill.
+            for (int sails : new int[] { 8, 16, 32, 64, 128 }) {
+                assertEquals(totalSu(sails, 0, MIDNIGHT), totalSu(0, sails, MIDNIGHT), 1e-3,
+                        sails + " solar sails should match " + sails + " regular sails at night");
+                assertEquals(speed(sails, 0), speed(0, sails), 1e-6,
+                        "speed should not depend on the kind of sail");
+            }
+        }
+
+        @Test
+        @DisplayName("a mixed array loses only the solar half of its bonus")
+        void mixedArrayAtNight() {
+            // 8 regular + 8 solar: 1536 SU in daylight, 1024 once the bonus is gone.
+            assertEquals(1536f, totalSu(8, 8, NOON), 1e-3);
+            assertEquals(1024f, totalSu(8, 8, MIDNIGHT), 1e-3);
+        }
+
+        @Test
+        @DisplayName("the bonus is gone for the whole night, not just at midnight")
+        void acrossTheWholeNight() {
+            for (long t = DayCycle.NIGHT_START; t < DayCycle.NIGHT_END; t += 500) {
+                assertEquals(WindmillOutput.MULTIPLIER_NONE,
+                        WindmillOutput.solarMultiplier(true, t, Weather.CLEAR), 1e-6,
+                        "still bonused at day time " + t);
+                assertTrue(speed(0, 32) > 0, "stopped turning at day time " + t);
+            }
+        }
     }
 
     @Nested

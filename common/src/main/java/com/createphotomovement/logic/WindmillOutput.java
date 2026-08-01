@@ -8,6 +8,15 @@ package com.createphotomovement.logic;
  * sails adds one RPM and {@link #SU_PER_BRACKET} stress units. Solar sails earn
  * the same brackets but their contribution is scaled by
  * {@link #solarMultiplier}.
+ *
+ * <p>
+ * <strong>The bearing does not stop at night.</strong> Unlike the solar
+ * generators, which produce nothing without sunlight, a solar windmill bearing
+ * at night is simply an ordinary windmill bearing: same speed, and solar sails
+ * worth exactly as much as regular ones. That falls out of the split below --
+ * {@link #generatedSpeed} takes neither a day time nor a weather, so rotation
+ * cannot depend on them, and only {@link #solarMultiplier} knows the time.
+ * Keep it that way.
  */
 public final class WindmillOutput {
 

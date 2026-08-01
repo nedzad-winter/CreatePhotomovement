@@ -168,6 +168,37 @@ bestätigt. Sobald die `.nbt` liegt, laufen die neun Tests durch.
 - Die `.nbt`-Vorlage (siehe oben) — ohne sie laufen die NeoForge-Tests nicht.
 - Horizontale Generatoren: Ertrag je Blickrichtung zu verschiedenen Tageszeiten,
   Verdeckung durch eine Wand in Abstand 2 und 10.
-- Solarsegel + Windmühlenlager: Contraption-Zusammenbau, Drehung bei Tag, Stillstand
-  bei Nacht.
+- Solarsegel + Windmühlenlager: Contraption-Zusammenbau, und dass das Lager nachts
+  **weiterdreht** — siehe unten.
 - Portierung nach neoforge/1201 und fabric/1201.
+
+## Wichtig: das Windmühlenlager steht nachts NICHT still
+
+Für die Solargeneratoren gilt „nachts kein Ertrag". Für das Solar-Windmühlenlager
+gilt das ausdrücklich **nicht**:
+
+> Nachts ist der Solar-Windmill-Generator ein ganz normales Windmühlenlager.
+
+Also:
+
+| | Tag (klar, freier Himmel) | Nacht |
+|---|---|---|
+| Drehzahl | von der Segelzahl abhängig | **unverändert, gleiche Drehzahl** |
+| Solarbonus | ×2,0 | ×1,0 — fällt weg |
+| Gesamt-SU | doppelt | wie eine gewöhnliche Windmühle gleicher Segelzahl |
+
+Der Code macht das bereits richtig, und zwar durch seinen Aufbau:
+`WindmillOutput.generatedSpeed(...)` nimmt **überhaupt keinen** Zeit- oder
+Wetterparameter entgegen — die Drehzahl kann von der Tageszeit gar nicht abhängen.
+Nur `solarMultiplier(...)` kennt die Uhrzeit, und der wirkt ausschließlich auf die
+Stress-Kapazität.
+
+Festgehalten wird das von `WindmillOutputTest`:
+
+- `stillTurnsAtNight` — gleiche Drehzahl bei Tag und Nacht
+- `atNightBehavesLikeAPlainWindmill` — Solarsegel liefern nachts exakt so viel wie
+  dieselbe Zahl gewöhnlicher Segel
+
+Der GameTest für die Contraption muss diese Erwartung übernehmen: nachts prüft er
+**Weiterdrehen bei reduziertem SU**, nicht Stillstand. Ein Test, der Stillstand
+erwartet, wäre grün, obwohl das Verhalten falsch wäre.
