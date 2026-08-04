@@ -8,97 +8,24 @@ Blockplatzierung, Contraption-Zusammenbau.
 > [docs/test-world.md](test-world.md).** Dieses Dokument hier beschreibt Aufbau und
 > Stand der Tests; dort steht, was du im Client tun musst.
 
-## Was du tun musst: die Strukturvorlage bauen
+## Die Strukturvorlage
 
-**Das ist der einzige Schritt, den ich nicht für dich erledigen kann.** Eine
-`.nbt`-Strukturvorlage lässt sich nicht sinnvoll aus Code erzeugen — sie muss im
-Spiel mit einem Strukturblock gespeichert werden.
+Alle Tests teilen sich **eine einzige** Vorlage namens `solar_platform`, und die
+wird von einem Skript erzeugt:
 
-Alle Tests teilen sich **eine einzige** Vorlage namens `solar_platform`. Du baust
-sie also genau einmal.
+```
+powershell -File tools/make_gametest_structure.ps1
+gradlew :neoforge:1211:runGameTestServer
+```
 
-### Schritt für Schritt
+Die Dateien sind eingecheckt; das Skript brauchst du nur, wenn sich die Größe der
+Arena ändern soll. Details und der Ordner-Stolperstein (`structure` im Mod,
+`structures` beim Export aus dem Spiel) stehen in
+[docs/test-world.md](test-world.md).
 
-1. **Dev-Client starten**
-
-   ```
-   gradlew :neoforge:1211:runClient
-   ```
-
-   Die Run-Konfiguration öffnet automatisch die Welt `CPM Testwork`.
-
-2. **In den Kreativmodus und an einen freien, flachen Ort mit freiem Himmel**
-
-   ```
-   /gamemode creative
-   ```
-
-   Wichtig: **kein Dach, keine Bäume, keine Überhänge.** Wenn über der Vorlage
-   etwas steht, liefert `canSeeSky()` überall `false` und *jeder* Solartest meldet
-   „erzeugt nichts". Der Test `generatesUnderOpenSky` prüft das als Erstes und sagt
-   es dir ausdrücklich — verbieg dann nicht die Erwartungen, sondern baue die
-   Vorlage neu.
-
-3. **Testbereich erzeugen**
-
-   ```
-   /test create solar_platform 16 8 9
-   ```
-
-   16 lang, 8 hoch, 9 breit. Die Länge ist nötig, weil die Beschattungstests des
-   horizontalen Generators eine freie Bahn von 11 Blöcken vor dem Panel brauchen —
-   nur so lässt sich auch prüfen, dass ein Block in Abstand 11 *keine* Wirkung mehr
-   hat.
-
-4. **Boden legen**
-
-   Fülle die **unterste Schicht** (relative Höhe 0) des markierten Bereichs
-   vollständig mit einem soliden Block — Stein reicht. Die Generatoren stehen im
-   Test auf Höhe 1.
-
-   Der Rest des Bereichs bleibt **Luft**. Nichts darüber.
-
-5. **Speichern**
-
-   Rechtsklick auf den Strukturblock. Im Feld „Structure Name" muss stehen:
-
-   ```
-   createphotomovement:solar_platform
-   ```
-
-   Dann auf **SAVE**. Modus des Strukturblocks muss „Save" sein.
-
-6. **Datei kopieren**
-
-   Exportiert wird nach — und hier ist eine Stolperfalle:
-
-   ```
-   neoforge/1211/run/saves/CPM Testwork/generated/createphotomovement/structures/solar_platform.nbt
-   ```
-
-   Beachte: der **Export**-Ordner heißt `structures` (Plural), auch in 1.21.1.
-   Der **Ressourcen**-Ordner im Mod heißt in 1.21.1 dagegen `structure` (Singular).
-   Das ist nicht dasselbe Wort, und das Vertauschen ist der häufigste Grund, warum
-   die Vorlage später nicht gefunden wird.
-
-   | Version | Ressourcen-Ordner (im Mod) | Export-Ordner (aus dem Spiel) |
-   |---|---|---|
-   | 1.20.1 | `data/<ns>/structures/` | `generated/<ns>/structures/` |
-   | 1.21.1 | `data/<ns>/structure/`  | `generated/<ns>/structures/` |
-
-   Kopiere die Datei also nach:
-
-   ```
-   neoforge/1211/src/main/resources/data/createphotomovement/structure/solar_platform.nbt
-   ```
-
-   (Beim späteren Portieren nach 1.20.1 und Fabric: dort in `structures/`.)
-
-7. **Tests laufen lassen**
-
-   ```
-   gradlew :neoforge:1211:runGameTestServer
-   ```
+> **Korrektur:** Hier stand vorher eine Anleitung zum Bau von Hand mit dem Hinweis,
+> eine `.nbt` lasse sich nicht aus Code erzeugen. Das war falsch und ungeprüft aus
+> dem ursprünglichen Plan übernommen.
 
 ## Warum Fabric keine Vorlage braucht
 
@@ -144,16 +71,23 @@ Alle im Repo gegen die tatsächlichen Artefakte geprüft, nicht aus der Erinneru
 
 ## Stand
 
-Umgesetzt für **neoforge/1211**: 24 Szenarien in zwei Klassen.
+Umgesetzt für **neoforge/1211**: 35 Szenarien in drei Klassen.
 
-`SolarGeneratorGameTests` — vertikale Generatoren: freier Himmel, Stein, Glas,
-Teppich, Schneeschicht, Nacht, Regen, Advanced gegen Basis, Farbvariante gegen
+```
+========= 35 GAME TESTS COMPLETE IN 2.709 s ======================
+All 35 required tests passed :)
+```
+
+`SolarGeneratorGameTests` (10) — vertikale Generatoren: freier Himmel, Stein, Glas,
+Teppich, Schneeschicht, Nacht, Advanced gegen Basis, Farbvariante gegen
 ungefärbte, und SU-Stabilität über zwei Tag-Nacht-Zyklen.
 
-`HorizontalSolarGameTests` — horizontale Generatoren: freier Himmel, Nacht,
+`HorizontalSolarGameTests` (13) — horizontale Generatoren: freier Himmel, Nacht,
 Block direkt davor, Glas direkt davor, Verdeckung in Abstand 2 und 8, Abstand 11
 ohne Wirkung, Glas in Abstand 8 ohne Wirkung, Ost-Peak am Morgen, West-Peak am
 Abend, Nord immer am Minimum, Advanced-Multiplikator, und SU-Stabilität.
+
+`SolarWindmillGameTests` (12) — das Solar-Windmühlenlager, siehe unten.
 
 Der Glas-Test ist der interessante: er schreibt die Entscheidung fest, dass
 lichtdurchlässige Blöcke die Erzeugung **nicht** blockieren. Das war der Punkt, an
@@ -161,18 +95,70 @@ dem NeoForge und Fabric auseinanderliefen.
 
 Der Farbvarianten-Test sichert den späteren `AllBlocks`-Umbau ab.
 
-### Was bereits verifiziert ist
+## Die Windmühlen-Tests
 
-`gradlew :neoforge:1211:runGameTestServer` wurde ausgeführt. Der Server startet, die
-Tests werden gefunden, und der Lauf scheitert an genau einer Stelle — der fehlenden
-Vorlage:
+Das Lager ist die Stelle mit dem meisten handgeschriebenen Zustand: Segelzahlen und
+Himmelssicht werden **einmal beim Zusammenbau** ermittelt und danach in Feldern
+gehalten, ins NBT geschrieben, beim Laden absichtlich wieder genullt und aus der
+Blockliste der Contraption neu gezählt. Jeder dieser Schritte existiert wegen einer
+Kapazität, die einmal doppelt gezählt wurde. Die Formel deckt `WindmillOutputTest`
+ab; ob die richtigen Zahlen dort ankommen, kann nur eine Welt sagen.
 
-```
-========= 23 GAME TESTS COMPLETE IN 1.535 s ======================
-All 23 required tests passed :)
-```
+Jeder Test baut zwei identische Lager nebeneinander — eines mit Solarsegeln, eines
+mit Creates gewöhnlichen Segeln — und vergleicht sie miteinander statt gegen feste
+SU-Zahlen. Damit misst der Test den Bonus und nicht die Konfiguration.
 
-`gradlew :neoforge:1211:runGameTestServer` läuft grün durch.
+| Test | Erwartung |
+|---|---|
+| `assemblesFromSolarSails` | 9 Solarsegel, 0 reguläre, Himmelssicht, dreht |
+| `plainSailsAreNotCountedAsSolar` | 9 reguläre, 0 solare |
+| `solarSailsDoubleTheCapacityByDay` | ×2,0 gegenüber der Referenz |
+| `sailTypeDoesNotChangeSpeed` | gleiche Drehzahl — der Bonus liegt auf SU, nicht auf RPM |
+| `noSkyAccessMeansNoBonus` | überdacht: ×1,0, **dreht aber weiter** |
+| `keepsTurningAtNight` | dreht, und zwar mit der Drehzahl der Referenz |
+| `losesOnlyTheBonusAtNight` | ×1,0 |
+| `rainReducesTheBonus` | ×1,5 |
+| `thunderRemovesTheBonus` | ×1,0, dreht weiter |
+| `networkCapacityReturnsAfterANightDayCycle` | Netz-Kapazität nach zwei Zyklen unverändert |
+| `speedIsUnaffectedByNightfall` | Drehzahl exakt identisch über Tag → Nacht → Tag |
+| `disassemblingClearsTheOutput` | nach dem Zerlegen 0 RPM **und** 0 SU |
+
+### Regen ist hier messbar, bei den Panels nicht
+
+Beides ist dasselbe Wetter, aber zwei verschiedene Fragen. Das Lager fragt
+`level.isRaining()` — globales Wetter, direkt setzbar. Die Panels fragen
+`level.isRainingAt(pos)`, was zusätzlich die Heightmap heranzieht und in einer
+Testarena immer „überdacht" meldet. Deshalb ist Regen für das Lager automatisiert
+und für die Panels weiterhin Handarbeit
+([Prüfung F](test-world.md#prüfung-f--regen-und-gewitter)).
+
+### Warum die Netz-Kapazität gemessen wird und nicht die des Lagers
+
+`calculateAddedStressCapacity()` rechnet bei jedem Aufruf neu aus den aktuellen
+Feldern — dieser Wert kann sich gar nicht selbst widersprechen. Der gemeldete Bug
+saß in `KineticNetwork.calculateCapacity()`, also in
+`presentCapacity + unloadedCapacity`, wo dasselbe Lager einmal als lebende Quelle
+und einmal als übrig gebliebene entladene Kapazität auftauchte. Der Test misst
+deshalb die Netzsumme. Einen Serverneustart erreicht er trotzdem nicht — das
+bleibt Prüfung A bis C.
+
+### Zwei Dinge, die dabei ans Licht kamen
+
+**Segel verbinden sich nur innerhalb ihrer eigenen Ebene.** Eine 3×3-Fläche
+Solarsegel mit Standardausrichtung an einem nach Norden zeigenden Lager zerfiel in
+Streifen, und der Zusammenbau scheiterte mit *„Attached structure does not include
+enough sail-like blocks: 3"* — bei neun gesetzten Segeln. Die Ausrichtung der Segel
+muss zur Lagerachse passen. Mit Creates eigenen Segeln fiel das nicht auf, weil
+deren Standardausrichtung zufällig gepasst hat.
+
+**Wetter wirkt nicht sofort.** `setWeatherParameters` setzt nur Schalter; gelesen
+werden zwei Intensitätswerte, die pro Tick um 0,01 nachziehen. `isRaining()` will
+über 0,2, `isThundering()` über 0,9 — ein Gewitter braucht also rund 90 Ticks, um
+echt zu werden, und ebenso lange, um zu verschwinden. Da alle Batches sich eine Welt
+teilen, lief mein Regen in die horizontalen Tests hinein, die daraufhin mit
+`skyDarken=5, effective=10, needs>=12` scheiterten — ohne eigenes Verschulden.
+`SolarAssertions` setzt die Intensität jetzt direkt mit, sodass das Wetter eine
+Tatsache ist und keine Absicht.
 
 ### Drei Dinge, die auf dem Weg dorthin schiefgingen
 
@@ -198,12 +184,11 @@ Block vor dem Panel und die Wetterlage.
 
 ### Noch offen
 
-- Solarsegel + Windmühlenlager: Contraption-Zusammenbau, und dass das Lager nachts
-  **weiterdreht** — siehe unten.
 - Portierung nach neoforge/1201 und fabric/1201.
-- Regen: in der Arena nicht herstellbar, siehe
+- Regen **auf die Panels**: in der Arena nicht herstellbar, siehe
   [docs/test-world.md](test-world.md#warum-regen-kein-gametest-ist). Manuell als
-  Prüfung F.
+  Prüfung F. Für das Windmühlenlager ist Regen dagegen automatisiert.
+- Neustart und Chunk-Neuladen: erreicht kein GameTest, Prüfungen A bis C.
 
 ## Wichtig: das Windmühlenlager steht nachts NICHT still
 
@@ -226,12 +211,16 @@ Wetterparameter entgegen — die Drehzahl kann von der Tageszeit gar nicht abhä
 Nur `solarMultiplier(...)` kennt die Uhrzeit, und der wirkt ausschließlich auf die
 Stress-Kapazität.
 
-Festgehalten wird das von `WindmillOutputTest`:
+Festgehalten wird das an zwei Stellen. Rechnerisch von `WindmillOutputTest`:
 
 - `stillTurnsAtNight` — gleiche Drehzahl bei Tag und Nacht
 - `atNightBehavesLikeAPlainWindmill` — Solarsegel liefern nachts exakt so viel wie
   dieselbe Zahl gewöhnlicher Segel
 
-Der GameTest für die Contraption muss diese Erwartung übernehmen: nachts prüft er
-**Weiterdrehen bei reduziertem SU**, nicht Stillstand. Ein Test, der Stillstand
-erwartet, wäre grün, obwohl das Verhalten falsch wäre.
+Und in der Welt von `SolarWindmillGameTests`: `keepsTurningAtNight` prüft, dass eine
+nachts zusammengebaute Solar-Windmühle mit derselben Drehzahl läuft wie die
+Referenz mit gewöhnlichen Segeln, `losesOnlyTheBonusAtNight` den Faktor ×1,0, und
+`speedIsUnaffectedByNightfall` die Drehzahl über einen vollständigen Wechsel.
+
+Ein Test, der Stillstand erwartet, wäre grün, obwohl das Verhalten falsch wäre —
+deshalb steht die Regel hier ausdrücklich und nicht nur im Code.

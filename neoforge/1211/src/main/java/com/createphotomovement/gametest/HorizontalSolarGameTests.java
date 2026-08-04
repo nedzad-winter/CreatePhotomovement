@@ -255,7 +255,12 @@ public class HorizontalSolarGameTests {
 
         helper.startSequence()
                 .thenIdle(SETTLE)
-                .thenExecute(() -> baseline[0] = SolarAssertions.stressCapacityAt(helper, PANEL))
+                .thenExecute(() -> {
+                    // Guard against the whole test being vacuous: an idle panel returns the
+                    // same nothing after every cycle, so "unchanged" would prove nothing.
+                    SolarAssertions.assertGenerating(helper, PANEL, "Before the first night");
+                    baseline[0] = SolarAssertions.stressCapacityAt(helper, PANEL);
+                })
                 .thenExecute(() -> SolarAssertions.setDayTime(helper, SolarAssertions.MIDNIGHT))
                 .thenIdle(SETTLE)
                 .thenExecute(() -> SolarAssertions.setDayTime(helper, DAWN))

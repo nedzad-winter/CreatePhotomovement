@@ -160,6 +160,27 @@ Nach deiner Szenarienliste, aufgeteilt nach dem, was automatisierbar ist.
 | Advanced-Multiplikator stimmt | ✅ |
 | SU bleibt gleich nach Spielneustart | ❌ **manuell**, siehe Teil 3 |
 
+### Solar-Windmühlenlager
+
+Vergleicht durchgehend gegen ein zweites, baugleiches Lager mit Creates
+gewöhnlichen Segeln, das direkt daneben steht.
+
+| Szenario | Automatisiert |
+|---|---|
+| 9 Solarsegel bauen zusammen, werden als solar gezählt | ✅ |
+| Creates Segel werden als regulär gezählt | ✅ |
+| Tag, freier Himmel → ×2,0 SU | ✅ |
+| Segeltyp ändert die **Drehzahl nicht** | ✅ |
+| Überdacht → ×1,0, **dreht aber weiter** | ✅ |
+| **Nacht → dreht weiter**, gleiche Drehzahl wie die Referenz | ✅ |
+| Nacht → ×1,0 | ✅ |
+| Regen → ×1,5 | ✅ **hier geht Regen**, siehe unten |
+| Gewitter → ×1,0, dreht weiter | ✅ |
+| Netz-SU nach zwei Tag-Nacht-Zyklen unverändert | ✅ |
+| Drehzahl über Tag → Nacht → Tag exakt gleich | ✅ |
+| Nach dem Zerlegen 0 RPM und 0 SU | ✅ |
+| SU bleibt gleich nach Spielneustart | ❌ **manuell**, siehe Teil 3 |
+
 ### Warum Regen kein GameTest ist
 
 Der Generator liest `level.isRainingAt(pos)`. Das prüft nicht nur, ob es regnet,
@@ -178,6 +199,16 @@ Die Halbierung selbst ist durch `SolarGeneratorOutputTest.basicRain` und
 `advancedRain` abgedeckt; im Weltcode hängt sie an einem einzigen
 `isRainingAt`-Aufruf. Wirklich verifizieren lässt sie sich nur von Hand — **Prüfung F**
 weiter unten.
+
+**Beim Windmühlenlager ist das anders und dort ist Regen automatisiert.** Das Lager
+fragt `level.isRaining()` — das globale Wetter, ohne Ortsbezug und ohne Heightmap.
+Dasselbe Wetter, eine andere Frage. Nur die Panels stolpern über die Arena.
+
+Nebenbei aufgefallen: Wetter wirkt in Minecraft nicht sofort. Die Schalter sind
+sofort gesetzt, aber gelesen werden zwei Intensitätswerte, die pro Tick um 0,01
+nachziehen — `isRaining()` will über 0,2, `isThundering()` über 0,9. Ein Gewitter
+braucht also rund 90 Ticks. Für die Handprüfungen heißt das: nach `/weather rain`
+etwa fünf Sekunden warten, bevor du den Wert abliest.
 
 ### Wie die Beschattung wirklich rechnet
 
@@ -259,18 +290,27 @@ machen. Es ist der Bug, der laut Changelog in einer früheren Version aufgetrete
 
 Solarsegel-Contraption bauen, dann A bis D wiederholen.
 
-Zusätzlich: **nachts muss sich das Lager weiterdrehen** — nur der Solarbonus fällt
-weg. Nachts ist es eine ganz normale Windmühle. Ein Stillstand wäre ein Fehler.
+Nur noch der **Neustart-Teil**. Alles andere am Lager ist inzwischen automatisiert:
+Nacht, Regen, Gewitter, Überdachung, Zerlegen und zwei Tag-Nacht-Zyklen prüft
+`SolarWindmillGameTests`. Was dort nicht hinreicht, ist genau das Laden von der
+Platte.
+
+Falls es dich beim Bauen trotzdem interessiert: **nachts muss sich das Lager
+weiterdrehen** — nur der Solarbonus fällt weg. Ein Stillstand wäre ein Fehler.
 
 ### Prüfung F — Regen und Gewitter
 
-Kein GameTest, siehe oben.
+Nur noch für die **Panels** nötig; beim Windmühlenlager ist Regen automatisiert
+(×1,5) und Gewitter ebenso (×1,0).
+
+Nach jedem `/weather`-Befehl **etwa fünf Sekunden warten** — die Wetterstärke zieht
+pro Tick um 0,01 nach, ein Gewitter braucht rund 90 Ticks, bis das Spiel es als
+solches zählt. Sofort abgelesen misst du den alten Zustand.
 
 1. Tag, freier Himmel, Solargenerator läuft. Drehzahl notieren (Standard: 16 RPM).
-2. `/weather rain` → **Erwartung: halbe Drehzahl** (8 RPM).
-3. `/weather thunder` → Erwartung: ebenfalls halbiert. Beim Windmühlenlager fällt
-   dagegen der **Solarbonus komplett** weg (Faktor 1,0 statt 1,5).
-4. `/weather clear` → zurück auf den Ausgangswert. Nicht darüber.
+2. `/weather rain`, warten → **Erwartung: halbe Drehzahl** (8 RPM).
+3. `/weather thunder`, warten → Erwartung: ebenfalls halbiert.
+4. `/weather clear`, warten → zurück auf den Ausgangswert. Nicht darüber.
 
 Beim horizontalen Generator dasselbe, dort zählt der Regen auf dem Block **vor**
 dem Panel, nicht darüber.

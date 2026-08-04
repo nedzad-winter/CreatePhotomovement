@@ -56,17 +56,45 @@ public final class SolarAssertions {
 
     /** Clear weather. */
     public static void setClear(GameTestHelper helper) {
-        helper.getLevel().setWeatherParameters(6000, 0, false, false);
+        setWeather(helper, 6000, 0, false, false, 0.0F, 0.0F);
     }
 
     /** Rain without thunder. */
     public static void setRaining(GameTestHelper helper) {
-        helper.getLevel().setWeatherParameters(0, 6000, true, false);
+        setWeather(helper, 0, 6000, true, false, 1.0F, 0.0F);
     }
 
     /** A full thunderstorm: Minecraft sets both the rain and thunder flags. */
     public static void setThundering(GameTestHelper helper) {
-        helper.getLevel().setWeatherParameters(0, 6000, true, true);
+        setWeather(helper, 0, 6000, true, true, 1.0F, 1.0F);
+    }
+
+    /**
+     * Switches the weather and makes it take effect on the same tick.
+     *
+     * <p>
+     * {@code setWeatherParameters} only flips the flags. What the game actually
+     * reads are two intensity values that drift towards those flags by 0.01 per
+     * tick, and the questions that matter are asked against thresholds partway up
+     * that ramp: {@code isRaining()} wants above 0.2, {@code isThundering()} wants
+     * above 0.9, and the sky darkening that decides whether a solar panel runs at
+     * all scales continuously with both. So a storm needs about ninety ticks to
+     * become real and roughly as long to disappear again.
+     *
+     * <p>
+     * That ramp is not a detail a test can wait out politely, because game tests
+     * in different batches share one level: a test that ordered rain leaves it
+     * still fading while the next batch is already asserting on a clear sky. It
+     * cost a run's worth of horizontal generators reporting {@code skyDarken=5,
+     * effective=10, needs>=12} for no reason of their own. Snapping the intensity
+     * to its destination makes the weather a fact rather than an intention.
+     */
+    private static void setWeather(GameTestHelper helper, int clearTime, int weatherTime, boolean raining,
+            boolean thundering, float rainLevel, float thunderLevel) {
+        ServerLevel level = helper.getLevel();
+        level.setWeatherParameters(clearTime, weatherTime, raining, thundering);
+        level.setRainLevel(rainLevel);
+        level.setThunderLevel(thunderLevel);
     }
 
     // ---------------------------------------------------------------- inspection

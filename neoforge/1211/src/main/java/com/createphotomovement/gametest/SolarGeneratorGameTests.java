@@ -173,7 +173,12 @@ public class SolarGeneratorGameTests {
 
         helper.startSequence()
                 .thenIdle(SETTLE)
-                .thenExecute(() -> baseline[0] = SolarAssertions.stressCapacityAt(helper, GENERATOR))
+                .thenExecute(() -> {
+                    // Without this the test passes on a generator that never ran: zero is
+                    // unchanged by any number of cycles.
+                    SolarAssertions.assertGenerating(helper, GENERATOR, "Before the first night");
+                    baseline[0] = SolarAssertions.stressCapacityAt(helper, GENERATOR);
+                })
                 .thenExecute(() -> SolarAssertions.setDayTime(helper, SolarAssertions.MIDNIGHT))
                 .thenIdle(SETTLE)
                 .thenExecute(() -> SolarAssertions.setDayTime(helper, SolarAssertions.MIDDAY))
@@ -200,7 +205,10 @@ public class SolarGeneratorGameTests {
 
         helper.startSequence()
                 .thenIdle(SETTLE)
-                .thenExecute(() -> baseline[0] = SolarAssertions.stressCapacityAt(helper, GENERATOR))
+                .thenExecute(() -> {
+                    SolarAssertions.assertGenerating(helper, GENERATOR, "Before the first night");
+                    baseline[0] = SolarAssertions.stressCapacityAt(helper, GENERATOR);
+                })
                 .thenExecute(() -> SolarAssertions.setDayTime(helper, SolarAssertions.MIDNIGHT))
                 .thenIdle(SETTLE)
                 .thenExecute(() -> SolarAssertions.setDayTime(helper, SolarAssertions.MIDDAY))
