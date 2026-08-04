@@ -6,8 +6,11 @@ import com.createphotomovement.CreatePhotomovement;
 import net.minecraft.core.BlockPos;
 import net.minecraft.gametest.framework.GameTest;
 import net.minecraft.gametest.framework.GameTestHelper;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.entity.BlockEntity;
 import net.neoforged.neoforge.gametest.GameTestHolder;
 import net.neoforged.neoforge.gametest.PrefixGameTestTemplate;
 
@@ -326,6 +329,75 @@ public class SolarWindmillGameTests {
                                 + WindmillAssertions.describeBearing(helper, BEARING));
                 })
                 .thenSucceed();
+    }
+
+    /**
+     * What the restart fix actually promises: nothing goes to disk.
+     *
+     * <p>
+     * The reported bug had a precise mechanism. On load,
+     * {@code KineticBlockEntity.initialize()} hands the network whatever capacity
+     * it read from NBT as {@code unloadedCapacity}, and then adds the bearing
+     * again as a live source -- so a saved figure that was not cleared first makes
+     * the same windmill count twice. The fix is a single line in {@code write()}
+     * zeroing {@code capacity} and {@code lastCapacityProvided} before Create
+     * serialises them, and until now nothing held it in place.
+     *
+     * <p>
+     * This asserts the saved tag directly rather than trying to stage a reload.
+     * That is deliberate: replaying the load path in a game test does not work.
+     * Swapping the block entity for one rebuilt from its own tag severs the
+     * contraption entity's link to it for good -- measured at eighty ticks, the
+     * bearing still reported {@code solarSails=0, speed=0} -- so such a test
+     * measures the harness, not the mod. The tag is the part the fix controls, and
+     * it is checked here; the rest is manual checks A to C in docs/test-world.md.
+     */
+    @GameTest(template = PLATFORM, batch = "windmill_persistence")
+    public static void savedTagCarriesNoCapacity(GameTestHelper helper) {
+        dayWithSun(helper);
+        WindmillAssertions.buildWindmill(helper, BEARING, bearing(), solarSail());
+
+        helper.startSequence()
+                .thenIdle(SETTLE)
+                .thenExecute(() -> WindmillAssertions.assemble(helper, BEARING))
+                .thenIdle(SETTLE)
+                .thenExecute(() -> {
+                    // Only meaningful while the bearing genuinely has capacity to leak.
+                    if (WindmillAssertions.capacityAt(helper, BEARING) <= 0)
+                        helper.fail("The bearing provides nothing, so an empty saved tag proves nothing"
+                                + WindmillAssertions.describeBearing(helper, BEARING));
+                    assertNothingPersisted(helper, BEARING);
+                })
+                .thenSucceed();
+    }
+
+    /**
+     * Saves the bearing the way the chunk would and inspects the resulting tag.
+     *
+     * <p>
+     * Lives here rather than in {@code common/} because the save signature gained
+     * a {@code HolderLookup.Provider} in 1.21 and would not compile against
+     * 1.20.1. It is the one piece of these tests that genuinely differs per
+     * version.
+     */
+    private static void assertNothingPersisted(GameTestHelper helper, BlockPos relativePos) {
+        ServerLevel level = helper.getLevel();
+        BlockEntity be = level.getBlockEntity(helper.absolutePos(relativePos));
+        if (be == null) {
+            helper.fail("Nothing to save at " + relativePos);
+            return;
+        }
+
+        CompoundTag saved = be.saveWithFullMetadata(level.registryAccess());
+        CompoundTag network = saved.getCompound("Network");
+        float capacity = network.getFloat("Capacity");
+        float added = network.getFloat("AddedCapacity");
+
+        if (capacity != 0 || added != 0)
+            helper.fail("The bearing saved Capacity=" + capacity + " and AddedCapacity=" + added
+                    + " to its tag. Both must be zero: on load they become the network's unloadedCapacity "
+                    + "while the bearing is also added as a live source, which is how the same windmill "
+                    + "came to be counted twice." + WindmillAssertions.describeBearing(helper, relativePos));
     }
 
     /**

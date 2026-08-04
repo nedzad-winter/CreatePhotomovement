@@ -32,7 +32,8 @@ Arena ändern soll. Details und der Ordner-Stolperstein (`structure` im Mod,
 Fabric API bringt eine leere Struktur mit:
 `@GameTest(template = FabricGameTest.EMPTY_STRUCTURE)`. NeoForge hat kein
 Äquivalent — in 21.1.206 wurde nach einer `@EmptyTemplate`-Annotation gesucht, die
-es dort noch nicht gibt. Deshalb der Handbau für die beiden NeoForge-Ziele.
+es dort noch nicht gibt. Deshalb die erzeugte Vorlage für die beiden
+NeoForge-Ziele.
 
 ## Aufbau der Tests
 
@@ -41,13 +42,20 @@ Methoden mit `net.neoforged.neoforge.gametest.*` (bzw. `net.minecraftforge.gamet
 in 1.20.1), Fabric verlangt Instanzmethoden und ein `FabricGameTest`-Interface.
 
 Geteilt wird stattdessen alles darunter, in
-`common/src/main/java/com/createphotomovement/gametest/SolarAssertions.java`:
-Weltvorbereitung (Zeit, Wetter) und alle Prüfungen. Das Gerüst pro Loader bleibt
-dünn und enthält nur Annotationen und Positionen.
+`common/src/main/java/com/createphotomovement/gametest/`: `SolarAssertions` für
+Weltvorbereitung (Zeit, Wetter) und die Panel-Prüfungen, `WindmillAssertions` für
+Aufbau und Prüfungen des Lagers. Das Gerüst pro Loader bleibt dünn und enthält nur
+Annotationen und Positionen.
 
-Dass diese Hilfsklasse in allen drei Zielen kompiliert, belegt nebenbei, dass
-`ServerLevel.setWeatherParameters`, `GameTestAssertException(String)` und die
-Create-Kinetik-API in 1.20.1 und 1.21.1 identisch sind.
+Dass beide Hilfsklassen in allen drei Zielen kompilieren, belegt nebenbei, dass
+`ServerLevel.setWeatherParameters`, `Level.setRainLevel`,
+`GameTestAssertException(String)`, `KineticNetwork.calculateCapacity` und
+`MechanicalBearingBlockEntity.assemble`/`getLastAssemblyException` in 1.20.1 und
+1.21.1 identisch sind.
+
+Eine Ausnahme gibt es: `savedTagCarriesNoCapacity` liest das gespeicherte NBT, und
+`saveWithFullMetadata` hat in 1.21 einen `HolderLookup.Provider` bekommen. Diese
+eine Methode steht deshalb in der Testklasse selbst und nicht in `common/`.
 
 ### Verifizierte API-Fakten
 
@@ -71,11 +79,11 @@ Alle im Repo gegen die tatsächlichen Artefakte geprüft, nicht aus der Erinneru
 
 ## Stand
 
-Umgesetzt für **neoforge/1211**: 35 Szenarien in drei Klassen.
+Umgesetzt für **neoforge/1211**: 36 Szenarien in drei Klassen.
 
 ```
-========= 35 GAME TESTS COMPLETE IN 2.709 s ======================
-All 35 required tests passed :)
+========= 36 GAME TESTS COMPLETE IN 1.978 s ======================
+All 36 required tests passed :)
 ```
 
 `SolarGeneratorGameTests` (10) — vertikale Generatoren: freier Himmel, Stein, Glas,
@@ -87,7 +95,7 @@ Block direkt davor, Glas direkt davor, Verdeckung in Abstand 2 und 8, Abstand 11
 ohne Wirkung, Glas in Abstand 8 ohne Wirkung, Ost-Peak am Morgen, West-Peak am
 Abend, Nord immer am Minimum, Advanced-Multiplikator, und SU-Stabilität.
 
-`SolarWindmillGameTests` (12) — das Solar-Windmühlenlager, siehe unten.
+`SolarWindmillGameTests` (13) — das Solar-Windmühlenlager, siehe unten.
 
 Der Glas-Test ist der interessante: er schreibt die Entscheidung fest, dass
 lichtdurchlässige Blöcke die Erzeugung **nicht** blockieren. Das war der Punkt, an
@@ -121,6 +129,7 @@ SU-Zahlen. Damit misst der Test den Bonus und nicht die Konfiguration.
 | `thunderRemovesTheBonus` | ×1,0, dreht weiter |
 | `networkCapacityReturnsAfterANightDayCycle` | Netz-Kapazität nach zwei Zyklen unverändert |
 | `speedIsUnaffectedByNightfall` | Drehzahl exakt identisch über Tag → Nacht → Tag |
+| `savedTagCarriesNoCapacity` | im gespeicherten NBT stehen `Capacity=0` und `AddedCapacity=0` |
 | `disassemblingClearsTheOutput` | nach dem Zerlegen 0 RPM **und** 0 SU |
 
 ### Regen ist hier messbar, bei den Panels nicht
@@ -131,6 +140,25 @@ Beides ist dasselbe Wetter, aber zwei verschiedene Fragen. Das Lager fragt
 Testarena immer „überdacht" meldet. Deshalb ist Regen für das Lager automatisiert
 und für die Panels weiterhin Handarbeit
 ([Prüfung F](test-world.md#prüfung-f--regen-und-gewitter)).
+
+### Was vom Neustart-Bug automatisierbar war — und was nicht
+
+Der gemeldete Bug hat einen genauen Mechanismus. Beim Laden übergibt
+`KineticBlockEntity.initialize()` die aus dem NBT gelesene Kapazität als
+`unloadedCapacity` an das Netz und fügt das Lager **zusätzlich** als lebende Quelle
+hinzu. Eine gespeicherte Zahl, die vorher nicht genullt wurde, zählt damit doppelt.
+Der Fix ist eine Zeile in `write()`, die `capacity` und `lastCapacityProvided` vor
+dem Serialisieren auf 0 setzt — und die war bis jetzt durch nichts abgesichert.
+
+`savedTagCarriesNoCapacity` sichert genau diese Zeile: es baut eine echte Windmühle
+mit echter Kapazität, speichert sie so wie der Chunk es täte und prüft im Tag
+`Capacity=0` und `AddedCapacity=0`.
+
+**Den Ladevorgang selbst nachzuspielen funktioniert nicht.** Ich habe es versucht:
+Block-Entity speichern, wegwerfen, aus dem eigenen Tag neu aufbauen. Dabei reißt die
+Verbindung zur Contraption-Entity dauerhaft ab — nach 80 Ticks meldete das Lager
+immer noch `solarSails=0, speed=0`. Ein solcher Test misst den Testaufbau, nicht den
+Mod. Der Versuch ist entfernt; das Nachladen bleibt Prüfung A bis C von Hand.
 
 ### Warum die Netz-Kapazität gemessen wird und nicht die des Lagers
 
