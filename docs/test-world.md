@@ -5,13 +5,40 @@ laufen können — und die Prüfungen, die kein automatischer Test übernehmen k
 
 ## Kurzfassung
 
-Du baust **eine** Strukturvorlage: eine leere Plattform, 16 × 8 × 9, mit freiem
-Himmel. Alle Generator-Tests teilen sie sich. Die Generatoren und Hindernisse setzt
-der Test selbst — du baust nur den Boden.
+**Du musst nichts bauen.** Die Strukturvorlage wird von einem Skript erzeugt:
+
+```
+powershell -File tools/make_gametest_structure.ps1
+```
+
+Das schreibt `solar_platform.nbt` für alle drei Ziele — eine Plattform 16 × 8 × 9
+mit Bedrock-Boden auf Ebene 0 und Luft darüber. Die Dateien sind eingecheckt, du
+brauchst das Skript nur, wenn sich die Größe ändern soll.
+
+Danach direkt:
+
+```
+gradlew :neoforge:1211:runGameTestServer
+```
+
+> **Korrektur zu einer früheren Aussage von mir:** Ich hatte geschrieben, eine
+> `.nbt` lasse sich nicht aus Code erzeugen. Das stimmt nicht — das Format ist
+> gzip-komprimiertes NBT mit Größe, Block-Palette und Positionsliste, und für eine
+> leere Plattform ist es in wenigen Zeilen geschrieben. Der Handbau unten steht nur
+> noch als Referenz da, falls du irgendwann eine Arena mit echtem Inhalt brauchst.
+
+Was du **wirklich** manuell prüfen musst, ist Teil 3: der SU-Bug beim Neustart. Den
+kann kein GameTest fahren.
 
 ---
 
-## Teil 1: Die Strukturvorlage
+## Teil 1: Die Strukturvorlage von Hand bauen (nur als Referenz)
+
+Wird für `solar_platform` **nicht** gebraucht — siehe Kurzfassung. Diese Anleitung
+ist für den Fall, dass du später eine Arena mit vorgebauten Blöcken brauchst.
+
+> **Nebenbei:** `/test create` legt den Boden bereits selbst an, aus Bedrock über die
+> volle Grundfläche. Blöcke von Hand setzen musst du dafür nicht.
 
 ### 1. Dev-Client starten
 
@@ -109,7 +136,7 @@ Nach deiner Szenarienliste, aufgeteilt nach dem, was automatisierbar ist.
 | Glas darüber → erzeugt weiter | ✅ |
 | Teppich / Schneeschicht darüber → erzeugt nicht | ✅ |
 | Nacht → erzeugt nicht | ✅ |
-| Regen → halbe Drehzahl | ✅ |
+| Regen → halbe Drehzahl | ❌ **in der Arena nicht herstellbar**, siehe unten |
 | Advanced liefert mehr als Basis | ✅ |
 | Farbvariante verhält sich wie ungefärbt | ✅ |
 | SU bleibt gleich bei Nacht → Tag → Nacht | ✅ |
@@ -132,6 +159,25 @@ Nach deiner Szenarienliste, aufgeteilt nach dem, was automatisierbar ist.
 | Nord/Süd immer Minimum | ✅ |
 | Advanced-Multiplikator stimmt | ✅ |
 | SU bleibt gleich nach Spielneustart | ❌ **manuell**, siehe Teil 3 |
+
+### Warum Regen kein GameTest ist
+
+Der Generator liest `level.isRainingAt(pos)`. Das prüft nicht nur, ob es regnet,
+sondern auch, ob die MOTION_BLOCKING-Heightmap **über** der Position liegt — und in
+einer GameTest-Arena tut sie das immer. Gemessen in dieser Arena:
+
+```
+raining=true, rainLevel=0.60, precipitation=RAIN, canSeeSky=true,
+heightmapY=-50, posY=-57   ->   isRainingAt=false
+```
+
+Es regnet also, das Biom passt, der Himmel ist frei — und Minecraft hält die Position
+trotzdem für überdacht. Egal wo im Arena das Panel steht.
+
+Die Halbierung selbst ist durch `SolarGeneratorOutputTest.basicRain` und
+`advancedRain` abgedeckt; im Weltcode hängt sie an einem einzigen
+`isRainingAt`-Aufruf. Wirklich verifizieren lässt sie sich nur von Hand — **Prüfung F**
+weiter unten.
 
 ### Wie die Beschattung wirklich rechnet
 
@@ -215,6 +261,19 @@ Solarsegel-Contraption bauen, dann A bis D wiederholen.
 
 Zusätzlich: **nachts muss sich das Lager weiterdrehen** — nur der Solarbonus fällt
 weg. Nachts ist es eine ganz normale Windmühle. Ein Stillstand wäre ein Fehler.
+
+### Prüfung F — Regen und Gewitter
+
+Kein GameTest, siehe oben.
+
+1. Tag, freier Himmel, Solargenerator läuft. Drehzahl notieren (Standard: 16 RPM).
+2. `/weather rain` → **Erwartung: halbe Drehzahl** (8 RPM).
+3. `/weather thunder` → Erwartung: ebenfalls halbiert. Beim Windmühlenlager fällt
+   dagegen der **Solarbonus komplett** weg (Faktor 1,0 statt 1,5).
+4. `/weather clear` → zurück auf den Ausgangswert. Nicht darüber.
+
+Beim horizontalen Generator dasselbe, dort zählt der Regen auf dem Block **vor**
+dem Panel, nicht darüber.
 
 ### Wenn eine Prüfung fehlschlägt
 

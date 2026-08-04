@@ -168,22 +168,42 @@ Tests werden gefunden, und der Lauf scheitert an genau einer Stelle — der fehl
 Vorlage:
 
 ```
-[GameTestHooks]: Enabled Gametest Namespaces: [createphotomovement]
-[GameTestServer]: 24 tests are now running at position 505834, -59, 6357728!
-java.lang.IllegalStateException: Missing test structure: createphotomovement:solar_platform
+========= 23 GAME TESTS COMPLETE IN 1.535 s ======================
+All 23 required tests passed :)
 ```
 
-Run-Konfiguration, Namespace-Property, Annotationen und Testerkennung sind damit
-bestätigt. Sobald die `.nbt` liegt, laufen die 24 Tests durch.
+`gradlew :neoforge:1211:runGameTestServer` läuft grün durch.
+
+### Drei Dinge, die auf dem Weg dorthin schiefgingen
+
+**Alle Tests liefen gleichzeitig.** GameTests einer Batch teilen sich eine Welt, und
+Tageszeit wie Wetter sind globaler Zustand — die Tests überschrieben sich gegenseitig.
+Zwei Nacht-Tests meldeten unterschiedliche Tageszeiten. Behoben mit `batch = "..."`
+pro benötigtem Weltzustand; Tests, die die Zeit *während* des Laufs ändern, haben eine
+eigene Batch für sich.
+
+**Die Bodenschicht lag eine Ebene zu hoch.** Ein Strukturblock setzt seinen Inhalt eine
+Ebene über sich, also landet Template-Ebene 0 auf Helper-Höhe 1. Die vertikalen Tests
+merkten das nicht — `setBlock` überschreibt den Boden, und sie schauen nur nach oben.
+Die horizontalen schauten direkt in die Bodenschicht: `front=Bedrock,
+frontLightBlock=15`. Alle Testpositionen liegen jetzt auf Höhe 2.
+
+**Zwei Tests waren so gebaut, dass sie nichts prüfen konnten.** Sie starteten eine
+zweite Sequenz innerhalb einer laufenden; die äußere ruft `thenSucceed()` auf, sobald
+der Block zurückkehrt. Grün, ohne je zur Prüfung zu kommen. Jetzt lineare Sequenzen.
+
+Ohne Diagnoseausgabe in den Assertions wäre keiner dieser drei Punkte auffindbar
+gewesen — jede Fehlermeldung nennt jetzt Tageszeit, Himmelslicht, `skyDarken`, den
+Block vor dem Panel und die Wetterlage.
 
 ### Noch offen
 
-- Die `.nbt`-Vorlage (siehe oben) — ohne sie laufen die NeoForge-Tests nicht.
-- Horizontale Generatoren: Ertrag je Blickrichtung zu verschiedenen Tageszeiten,
-  Verdeckung durch eine Wand in Abstand 2 und 10.
 - Solarsegel + Windmühlenlager: Contraption-Zusammenbau, und dass das Lager nachts
   **weiterdreht** — siehe unten.
 - Portierung nach neoforge/1201 und fabric/1201.
+- Regen: in der Arena nicht herstellbar, siehe
+  [docs/test-world.md](test-world.md#warum-regen-kein-gametest-ist). Manuell als
+  Prüfung F.
 
 ## Wichtig: das Windmühlenlager steht nachts NICHT still
 

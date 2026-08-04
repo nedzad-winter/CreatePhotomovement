@@ -30,11 +30,19 @@ public class HorizontalSolarGameTests {
 
     private static final String PLATFORM = "solar_platform";
 
-    /** West end of the platform, facing east down the long axis. */
-    private static final BlockPos PANEL = new BlockPos(1, 1, 4);
+    /**
+     * West end of the platform, facing east down the long axis.
+     *
+     * <p>
+     * Y is 2, not 1: a structure block places its contents one layer above itself,
+     * so the template's floor lands on relative Y 1. A panel there would be staring
+     * straight into that floor -- which is exactly what happened the first time and
+     * made every horizontal test report zero output.
+     */
+    private static final BlockPos PANEL = new BlockPos(1, 2, 4);
 
     /** Second lane, for side-by-side comparisons. */
-    private static final BlockPos REFERENCE = new BlockPos(1, 1, 7);
+    private static final BlockPos REFERENCE = new BlockPos(1, 2, 7);
 
     private static final int SETTLE = 5;
 
@@ -46,7 +54,7 @@ public class HorizontalSolarGameTests {
 
     // ------------------------------------------------------------ sky and time
 
-    @GameTest(template = PLATFORM)
+    @GameTest(template = PLATFORM, batch = "horiz_day")
     public static void generatesUnderOpenSky(GameTestHelper helper) {
         SolarAssertions.setDayTime(helper, SolarAssertions.MIDDAY);
         SolarAssertions.setClear(helper);
@@ -61,7 +69,7 @@ public class HorizontalSolarGameTests {
                 .thenSucceed();
     }
 
-    @GameTest(template = PLATFORM)
+    @GameTest(template = PLATFORM, batch = "horiz_night")
     public static void idleAtNight(GameTestHelper helper) {
         SolarAssertions.setDayTime(helper, SolarAssertions.MIDNIGHT);
         SolarAssertions.setClear(helper);
@@ -78,7 +86,7 @@ public class HorizontalSolarGameTests {
 
     // ------------------------------------------------------------ obstruction
 
-    @GameTest(template = PLATFORM)
+    @GameTest(template = PLATFORM, batch = "horiz_dawn")
     public static void blockDirectlyInFrontStopsGeneration(GameTestHelper helper) {
         SolarAssertions.setDayTime(helper, DAWN);
         SolarAssertions.setClear(helper);
@@ -92,7 +100,7 @@ public class HorizontalSolarGameTests {
                 .thenSucceed();
     }
 
-    @GameTest(template = PLATFORM)
+    @GameTest(template = PLATFORM, batch = "horiz_dawn")
     public static void clearGlassInFrontDoesNotBlock(GameTestHelper helper) {
         SolarAssertions.setDayTime(helper, DAWN);
         SolarAssertions.setClear(helper);
@@ -107,7 +115,7 @@ public class HorizontalSolarGameTests {
     }
 
     /** A gap of seven air blocks -- the case from the scenario list. */
-    @GameTest(template = PLATFORM)
+    @GameTest(template = PLATFORM, batch = "horiz_dawn")
     public static void blockAtDistanceEightReducesOutput(GameTestHelper helper) {
         SolarAssertions.setDayTime(helper, DAWN);
         SolarAssertions.setClear(helper);
@@ -125,7 +133,7 @@ public class HorizontalSolarGameTests {
                 .thenSucceed();
     }
 
-    @GameTest(template = PLATFORM)
+    @GameTest(template = PLATFORM, batch = "horiz_dawn")
     public static void blockAtDistanceTwoReducesOutput(GameTestHelper helper) {
         SolarAssertions.setDayTime(helper, DAWN);
         SolarAssertions.setClear(helper);
@@ -139,7 +147,7 @@ public class HorizontalSolarGameTests {
                 .thenSucceed();
     }
 
-    @GameTest(template = PLATFORM)
+    @GameTest(template = PLATFORM, batch = "horiz_dawn")
     public static void blockAtDistanceElevenIsIgnored(GameTestHelper helper) {
         SolarAssertions.setDayTime(helper, DAWN);
         SolarAssertions.setClear(helper);
@@ -153,7 +161,7 @@ public class HorizontalSolarGameTests {
                 .thenSucceed();
     }
 
-    @GameTest(template = PLATFORM)
+    @GameTest(template = PLATFORM, batch = "horiz_dawn")
     public static void clearGlassAtDistanceEightDoesNotShade(GameTestHelper helper) {
         SolarAssertions.setDayTime(helper, DAWN);
         SolarAssertions.setClear(helper);
@@ -169,7 +177,7 @@ public class HorizontalSolarGameTests {
 
     // ------------------------------------------------------------ sun tracking
 
-    @GameTest(template = PLATFORM)
+    @GameTest(template = PLATFORM, batch = "horiz_dawn")
     public static void eastPeaksAtDawn(GameTestHelper helper) {
         SolarAssertions.setClear(helper);
         SolarAssertions.setDayTime(helper, DAWN);
@@ -182,7 +190,7 @@ public class HorizontalSolarGameTests {
                 .thenSucceed();
     }
 
-    @GameTest(template = PLATFORM)
+    @GameTest(template = PLATFORM, batch = "horiz_dusk")
     public static void westPeaksAtDusk(GameTestHelper helper) {
         SolarAssertions.setClear(helper);
         SolarAssertions.setDayTime(helper, DUSK);
@@ -195,7 +203,7 @@ public class HorizontalSolarGameTests {
                 .thenSucceed();
     }
 
-    @GameTest(template = PLATFORM)
+    @GameTest(template = PLATFORM, batch = "horiz_dawn")
     public static void northStaysAtTheFloor(GameTestHelper helper) {
         SolarAssertions.setClear(helper);
         SolarAssertions.setDayTime(helper, DAWN);
@@ -210,7 +218,7 @@ public class HorizontalSolarGameTests {
 
     // ------------------------------------------------------------ variants
 
-    @GameTest(template = PLATFORM)
+    @GameTest(template = PLATFORM, batch = "horiz_dawn")
     public static void advancedOutproducesBasic(GameTestHelper helper) {
         SolarAssertions.setClear(helper);
         SolarAssertions.setDayTime(helper, DAWN);
@@ -235,7 +243,7 @@ public class HorizontalSolarGameTests {
      * See {@code docs/test-world.md} for the manual restart checks that go with
      * this.
      */
-    @GameTest(template = PLATFORM, timeoutTicks = 400)
+    @GameTest(template = PLATFORM, timeoutTicks = 400, batch = "horiz_cycle")
     public static void capacitySurvivesDayNightCycles(GameTestHelper helper) {
         SolarAssertions.setClear(helper);
         SolarAssertions.setDayTime(helper, DAWN);
@@ -288,14 +296,24 @@ public class HorizontalSolarGameTests {
         float actual = SolarAssertions.stressCapacityAt(helper, pos);
         if (Math.abs(actual - expected) > 0.01f)
             throw new net.minecraft.gametest.framework.GameTestAssertException(
-                    why + ": expected " + expected + " SU/RPM but got " + actual);
+                    why + ": expected " + expected + " SU/RPM but got " + actual + front(helper, pos));
     }
 
     private static void assertCapacityAbove(GameTestHelper helper, BlockPos pos, float floor, String why) {
         float actual = SolarAssertions.stressCapacityAt(helper, pos);
         if (actual <= floor)
             throw new net.minecraft.gametest.framework.GameTestAssertException(
-                    why + ": expected more than " + floor + " SU/RPM but got " + actual);
+                    why + ": expected more than " + floor + " SU/RPM but got " + actual + front(helper, pos));
+    }
+
+    /** What the panel is actually looking at, read back off the placed block state. */
+    private static String front(GameTestHelper helper, BlockPos pos) {
+        BlockState placed = helper.getBlockState(pos);
+        if (!placed.hasProperty(HorizontalSolarGeneratorBlock.HORIZONTAL_FACING))
+            return " [placed block " + placed.getBlock().getName().getString()
+                    + " has no HORIZONTAL_FACING property]";
+        return SolarAssertions.describeFront(helper, pos,
+                placed.getValue(HorizontalSolarGeneratorBlock.HORIZONTAL_FACING));
     }
 
     private static Block basic() {

@@ -3,10 +3,16 @@ package com.createphotomovement.gametest;
 import com.createphotomovement.logic.DayCycle;
 import com.simibubi.create.content.kinetics.base.KineticBlockEntity;
 
+import com.createphotomovement.logic.SolarGeneratorOutput;
+
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
 import net.minecraft.gametest.framework.GameTestAssertException;
 import net.minecraft.gametest.framework.GameTestHelper;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.level.LightLayer;
+import net.minecraft.world.level.levelgen.Heightmap;
+import net.minecraft.world.level.block.state.BlockState;
 
 /**
  * Assertions shared by the three loaders' game tests.
@@ -92,17 +98,53 @@ public final class SolarAssertions {
 
     // ---------------------------------------------------------------- assertions
 
+    /**
+     * The world state a solar generator actually sees.
+     *
+     * <p>
+     * Appended to every failure message. Without it "the generator is idle" gives
+     * nothing to work with -- the interesting question is always whether the sky
+     * light, the sky darkening or the time of day is the reason.
+     */
+    public static String describeState(GameTestHelper helper, BlockPos relativePos) {
+        ServerLevel level = helper.getLevel();
+        BlockPos above = helper.absolutePos(relativePos.above());
+        int skyLight = level.getBrightness(LightLayer.SKY, above);
+        int darken = level.getSkyDarken();
+        return String.format(
+                " [dayTime=%d, skyLight=%d, skyDarken=%d, effective=%d, needs>=%d, canSeeSky=%b, raining=%b, thundering=%b]",
+                DayCycle.timeOfDay(level.getDayTime()), skyLight, darken, skyLight - darken,
+                SolarGeneratorOutput.MIN_SKY_LIGHT, level.canSeeSky(above), level.isRaining(), level.isThundering());
+    }
+
+    /**
+     * The same for a horizontal panel, which looks at the block in front of itself
+     * rather than the one above.
+     */
+    public static String describeFront(GameTestHelper helper, BlockPos relativePos, Direction facing) {
+        ServerLevel level = helper.getLevel();
+        BlockPos front = helper.absolutePos(relativePos.relative(facing));
+        BlockState state = level.getBlockState(front);
+        return String.format(
+                " [facing=%s, front=%s, frontLightBlock=%d, frontSkyLight=%d, skyDarken=%d, effective=%d, needs>=%d]",
+                facing, state.getBlock().getName().getString(), state.getLightBlock(level, front),
+                level.getBrightness(LightLayer.SKY, front), level.getSkyDarken(),
+                level.getBrightness(LightLayer.SKY, front) - level.getSkyDarken(),
+                SolarGeneratorOutput.MIN_SKY_LIGHT);
+    }
+
     public static void assertGenerating(GameTestHelper helper, BlockPos relativePos, String why) {
         float speed = generatedSpeedAt(helper, relativePos);
         if (speed == 0)
-            throw new GameTestAssertException(why + ": expected the generator to produce rotation, but it is idle");
+            throw new GameTestAssertException(why + ": expected the generator to produce rotation, but it is idle"
+                    + describeState(helper, relativePos));
     }
 
     public static void assertIdle(GameTestHelper helper, BlockPos relativePos, String why) {
         float speed = generatedSpeedAt(helper, relativePos);
         if (speed != 0)
             throw new GameTestAssertException(why + ": expected no rotation, but the generator produces " + speed
-                    + " RPM");
+                    + " RPM" + describeState(helper, relativePos));
     }
 
     /**
@@ -123,10 +165,32 @@ public final class SolarAssertions {
         throw new GameTestAssertException(why + ": expected " + expected + " SU/RPM but got " + actual + direction);
     }
 
+    /**
+     * Whether the game considers it to be raining on the block above this one.
+     *
+     * <p>
+     * Broken down into the individual conditions {@code Level.isRainingAt} checks,
+     * because "it is raining but not on the panel" is otherwise impossible to act
+     * on.
+     */
+    public static String describeRain(GameTestHelper helper, BlockPos relativePos) {
+        ServerLevel level = helper.getLevel();
+        BlockPos above = helper.absolutePos(relativePos.above());
+        int heightmapY = level.getHeightmapPos(Heightmap.Types.MOTION_BLOCKING, above).getY();
+        return String.format(
+                " [raining=%b, rainLevel=%.2f, rainingAtPanel=%b, canSeeSky=%b, heightmapY=%d, posY=%d,"
+                        + " heightmapBlocks=%b, precipitation=%s, biome=%s]",
+                level.isRaining(), level.getRainLevel(1.0F), level.isRainingAt(above), level.canSeeSky(above),
+                heightmapY, above.getY(), heightmapY > above.getY(),
+                level.getBiome(above).value().getPrecipitationAt(above),
+                level.getBiome(above).unwrapKey().map(Object::toString).orElse("?"));
+    }
+
     public static void assertSpeed(GameTestHelper helper, BlockPos relativePos, float expected, String why) {
         float actual = generatedSpeedAt(helper, relativePos);
         if (Math.abs(actual - expected) > 0.001f)
-            throw new GameTestAssertException(why + ": expected " + expected + " RPM but got " + actual);
+            throw new GameTestAssertException(why + ": expected " + expected + " RPM but got " + actual
+                    + describeRain(helper, relativePos));
     }
 
     /**
