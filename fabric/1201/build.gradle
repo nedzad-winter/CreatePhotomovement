@@ -7,6 +7,12 @@ version = mod_version
 group = 'com.createphotomovement'
 base.archivesName = "createphotomovement-fabric-${minecraft_version}"
 
+// Code shared by all three targets. Each target compiles these same files against its
+// own Minecraft version and loader, so anything loader-specific here breaks the other
+// builds immediately -- that is the point.
+sourceSets.main.java.srcDir rootProject.file('common/src/main/java')
+sourceSets.main.resources.srcDir rootProject.file('common/src/main/resources')
+
 repositories {
     mavenLocal()
     mavenCentral()
@@ -16,8 +22,7 @@ repositories {
     maven { url = "https://raw.githubusercontent.com/Fuzss/modresources/main/maven" } // Forge Config API Port
     maven { url = "https://maven.jamieswhiteshirt.com/libs-release" } // Reach Entity Attributes
     maven { url = "https://maven.blamejared.com" } // JEI
-    maven { url = "https://api.modrinth.com/maven" } // LazyDFU
-    maven { url = "https://cursemaven.com" } // Jade
+    maven { url = "https://api.modrinth.com/maven" } // LazyDFU, Jade
 }
 
 loom {
@@ -34,6 +39,18 @@ loom {
             setConfigName("Fabric Server")
             ideConfigGenerated(true)
             runDir("run/server")
+        }
+
+        // Headless in-game tests, the Fabric API equivalent of NeoForge's
+        // gameTestServer run.
+        //   gradlew :fabric:1201:runGametest
+        gametest {
+            server()
+            setConfigName("Game Test")
+            ideConfigGenerated(false)
+            runDir("build/gametest")
+            vmArg("-Dfabric-api.gametest")
+            vmArg("-Dfabric-api.gametest.report-file=${project.layout.buildDirectory.get()}/gametest-report.xml")
         }
     }
 }

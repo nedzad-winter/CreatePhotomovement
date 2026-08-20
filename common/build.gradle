@@ -1,0 +1,56 @@
+// Headless test project.
+//
+// The three mod targets pull all of common/src/main/java in via srcDir and compile it
+// against their own Minecraft version. This project is different: it compiles ONLY the
+// com/createphotomovement/logic package -- the classes with no Minecraft imports -- so
+// the tests run in seconds without a game or a decompiled Minecraft jar.
+//
+// Everything else under common/ (block entities, renderers) needs Minecraft and is
+// deliberately excluded here; those are covered by the game tests instead.
+
+plugins {
+    id 'java'
+}
+
+group = 'com.createphotomovement'
+version = mod_version
+
+java {
+    toolchain.languageVersion = JavaLanguageVersion.of(17)
+}
+
+sourceSets {
+    main {
+        java {
+            srcDirs = ['src/main/java']
+            include 'com/createphotomovement/logic/**'
+        }
+        resources.srcDirs = []
+    }
+}
+
+dependencies {
+    testImplementation platform("org.junit:junit-bom:${junit_version}")
+    testImplementation 'org.junit.jupiter:junit-jupiter'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+
+    // Used by the resource consistency tests to parse the mod's JSON files.
+    testImplementation "com.google.code.gson:gson:${gson_version}"
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+}
+
+test {
+    useJUnitPlatform()
+
+    // The resource tests walk the three targets' resource trees, so they need to know
+    // where the repository root is regardless of how Gradle was invoked.
+    systemProperty 'repoRoot', rootProject.projectDir.absolutePath
+
+    testLogging {
+        events 'failed'
+        exceptionFormat 'full'
+    }
+}

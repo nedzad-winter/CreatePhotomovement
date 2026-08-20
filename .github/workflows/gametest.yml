@@ -1,0 +1,68 @@
+name: Game tests
+
+# Kept apart from build.yml on purpose: each of these jobs boots a real Minecraft
+# server with Create loaded, which takes minutes rather than seconds. Running that on
+# every push would make the fast feedback from the headless tests useless.
+on:
+  pull_request:
+  workflow_dispatch:
+
+concurrency:
+  group: gametest-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  gametest:
+    name: ${{ matrix.name }}
+    runs-on: ubuntu-latest
+
+    strategy:
+      # One target failing should not hide the state of the other two -- that is the
+      # whole point of running the same scenarios against all three.
+      fail-fast: false
+      matrix:
+        include:
+          - name: NeoForge 1.21.1
+            task: ':neoforge:1211:runGameTestServer'
+          - name: NeoForge 1.20.1
+            task: ':neoforge:1201:runGameTestServer'
+          - name: Fabric 1.20.1
+            task: ':fabric:1201:runGametest'
+
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17 and 21
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: |
+            17
+            21
+
+      - name: Point Gradle at both toolchains
+        run: |
+          echo "org.gradle.java.installations.fromEnv=JAVA_HOME_17_X64,JAVA_HOME_21_X64" >> gradle.properties
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          cache-read-only: true
+
+      - name: Run game tests
+        run: ./gradlew ${{ matrix.task }} --stacktrace
+
+      - name: Upload server logs
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: gametest-logs-${{ strategy.job-index }}
+          path: |
+            neoforge/*/run/**/logs/**
+            fabric/*/run/**/logs/**
+          retention-days: 7
+          if-no-files-found: ignore

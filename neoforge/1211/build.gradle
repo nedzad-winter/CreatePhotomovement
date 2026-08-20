@@ -7,13 +7,23 @@ group = 'com.createphotomovement'
 version = mod_version
 base.archivesName = "createphotomovement-neoforge-${minecraft_version}"
 
+// Code shared by all three targets. Each target compiles these same files against its
+// own Minecraft version and loader, so anything loader-specific here breaks the other
+// builds immediately -- that is the point.
+sourceSets.main.java.srcDir rootProject.file('common/src/main/java')
+sourceSets.main.resources.srcDir rootProject.file('common/src/main/resources')
+
 repositories {
     mavenLocal()
     mavenCentral()
     maven { url = "https://maven.createmod.net" } // Create, Ponder, Flywheel
     maven { url = "https://maven.ithundxr.dev/snapshots" } // Registrate
-    maven { url = "https://maven.blamejared.com" } // JEI
+
+    // Needed for Create's transitive RUNTIME dependencies, not for compiling. A plain
+    // `gradlew build` resolves only the compile classpath and stays green without
+    // these; the run configurations resolve the runtime classpath and do not.
     maven { url = "https://maven.theillusivec4.top/" } // Curios
+    maven { url = "https://maven.blamejared.com" } // JEI
     maven { url = "https://api.modrinth.com/maven" } // Modrinth
     maven { url = "https://maven.architectury.dev/" } // Architectury
     maven { url = "https://maven.saps.dev/minecraft" } // FTB Mods
@@ -28,10 +38,9 @@ dependencies {
         exclude group: 'maven.modrinth'
         exclude group: 'cc.tweaked'
     }
-    implementation "net.createmod.ponder:ponder-neoforge:1.0.81+mc${minecraft_version}"
+    implementation "net.createmod.ponder:ponder-neoforge:${ponder_version}+mc${minecraft_version}"
     implementation "dev.engine-room.flywheel:flywheel-neoforge-${minecraft_version}:${flywheel_version}"
     implementation "com.tterrag.registrate:Registrate:${registrate_version}"
-    implementation "curse.maven:construction-wands-revived-1395288:7356007"
 }
 
 neoForge {
@@ -62,6 +71,14 @@ neoForge {
         data {
             data()
             programArguments.addAll '--mod', mod_id, '--all', '--output', file('src/generated/resources/').getAbsolutePath(), '--existing', file('src/main/resources/').getAbsolutePath()
+        }
+
+        // Headless in-game tests. Boots a dedicated server, runs every @GameTest in
+        // our namespace and exits with a non-zero code if any of them fail.
+        //   gradlew :neoforge:1211:runGameTestServer
+        gameTestServer {
+            type = "gameTestServer"
+            systemProperty 'neoforge.enabledGameTestNamespaces', mod_id
         }
     }
 }

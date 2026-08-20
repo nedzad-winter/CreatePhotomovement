@@ -46,8 +46,10 @@ public class SolarWindmillBearingBlock extends WindmillBearingBlock {
                 // Manually call the standard tick logic (inherited from
                 // WindmillBearingBlockEntity -> SmartBlockEntity)
                 solarBe.tick();
-                // Then call our custom solar logic
-                solarBe.solarTick();
+                // Then call our custom solar logic (server-side only)
+                if (!level.isClientSide) {
+                    solarBe.solarTick();
+                }
             }
         };
     }

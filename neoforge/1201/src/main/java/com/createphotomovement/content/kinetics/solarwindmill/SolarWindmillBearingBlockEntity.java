@@ -3,6 +3,8 @@ package com.createphotomovement.content.kinetics.solarwindmill;
 import java.util.List;
 
 import com.createphotomovement.AllBlockEntityTypes;
+import com.createphotomovement.logic.Weather;
+import com.createphotomovement.logic.WindmillOutput;
 import com.simibubi.create.AllSoundEvents;
 import com.simibubi.create.content.contraptions.AssemblyException;
 import com.simibubi.create.content.contraptions.Contraption;
@@ -17,7 +19,6 @@ import com.simibubi.create.infrastructure.config.AllConfigs;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.util.Mth;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 
@@ -180,13 +181,8 @@ public class SolarWindmillBearingBlockEntity extends WindmillBearingBlockEntity 
         }
 
         // RPM is calculated normally - no solar bonus on speed
-        int totalSails = regularSailCount + solarSailCount;
-        int sailsPerRPM = AllConfigs.server().kinetics.windmillSailsPerRPM.get();
-        int rpm = totalSails / sailsPerRPM;
-
-        float speed = Mth.clamp(rpm, 1, 16) * getAngleSpeedDirection();
-
-        return speed;
+        return WindmillOutput.generatedSpeed(regularSailCount, solarSailCount,
+                AllConfigs.server().kinetics.windmillSailsPerRPM.get(), getAngleSpeedDirection());
     }
 
     /**
@@ -196,15 +192,10 @@ public class SolarWindmillBearingBlockEntity extends WindmillBearingBlockEntity 
      * - 1.0 = No bonus (night, thunder, no sky access)
      */
     private float getSolarMultiplier() {
-        if (!hasSkyAccess)
-            return 1.0f;
-        if (isNight())
-            return 1.0f;
-        if (isThundering())
-            return 1.0f;
-        if (isRaining())
-            return 1.5f; // Reduced bonus during rain
-        return 2.0f; // Full solar bonus
+        if (level == null)
+            return WindmillOutput.MULTIPLIER_NONE;
+        return WindmillOutput.solarMultiplier(hasSkyAccess, level.getDayTime(),
+                Weather.of(level.isRaining(), level.isThundering()));
     }
 
     @Override
@@ -215,30 +206,8 @@ public class SolarWindmillBearingBlockEntity extends WindmillBearingBlockEntity 
         if (!running)
             return 0;
 
-        // Calculate SU separately for normal and solar sails using power brackets
-        // Formula: floor(sailCount / 8) * 512
-        // Formula: floor(sailCount / sailsPerRPM) * 512
-        int sailsPerBracket = AllConfigs.server().kinetics.windmillSailsPerRPM.get();
-        float suPerBracket = 512f;
-
-        // Normal sails: standard bracket calculation
-        int normalBrackets = regularSailCount / sailsPerBracket;
-        float normalSU = normalBrackets * suPerBracket;
-
-        // Solar sails: bracket calculation with solar multiplier
-        int solarBrackets = solarSailCount / sailsPerBracket;
-        float solarMultiplier = getSolarMultiplier();
-        float solarSU = solarBrackets * suPerBracket * solarMultiplier;
-
-        // Total SU is the sum of both
-        float totalSU = normalSU + solarSU;
-
-        // Create multiplies capacity by speed internally, so divide by RPM
-        // to get the correct displayed value matching the wiki table
-        int totalSails = regularSailCount + solarSailCount;
-        int rpm = Math.max(1, totalSails / sailsPerBracket);
-
-        float result = totalSU / rpm;
+        float result = WindmillOutput.stressCapacityPerRpm(regularSailCount, solarSailCount,
+                AllConfigs.server().kinetics.windmillSailsPerRPM.get(), getSolarMultiplier());
 
         this.lastCapacityProvided = result;
         return result;
@@ -251,25 +220,6 @@ public class SolarWindmillBearingBlockEntity extends WindmillBearingBlockEntity 
         this.regularSailCount = regular;
         this.solarSailCount = solar;
         this.hasSkyAccess = skyAccess;
-    }
-
-    private boolean isNight() {
-        if (level == null)
-            return true;
-        long dayTime = level.getDayTime() % 24000;
-        return dayTime >= 13000 && dayTime < 23000;
-    }
-
-    private boolean isRaining() {
-        if (level == null)
-            return false;
-        return level.isRaining() && !level.isThundering();
-    }
-
-    private boolean isThundering() {
-        if (level == null)
-            return false;
-        return level.isThundering();
     }
 
     @Override

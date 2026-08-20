@@ -1,6 +1,7 @@
 # Create Photomovement
 
 <p align="center">
+  <a href="../../actions/workflows/build.yml"><img src="../../actions/workflows/build.yml/badge.svg" alt="Build"></a>
   <img src="https://img.shields.io/badge/Minecraft-1.20.1%20|%201.21.1-green" alt="Minecraft Versions">
   <img src="https://img.shields.io/badge/Forge%20|%20NeoForge%20|%20Fabric-orange" alt="Mod Loaders">
   <img src="https://img.shields.io/badge/Create-6.0+-blue" alt="Create Mod">
@@ -27,8 +28,11 @@ A directional variant that tracks the sun's position.
   - **East Facing**: Peak generation in the morning
   - **West Facing**: Peak generation in the evening
 - **Smart Obstruction System**:
-  - **Block touching face**: Stops generation (0 RPM)
-  - **Block within 2-10 blocks**: Reduced output
+  - **Block touching face**: Stops generation entirely
+  - **Block within 2-10 blocks**: Output drops to the minimum of 8 SU/RPM —
+    the same as a panel facing north or south. Not a halving.
+  - **Blocks 11 or more away**: No effect
+  - **Clear glass never obstructs**; tinted glass, leaves and ice do
 - **Weather**: Speed is halved during rain
 
 ### Advanced Solar Generator (NEW in 0.2.0!)
@@ -95,8 +99,12 @@ Specialized sails that harness sunlight for boosted power.
 |----------|-----------|--------|
 | NeoForge | 1.21.1 | ✅ |
 | NeoForge | 1.20.1 | ✅ |
-| Forge | 1.20.1 | ✅ |
 | Fabric | 1.20.1 | ✅ |
+| Forge | 1.20.1 | 📋 planned |
+
+> The NeoForge 1.20.1 build targets the Forge 1.20.1 API and may load under Forge,
+> but there is no dedicated Forge build and it is not tested. Treat it as unsupported
+> until a `forge/1201` target exists.
 
 ## Requirements
 

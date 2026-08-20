@@ -1,5 +1,25 @@
 # Changelog
 
+## [0.3.4] - 2026-08-20
+
+### Fixed
+- **Solar Sails and the Solar Windmill Bearing dropped nothing on 1.20.1**: breaking a Solar Sail (any colour) or a Solar Windmill Bearing on Fabric 1.20.1 or NeoForge/Forge 1.20.1 destroyed the block without dropping its item, and Silk Touch made no difference. The 17 loot tables involved had only ever been written for 1.21.1. A block with no loot table drops nothing at all, and Silk Touch is a branch *inside* a loot table -- with no table there was nothing for it to trigger. NeoForge 1.21.1 was never affected. Reported on CurseForge.
+- **Mineable tags never applied on 1.20.1**: both 1.20.1 targets shipped their `mineable/axe` and `mineable/pickaxe` tags under `data/minecraft/tags/block/`, which is the folder name 1.20.5 introduced. 1.20.1 reads `tags/blocks/`, so it never saw the files and the solar generators got no tool speed bonus. Drops were not affected by this -- no block in the mod requires a specific tool to drop.
+
+### Internal
+- **Shared source set**: the block entities, renderers and server config that were copy-pasted across all three targets now live once under `common/` and are compiled into each target against its own Minecraft version.
+- **Tests**: headless unit and resource tests (`gradlew :common:test`) and 36 in-game tests on NeoForge 1.21.1 (`gradlew :neoforge:1211:runGameTestServer`). Two of the resource tests exist because of the two bugs above: one asserts that every block has a loot table, the other that each target's data folders use the naming of its Minecraft version.
+- **CI**: builds and tests all three targets on every push.
+- **Build script**: `tools/build_mod.ps1` invoked a `gradlew.bat` inside each target folder. No such file exists -- there is one wrapper, at the repository root -- so the script aborted on the first target. It now runs `:neoforge:1201:build` and friends from the root, which is also the only way the shared `common/` sources resolve. The headless tests run first; `-SkipTests` opts out.
+- **Version bump script**: `tools/bump_version.ps1` wrote `gradle.properties` with a UTF-8 BOM in front of the first line.
+
+### Supported Platforms
+- NeoForge 1.21.1
+- NeoForge 1.20.1
+- Fabric 1.20.1
+
+---
+
 ## [0.3.3] - 2026-05-12
 
 ### Fixed

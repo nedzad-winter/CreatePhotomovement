@@ -1,7 +1,7 @@
 modLoader = "javafml"
 loaderVersion = "[47,)"
 license = "${mod_license}"
-issueTrackerURL = "https://github.com/example/createphotomovement/issues"
+issueTrackerURL = "https://github.com/nedzad-winter/CreatePhotomovement/issues"
 
 [[mods]]
 modId = "${mod_id}"

@@ -1,6 +1,7 @@
 modLoader="javafml"
 loaderVersion="[4,)"
 license="${mod_license}"
+issueTrackerURL="https://github.com/nedzad-winter/CreatePhotomovement/issues"
 
 [[mods]]
 modId="${mod_id}"

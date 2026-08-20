@@ -5,10 +5,11 @@
     "name": "Create Photomovement",
     "description": "A Create mod addon adding a solar powered rotation source.",
     "authors": [
-        "User"
+        "Nedzad Winter"
     ],
     "contact": {
-        "sources": "https://github.com/example/createphotomovement"
+        "sources": "https://github.com/nedzad-winter/CreatePhotomovement",
+        "issues": "https://github.com/nedzad-winter/CreatePhotomovement/issues"
     },
     "license": "MIT",
     "icon": "assets/createphotomovement/icon.png",
