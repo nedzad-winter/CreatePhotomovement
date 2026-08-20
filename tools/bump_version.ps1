@@ -105,7 +105,11 @@ foreach ($file in $Files) {
     if ($DryRun) {
         Write-Host "  [dry-run] $rel : $current -> $Version" -ForegroundColor DarkGray
     } else {
-        Set-Content -LiteralPath $file -Value $newLines -Encoding utf8
+        # -Encoding utf8 writes a BOM on Windows PowerShell 5.1, which then sits in
+        # front of the first line of gradle.properties on every bump. Write plain
+        # UTF-8 instead.
+        $utf8NoBom = New-Object System.Text.UTF8Encoding($false)
+        [System.IO.File]::WriteAllLines($file, $newLines, $utf8NoBom)
         Write-Host "  bumped   $rel : $current -> $Version" -ForegroundColor Green
     }
 }
