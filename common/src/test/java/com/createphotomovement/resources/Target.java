@@ -86,6 +86,11 @@ public final class Target {
         return resources().resolve("data").resolve(MOD_ID);
     }
 
+    /** The data folder itself, i.e. the parent of every namespace this target ships. */
+    public Path dataRoot() {
+        return resources().resolve("data");
+    }
+
     public Path blockstates() {
         return assets().resolve("blockstates");
     }
