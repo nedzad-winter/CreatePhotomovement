@@ -20,6 +20,9 @@
         ],
         "client": [
             "com.createphotomovement.CreatePhotomovementClient"
+        ],
+        "fabric-gametest": [
+            "com.createphotomovement.gametest.SolarWindmillGameTests"
         ]
     },
     "mixins": [],

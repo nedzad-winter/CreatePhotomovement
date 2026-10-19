@@ -1,28 +1,28 @@
 {
   "variants": {
     "facing=down": {
-      "model": "createphotomovement:block/solar_sail_glass_clear",
+      "model": "createphotomovement:block/solar_sail",
       "x": 180
     },
     "facing=east": {
-      "model": "createphotomovement:block/solar_sail_glass_clear",
+      "model": "createphotomovement:block/solar_sail",
       "x": 90,
       "y": 90
     },
     "facing=north": {
-      "model": "createphotomovement:block/solar_sail_glass_clear",
+      "model": "createphotomovement:block/solar_sail",
       "x": 90
     },
     "facing=south": {
-      "model": "createphotomovement:block/solar_sail_glass_clear",
+      "model": "createphotomovement:block/solar_sail",
       "x": 90,
       "y": 180
     },
     "facing=up": {
-      "model": "createphotomovement:block/solar_sail_glass_clear"
+      "model": "createphotomovement:block/solar_sail"
     },
     "facing=west": {
-      "model": "createphotomovement:block/solar_sail_glass_clear",
+      "model": "createphotomovement:block/solar_sail",
       "x": 90,
       "y": 270
     }

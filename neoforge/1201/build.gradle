@@ -142,3 +142,17 @@ processResources {
         expand replaceProperties
     }
 }
+
+// The 1.20.1 game test server builds its world from server.properties, whose default is
+// normal terrain. The test arena sits at y=-60, which is the surface of a flat world but
+// deep inside deepslate in a normal one -- nothing in it can see the sky, so every solar
+// check would fail for reasons that have nothing to do with the mod. Start from a fresh
+// flat world instead. Both files are generated into the git-ignored run folder.
+tasks.matching { it.name == 'prepareGameTestServerRun' }.configureEach {
+    doFirst {
+        def dir = file('run/gametest')
+        dir.mkdirs()
+        delete(new File(dir, 'world'))
+        new File(dir, 'server.properties').text = "level-type=minecraft\\:flat\n"
+    }
+}

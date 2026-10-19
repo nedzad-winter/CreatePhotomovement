@@ -7,7 +7,9 @@ package com.createphotomovement.logic;
  * Sails are counted in brackets: every full group of {@code sailsPerBracket}
  * sails adds one RPM and {@link #SU_PER_BRACKET} stress units. Solar sails earn
  * the same brackets but their contribution is scaled by
- * {@link #solarMultiplier}.
+ * {@link #solarMultiplier}. Regular and solar sails share their brackets, so a
+ * few regular sails next to a solar array still count towards the next bracket
+ * instead of being rounded away separately.
  *
  * <p>
  * <strong>The bearing does not stop at night.</strong> Unlike the solar
@@ -100,10 +102,17 @@ public final class WindmillOutput {
             float solarMultiplier) {
         requireValidBracket(sailsPerBracket);
 
-        float normalSU = (regularSails / sailsPerBracket) * SU_PER_BRACKET;
-        float solarSU = (solarSails / sailsPerBracket) * SU_PER_BRACKET * solarMultiplier;
+        int brackets = (regularSails + solarSails) / sailsPerBracket;
+        int sailsInBrackets = brackets * sailsPerBracket;
+        // The brackets fill with solar sails first, since they are worth the most;
+        // regular sails take whatever room is left.
+        int solarCounted = Math.min(solarSails, sailsInBrackets);
+        int regularCounted = sailsInBrackets - solarCounted;
 
-        int rpm = Math.max(MIN_RPM, (regularSails + solarSails) / sailsPerBracket);
+        float normalSU = (regularCounted / (float) sailsPerBracket) * SU_PER_BRACKET;
+        float solarSU = (solarCounted / (float) sailsPerBracket) * SU_PER_BRACKET * solarMultiplier;
+
+        int rpm = Math.max(MIN_RPM, brackets);
         return (normalSU + solarSU) / rpm;
     }
 

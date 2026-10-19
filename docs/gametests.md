@@ -132,6 +132,34 @@ SU-Zahlen. Damit misst der Test den Bonus und nicht die Konfiguration.
 | `savedTagCarriesNoCapacity` | im gespeicherten NBT stehen `Capacity=0` und `AddedCapacity=0` |
 | `disassemblingClearsTheOutput` | nach dem Zerlegen 0 RPM **und** 0 SU |
 
+### Gemischte Segel — das einzige Szenario auf allen drei Zielen
+
+`regularSailsNextToSolarSailsCount` baut eine Mühle aus 5 Solar- und 4 Create-Segeln
+neben einer Referenz aus 9 Create-Segeln und verlangt, dass die gemischte Mühle mehr
+liefert als die Referenz, aber weniger als das Doppelte. Er sichert den Fix ab, dass
+beide Segelarten sich ihre Gruppen teilen, statt getrennt abgerundet zu werden.
+
+Die Erwartung kommt bewusst **nicht** aus `WindmillOutput` — ein Test, der sein
+Soll aus der Formel unter Test ableitet, besteht auch gegen eine kaputte Formel. Gegen
+die alte Berechnung scheitert er auf allen drei Zielen mit `0.0 vs 512.0 SU/RPM`.
+
+Gebaut wird die Mühle von `WindmillAssertions.buildWindmill(..., secondSail, count)`
+in `common/`; die Klassen pro Ziel enthalten nur Annotationen und Positionen.
+
+Zwei Dinge, die beim Portieren auffielen:
+
+- **NeoForge 1.20.1 startete in einer normalen Terrainwelt.** Der Testserver baut seine
+  Welt aus `server.properties`, und deren Vorgabe ist `level-type=minecraft:normal`.
+  Die Arena liegt bei y=-60 — in einer flachen Welt an der Oberfläche, in einer
+  normalen tief im Tiefenschiefer. Nichts darin sah den Himmel (`skyAccess=false`),
+  die Heightmap meldete 63. `neoforge/1201/build.gradle` schreibt deshalb vor dem Start
+  eine flache Welt. NeoForge 1.21.1 und Fabric haben das Problem nicht.
+- **Fabric 1.20.1 führt auch Creates eigene Spieltests aus**, und drei davon
+  (`TestFluids.thresholdSwitch`, `TestItems.attributeFilters`,
+  `TestProcessing.precisionMechanismCrafting`) schlagen in dieser Umgebung fehl.
+  `gradlew :fabric:1201:runGametest` endet deshalb mit Fehler, auch wenn die eigenen
+  Tests grün sind. Das Ergebnis der eigenen steht in `fabric/1201/build/gametest-report.xml`.
+
 ### Regen ist hier messbar, bei den Panels nicht
 
 Beides ist dasselbe Wetter, aber zwei verschiedene Fragen. Das Lager fragt
@@ -212,7 +240,9 @@ Block vor dem Panel und die Wetterlage.
 
 ### Noch offen
 
-- Portierung nach neoforge/1201 und fabric/1201.
+- Portierung der übrigen Tests nach neoforge/1201 und fabric/1201. Dort läuft bisher
+  genau ein Szenario, `regularSailsNextToSolarSailsCount` (siehe unten); die anderen
+  36 gibt es nur auf neoforge/1211.
 - Regen **auf die Panels**: in der Arena nicht herstellbar, siehe
   [docs/test-world.md](test-world.md#warum-regen-kein-gametest-ist). Manuell als
   Prüfung F. Für das Windmühlenlager ist Regen dagegen automatisiert.
