@@ -1,12 +1,12 @@
 {
-    "credit": "Solar variant of Create windmill bearing item",
+    "credit": "Solar variant of Create windmill bearing item; solar panel inlay and brass trim",
     "parent": "block/block",
     "textures": {
-        "particle": "create:block/windmill_bearing_side",
+        "particle": "createphotomovement:block/solar_windmill_bearing_side",
         "bearing_top": "create:block/bearing_top",
         "gearbox": "create:block/gearbox",
-        "bearing_side": "create:block/windmill_bearing_side",
-        "redstone": "minecraft:block/redstone_block"
+        "bearing_side": "createphotomovement:block/solar_windmill_bearing_side",
+        "redstone": "createphotomovement:block/solar_windmill_bearing_trim"
     },
     "elements": [
         {
