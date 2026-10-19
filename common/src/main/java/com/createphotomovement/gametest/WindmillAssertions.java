@@ -80,12 +80,35 @@ public final class WindmillAssertions {
      *             Create one, which is the whole point of most of these tests
      */
     public static void buildWindmill(GameTestHelper helper, BlockPos bearingPos, Block bearing, Block sail) {
+        buildWindmill(helper, bearingPos, bearing, sail, sail, 0);
+    }
+
+    /**
+     * Same plane, but with some of the sails swapped for a second kind.
+     *
+     * <p>
+     * This is the shape a player actually builds: a solar windmill extended with a
+     * few of Create's own sails. The swapped sails are taken from the edge of the
+     * plane, never its centre, so the anchor block stays a sail of the first kind
+     * and the plane stays connected.
+     *
+     * @param otherSail how many sails of {@code secondSail} replace the first kind
+     */
+    public static void buildWindmill(GameTestHelper helper, BlockPos bearingPos, Block bearing, Block sail,
+            Block secondSail, int otherSail) {
         BlockPos anchor = bearingPos.north();
         BlockState sailState = sail.defaultBlockState().setValue(BearingBlock.FACING, Direction.NORTH);
+        BlockState secondState = secondSail.defaultBlockState().setValue(BearingBlock.FACING, Direction.NORTH);
         int reach = SAIL_EDGE / 2;
+        int swapped = 0;
         for (int dx = -reach; dx <= reach; dx++)
-            for (int dy = -reach; dy <= reach; dy++)
-                helper.setBlock(anchor.offset(dx, dy, 0), sailState);
+            for (int dy = -reach; dy <= reach; dy++) {
+                boolean centre = dx == 0 && dy == 0;
+                boolean swap = !centre && swapped < otherSail;
+                if (swap)
+                    swapped++;
+                helper.setBlock(anchor.offset(dx, dy, 0), swap ? secondState : sailState);
+            }
 
         BlockState state = bearing.defaultBlockState().setValue(BearingBlock.FACING, Direction.NORTH);
         helper.setBlock(bearingPos, state);
@@ -208,6 +231,35 @@ public final class WindmillAssertions {
         if (bearing.getRegularSailCount() != regular || bearing.getSolarSailCount() != solar)
             throw new GameTestAssertException(why + ": expected " + regular + " regular and " + solar
                     + " solar sails" + describeBearing(helper, bearingPos));
+    }
+
+    /**
+     * Asserts that a windmill's capacity lies strictly between a plain reference's
+     * and a given multiple of it.
+     *
+     * <p>
+     * For a windmill that mixes sail kinds. Every sail is worth at least a regular
+     * one and a solar sail at most {@code upper} times that, so a mixed windmill
+     * must land between the two -- and strictly above the reference as soon as it
+     * carries any solar sail. The bounds are stated in terms of the reference
+     * rather than recomputed with {@link WindmillOutput}: a check that derives its
+     * expectation from the formula under test passes against a broken formula too.
+     *
+     * @param plain a windmill with the same number of regular sails
+     * @param upper the bonus of an all-solar windmill, which the mixed one stays under
+     */
+    public static void assertBetweenPlainAndSolar(GameTestHelper helper, BlockPos mixed, BlockPos plain,
+            float upper, String why) {
+        float mixedCapacity = capacityAt(helper, mixed);
+        float plainCapacity = capacityAt(helper, plain);
+        if (plainCapacity == 0)
+            throw new GameTestAssertException(why + ": the reference windmill provides no capacity at all, so "
+                    + "there is nothing to compare against" + describeBearing(helper, plain));
+        float factor = mixedCapacity / plainCapacity;
+        if (!(factor > 1.0F && factor < upper))
+            throw new GameTestAssertException(why + ": expected between 1.0 and " + upper
+                    + " times the plain windmill, but got " + factor + " (" + mixedCapacity + " vs "
+                    + plainCapacity + " SU/RPM)" + describeBearing(helper, mixed) + describeBearing(helper, plain));
     }
 
     public static void assertSkyAccess(GameTestHelper helper, BlockPos bearingPos, boolean expected, String why) {

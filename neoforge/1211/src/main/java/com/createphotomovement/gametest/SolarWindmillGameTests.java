@@ -426,6 +426,45 @@ public class SolarWindmillGameTests {
                 .thenSucceed();
     }
 
+    // ------------------------------------------------------------ mixed sails
+
+    /**
+     * A solar windmill extended with a few of Create's own sails.
+     *
+     * <p>
+     * Before the fix this protects, the two kinds were rounded down to whole
+     * brackets separately: five solar and four regular sails make nine, one
+     * bracket, but each kind alone is short of one, so the windmill reported no
+     * capacity at all and the regular sails never counted. The capacity is judged
+     * against a plain reference rather than a recomputed figure, so the test fails
+     * against the old arithmetic instead of agreeing with it. The sail counts get
+     * their own assertion first, because a capacity that is wrong because the
+     * regular sails were never recognised looks the same as one that is wrong
+     * because they were rounded away.
+     */
+    @GameTest(template = PLATFORM, batch = "windmill_day")
+    public static void regularSailsNextToSolarSailsCount(GameTestHelper helper) {
+        dayWithSun(helper);
+        int regular = 4;
+        int solar = WindmillAssertions.SAIL_COUNT - regular;
+        WindmillAssertions.buildWindmill(helper, BEARING, bearing(), solarSail(), plainSail(), regular);
+        WindmillAssertions.buildWindmill(helper, REFERENCE, bearing(), plainSail());
+
+        helper.startSequence()
+                .thenIdle(SETTLE)
+                .thenExecute(() -> assemblePair(helper))
+                .thenIdle(SETTLE)
+                .thenExecute(() -> {
+                    WindmillAssertions.assertRunning(helper, BEARING, "Solar and regular sails on one bearing");
+                    WindmillAssertions.assertSailCounts(helper, BEARING, regular, solar,
+                            "Create's own sails must be counted as regular sails next to solar ones");
+                    WindmillAssertions.assertBetweenPlainAndSolar(helper, BEARING, REFERENCE,
+                            WindmillAssertions.BONUS_CLEAR,
+                            "Five solar and four regular sails fill one bracket together");
+                })
+                .thenSucceed();
+    }
+
     // ------------------------------------------------------------ helpers
 
     private static void dayWithSun(GameTestHelper helper) {
