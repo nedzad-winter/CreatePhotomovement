@@ -59,19 +59,11 @@ This will:
 - Solar Sail (16 color variants) - **VERIFIED**
 - Solar Windmill Bearing - **VERIFIED**
 
-### Experimental: Cyan Solar Sail Glass Pane Texture (2026-01-28)
-**Status:** Testing in progress - user will evaluate
-
-Created `cyan_solar_sail_glass_test.json` model with:
-- Outer 1-pixel ring at Y=9-10 (connected to frame)
-- Clear glass pane at Y=9.01-9.99 covering inner 14x14 area
-- Recessed inner sail texture at Y=8-8.99 visible through glass
-
-**Files modified:**
-- `neoforge/1211/src/main/resources/assets/createphotomovement/models/block/cyan_solar_sail_glass_test.json` (NEW)
-- `neoforge/1211/src/main/resources/assets/createphotomovement/blockstates/cyan_solar_sail.json` (temporarily points to test model)
-
-**To revert:** Change blockstate back to use `cyan_solar_sail` model instead of `cyan_solar_sail_glass_test`
+### Solar Sail Look (updated 2026-10-19)
+The glass-pane experiment (2026-01-28) was rolled out as `*_solar_sail_glass_clear` models and has since been removed again.
+The sails now use the plain `*_solar_sail` models (parent `solar_sail_base`) with solar-panel textures
+(`textures/block/solar_canvas_<color>.png`): 2x2 dark blue cells, silver busbars, baked-in highlight,
+1-pixel dyed border taken from Create's `sail/canvas_<color>.png`.
 
 ---
 
