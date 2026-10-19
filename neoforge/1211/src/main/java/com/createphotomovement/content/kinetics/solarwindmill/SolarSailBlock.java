@@ -10,6 +10,7 @@ import javax.annotation.Nullable;
 
 import com.createphotomovement.AllBlocks;
 import com.simibubi.create.AllShapes;
+import com.simibubi.create.content.contraptions.bearing.SailBlock;
 import com.simibubi.create.foundation.block.WrenchableDirectionalBlock;
 import com.simibubi.create.foundation.utility.BlockHelper;
 
@@ -316,13 +317,18 @@ public class SolarSailBlock extends WrenchableDirectionalBlock {
         return color;
     }
 
+    /** Solar sails and Create's own sails can be mixed on one windmill. */
+    private static boolean isAnySail(Block block) {
+        return block instanceof SolarSailBlock || block instanceof SailBlock;
+    }
+
     @MethodsReturnNonnullByDefault
     private static class PlacementHelper implements IPlacementHelper {
         @Override
         public Predicate<ItemStack> getItemPredicate() {
             return i -> {
                 if (i.getItem() instanceof BlockItem blockItem) {
-                    return blockItem.getBlock() instanceof SolarSailBlock;
+                    return isAnySail(blockItem.getBlock());
                 }
                 return false;
             };
@@ -330,6 +336,8 @@ public class SolarSailBlock extends WrenchableDirectionalBlock {
 
         @Override
         public Predicate<BlockState> getStatePredicate() {
+            // Only our own sails are matched here: Create's own helper already
+            // handles a Create sail being targeted, and this one runs from our block.
             return s -> s.getBlock() instanceof SolarSailBlock;
         }
 

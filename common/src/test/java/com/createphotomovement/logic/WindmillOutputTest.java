@@ -288,6 +288,37 @@ class WindmillOutputTest {
         }
 
         @Test
+        @DisplayName("regular and solar sails share brackets instead of rounding down separately")
+        void mixedSailsShareBrackets() {
+            // 4 + 4 sails fill one bracket together: 4 solar at 2.0 plus 4 regular, over 8.
+            assertEquals(768f, totalSu(4, 4, WindmillOutput.MULTIPLIER_CLEAR), 1e-3);
+        }
+
+        @Test
+        @DisplayName("a few regular sails next to a solar array count once they fill a bracket")
+        void regularSailsNextToSolarArray() {
+            // 8 solar sails alone: 1024. Seven more regular sails do not fill the next bracket.
+            assertEquals(1024f, totalSu(0, 8, WindmillOutput.MULTIPLIER_CLEAR), 1e-3);
+            assertEquals(1024f, totalSu(7, 8, WindmillOutput.MULTIPLIER_CLEAR), 1e-3);
+            // The eighth one fills it: 1024 + 512.
+            assertEquals(1536f, totalSu(8, 8, WindmillOutput.MULTIPLIER_CLEAR), 1e-3);
+        }
+
+        @Test
+        @DisplayName("adding a sail never lowers the output")
+        void addingASailNeverLowersOutput() {
+            for (int solar = 0; solar <= 24; solar++) {
+                float previous = totalSu(0, solar, WindmillOutput.MULTIPLIER_CLEAR);
+                for (int regular = 1; regular <= 24; regular++) {
+                    float current = totalSu(regular, solar, WindmillOutput.MULTIPLIER_CLEAR);
+                    assertTrue(current >= previous - 1e-3,
+                            solar + " solar + " + regular + " regular dropped to " + current + " from " + previous);
+                    previous = current;
+                }
+            }
+        }
+
+        @Test
         @DisplayName("solar sails without sky access are worth exactly as much as regular ones")
         void coveredSolarSailsMatchRegular() {
             assertEquals(totalSu(16, 0, WindmillOutput.MULTIPLIER_NONE),
