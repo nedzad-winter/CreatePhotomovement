@@ -6,12 +6,14 @@
 - **Regular Create sails were not counted next to solar sails**: the bearing rounded regular and solar sails down to whole groups of 8 *separately*, so e.g. 8 solar sails plus 4 regular sails produced the same SU as the 8 solar sails alone, and 4 + 4 produced nothing at all. They now share their groups: the groups are filled with solar sails first and regular sails take the rest, so 4 solar + 4 regular give 768 SU. Pure regular and pure solar windmills are unchanged, and adding a sail never lowers the output.
 - **No placement preview for regular sails on a solar sail**: holding a Create sail and pointing at a Solar Sail did not show the ghost block, so a windmill could not be extended with regular sails. It does now. (The other way round -- a Solar Sail in hand, pointing at a Create sail -- still places normally without the preview.)
 
-### Internal
-- **Tests for mixed sails**: three unit tests for the shared brackets, plus one in-game test, `regularSailsNextToSolarSailsCount`, that runs on all three targets. It is the first in-game test on NeoForge 1.20.1 and Fabric 1.20.1. It compares a mixed windmill against a plain one instead of recomputing the expected figure, so it fails against the old arithmetic.
-- **NeoForge 1.20.1 game test world**: the test server started in a normal terrain world, which buried the test arena in deepslate with no sky access. The build now starts it in a flat world.
-
 ### Changed
 - **New Solar Sail look**: the sail face is now a proper solar panel -- four dark blue cells divided by silver busbars, with a highlight across the cells -- instead of Create's plain canvas with a few red pixels. The dye colour still shows as a thin stitched border around each panel, so coloured windmills keep their colour. The separate glass layer on top of the sail is gone; the highlight is part of the texture now. All 16 colours, all three targets.
+- **New Solar Windmill Bearing look**: the bearing no longer looks like a copy of Create's windmill bearing with a red outline. Each side now has an inset solar panel (the same dark blue cells as the sails) in a brass frame, and the red redstone outline is a brass trim. Create's own rotating top, the green one, is unchanged. The two textures the bearing shipped before were identical copies of Create's and unused; it now has its own `solar_windmill_bearing_side` and `solar_windmill_bearing_trim`.
+
+### Internal
+- **Texture reference test**: a new resource test checks, for all three targets, that every texture of this mod that a model names actually exists, and that the bearing model points at its own textures. Until now only blockstate-to-model was checked, so a model naming a missing texture loaded fine and rendered as purple-and-black.
+- **Tests for mixed sails**: three unit tests for the shared brackets, plus one in-game test, `regularSailsNextToSolarSailsCount`, that runs on all three targets. It is the first in-game test on NeoForge 1.20.1 and Fabric 1.20.1. It compares a mixed windmill against a plain one instead of recomputing the expected figure, so it fails against the old arithmetic.
+- **NeoForge 1.20.1 game test world**: the test server started in a normal terrain world, which buried the test arena in deepslate with no sky access. The build now starts it in a flat world.
 
 ## [0.3.4] - 2026-08-20
 
