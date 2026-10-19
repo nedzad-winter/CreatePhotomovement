@@ -5,7 +5,7 @@
         "particle": "create:block/brass_casing",
         "sensor_top": "createphotomovement:block/adv_solar_generator_top",
         "casing": "create:block/brass_casing",
-        "gearbox": "create:block/gearbox",
+        "gearbox": "create:block/brass_gearbox",
         "glass": "minecraft:block/glass"
     },
     "elements": [

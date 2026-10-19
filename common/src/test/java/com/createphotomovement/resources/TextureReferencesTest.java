@@ -117,4 +117,20 @@ class TextureReferencesTest {
             assertEquals(block.get(slot).getAsString(), item.get(slot).getAsString(),
                     "texture slot '" + slot + "' of the item model in " + target);
     }
+
+    /**
+     * The advanced generators are brass, but their shaft sides kept Create's
+     * andesite gearbox texture. The colour variants only override the glass, so
+     * the two parent models decide the look of all 32 blocks.
+     */
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("com.createphotomovement.resources.Target#targets")
+    @DisplayName("the advanced solar generators use the brass gearbox on their shaft sides")
+    void advancedGeneratorsUseBrassGearbox(Target target) {
+        for (String model : List.of("block/adv_solar_generator.json", "block/horz_adv_solar_generator.json")) {
+            JsonObject textures = readObject(target.models().resolve(model)).getAsJsonObject("textures");
+            assertEquals("create:block/brass_gearbox", textures.get("gearbox").getAsString(),
+                    "gearbox texture of " + model + " in " + target);
+        }
+    }
 }
