@@ -97,4 +97,24 @@ class TextureReferencesTest {
         assertTrue(Files.isRegularFile(texture(target, textures.get("redstone").getAsString())),
                 "trim texture file in " + target);
     }
+
+    /**
+     * The bearing's item model is a full copy of its block model plus the rotating
+     * top, not a child of it, so it does not pick up changes to the block on its
+     * own. The held item kept the old Create-and-redstone look after the block
+     * got its own textures, which is how this was noticed.
+     */
+    @ParameterizedTest(name = "{0}")
+    @MethodSource("com.createphotomovement.resources.Target#targets")
+    @DisplayName("the bearing item shows the same textures as the bearing block")
+    void bearingItemMatchesBlock(Target target) {
+        JsonObject block = readObject(target.models().resolve("block/solar_windmill_bearing.json"))
+                .getAsJsonObject("textures");
+        JsonObject item = readObject(target.models().resolve("item/solar_windmill_bearing.json"))
+                .getAsJsonObject("textures");
+
+        for (String slot : List.of("bearing_side", "redstone", "particle"))
+            assertEquals(block.get(slot).getAsString(), item.get(slot).getAsString(),
+                    "texture slot '" + slot + "' of the item model in " + target);
+    }
 }
