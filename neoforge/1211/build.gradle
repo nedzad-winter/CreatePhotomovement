@@ -60,7 +60,12 @@ neoForge {
 
         client {
             client()
-            programArguments.addAll '--width', '1600', '--height', '900', '--quickPlaySingleplayer', 'CPM Testwork'
+            // Window size and the world it opens can be changed from the command line, e.g. for
+            // the Short film set in portrait:
+            //   .\gradlew.bat :neoforge:1211:runClient "-Pworld=Create Photomovement Short" -Pwidth=720 -Pheight=1280
+            programArguments.addAll '--width', (project.findProperty('width') ?: '1600').toString(),
+                    '--height', (project.findProperty('height') ?: '900').toString(),
+                    '--quickPlaySingleplayer', (project.findProperty('world') ?: 'CPM Testwork').toString()
         }
 
         server {
