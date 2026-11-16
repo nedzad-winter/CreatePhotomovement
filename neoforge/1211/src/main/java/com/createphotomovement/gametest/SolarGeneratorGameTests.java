@@ -78,7 +78,12 @@ public class SolarGeneratorGameTests {
 
         helper.startSequence()
                 .thenIdle(SETTLE)
-                .thenExecute(() -> SolarAssertions.assertIdle(helper, GENERATOR, "Solid stone overhead"))
+                .thenExecute(() -> {
+                    // Checked first: if the stone is not there, the generator's result says
+                    // nothing about stone overhead, and the failure should say so.
+                    helper.assertBlockPresent(Blocks.STONE, COVER);
+                    SolarAssertions.assertIdle(helper, GENERATOR, "Solid stone overhead");
+                })
                 .thenSucceed();
     }
 
