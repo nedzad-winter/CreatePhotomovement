@@ -53,7 +53,7 @@ class RecipeTest {
                 continue;
             JsonObject resultObject = result.getAsJsonObject();
 
-            String name = target.repoRoot().relativize(file).toString();
+            String name = target.source(file).toString();
             if (resultObject.has(wrong) && !resultObject.has(expected))
                 offenders.add(name + " uses \"" + wrong + "\", expected \"" + expected + "\"");
             else if (!resultObject.has(expected))
@@ -89,7 +89,7 @@ class RecipeTest {
                     unused.add(key);
 
             if (!unused.isEmpty())
-                offenders.add(target.repoRoot().relativize(file) + " declares unused key(s) " + unused);
+                offenders.add(target.source(file) + " declares unused key(s) " + unused);
         }
 
         if (!offenders.isEmpty())
@@ -116,7 +116,7 @@ class RecipeTest {
                         undefined.add(c);
 
             if (!undefined.isEmpty())
-                offenders.add(target.repoRoot().relativize(file) + " uses undefined character(s) " + undefined);
+                offenders.add(target.source(file) + " uses undefined character(s) " + undefined);
         }
 
         if (!offenders.isEmpty())
@@ -142,7 +142,7 @@ class RecipeTest {
                 if (width == -1)
                     width = length;
                 else if (width != length) {
-                    offenders.add(target.repoRoot().relativize(file) + " has rows of differing width");
+                    offenders.add(target.source(file) + " has rows of differing width");
                     break;
                 }
             }

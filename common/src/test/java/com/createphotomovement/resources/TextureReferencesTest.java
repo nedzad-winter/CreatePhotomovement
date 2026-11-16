@@ -65,7 +65,7 @@ class TextureReferencesTest {
                 if (!reference.startsWith(OWN_PREFIX))
                     continue;
                 if (!Files.isRegularFile(texture(target, reference)))
-                    missing.add(target.repoRoot().relativize(model) + " [" + entry.getKey() + "] -> " + reference);
+                    missing.add(target.source(model) + " [" + entry.getKey() + "] -> " + reference);
             }
         }
 

@@ -1,5 +1,11 @@
 # Changelog
 
+## [Unreleased]
+
+### Internal
+- **Repository tidy-up**: one changelog (this file; the 0.1.2 entry was missing here and is now included) and one bug list (`docs/bugs.md`). `mic/` is now `media/`. New architecture documentation after arc42 in `docs/architecture/`, an index in `docs/README.md` and a guide to the scripts in `tools/README.md`. `docs/Current-Dev-Status.md` shows the current targets and version again. `tools/build_mod.sh` no longer tries to build the removed Forge target. The CI no longer writes into the repository's `gradle.properties`.
+- **Shared resources**: the 300 resource files that were byte-for-byte the same on all three targets (all blockstates, most models and textures, the German and Spanish translations, most Ponder schematics) now exist once, in `common/src/main/resources`, instead of three times. The jars contain the same files as before. A new headless test (`CommonResourcesTest`) fails if a file exists both in `common/` and in a target.
+
 ## [0.4.0] - 2026-11-14
 
 ### New look
@@ -158,6 +164,14 @@
   - Fixed transparency rendering for colored Solar Generators (stained glass)
 - **Recipes**:
   - Fixed JEI display issues for Solar Generator recipes (Fabric)
+
+## [0.1.2] - 2026-01-15
+
+### Fixed
+- Fixed rain detection - generators now produce half speed (8 RPM) when raining
+
+### Changed
+- Updated light level text from "higher than 12" to "12 or higher"
 
 ## [0.1.1] - 2026-01-12
 

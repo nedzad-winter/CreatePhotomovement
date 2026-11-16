@@ -34,8 +34,11 @@ jobs:
             21
 
       - name: Point Gradle at both toolchains
+        # Written to Gradle's user-level properties, not the repository's
+        # gradle.properties, so the checkout stays unmodified.
         run: |
-          echo "org.gradle.java.installations.fromEnv=JAVA_HOME_17_X64,JAVA_HOME_21_X64" >> gradle.properties
+          mkdir -p ~/.gradle
+          echo "org.gradle.java.installations.fromEnv=JAVA_HOME_17_X64,JAVA_HOME_21_X64" >> ~/.gradle/gradle.properties
 
       - name: Set up Gradle
         uses: gradle/actions/setup-gradle@v4

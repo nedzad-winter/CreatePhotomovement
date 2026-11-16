@@ -105,7 +105,7 @@ class BlockCompletenessTest {
                 String relative = modelRef.substring(Target.MOD_ID.length() + 1);
                 Path model = target.models().resolve(relative + ".json");
                 if (!Files.isRegularFile(model))
-                    dangling.add(target.repoRoot().relativize(file) + " -> " + modelRef);
+                    dangling.add(target.source(file) + " -> " + modelRef);
             }
         }
 

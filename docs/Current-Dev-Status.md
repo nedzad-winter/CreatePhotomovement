@@ -1,59 +1,61 @@
 # Create Photomovement - Development Status
-**Last Updated:** 2026-02-07
+**Last Updated:** 2026-11-16
 
-## Global Informations
- - Create version: 6.0.8 - MC 1.20.1
+This file is the running notebook: current state, porting notes and the knowledge base.
+How the project is structured and why is in [architecture/arc42.md](architecture/arc42.md);
+fixed bugs are in [bugs.md](bugs.md); released changes are in [../CHANGELOG.md](../CHANGELOG.md).
 
-## Version 0.2.0 - RELEASE READY ✅
+## Current State
 
-### All Versions Complete:
+- **Released version:** 0.4.0 (2026-11-14). The version number lives only in the root `gradle.properties`.
+- **Targets** (see `settings.gradle`):
 
-#### NeoForge 1.21.1 ✅ (recipe folder NOT recipes)
-- All 68 blocks registered
-- All recipes, tags, loot tables working
-- German and Spanish translations
+| Target | Folder | Create version | Java |
+| --- | --- | --- | --- |
+| NeoForge 1.21.1 | `neoforge/1211` | 6.0.10-219 | 21 |
+| NeoForge 1.20.1 | `neoforge/1201` | 6.0.8-291 | 17 |
+| Fabric 1.20.1 | `fabric/1201` | 6.0.8.1+build.1744 | 17 |
 
-#### NeoForge 1.20.1 ✅
-- All 68 blocks registered
-- All recipes, tags, loot tables working
-- German and Spanish translations
+- **No separate Forge build.** `forge/1201` was removed on 2026-02-07 (see the migration
+  analysis at the end of this file and `architecture/adr/003-kein-eigener-forge-build.md`).
+- **Shared code and shared resources** live in `common/` and go into every target.
+  A model, texture or blockstate is in `common/src/main/resources` if it is the same on
+  all targets; look there first before editing one.
+- **Translations:** English, German, Spanish.
 
-#### Forge 1.20.1 ✅
-- All 68 blocks registered
-- All recipes, tags, loot tables working
-- German and Spanish translations
-
-#### Fabric 1.20.1 ✅
-- All 68 blocks registered
-- All recipes, tags, loot tables working
-- German and Spanish translations
-
-### Built JARs:
-- `createphotomovement-forge-1.20.1-0.2.0.jar`
-- `createphotomovement-neoforge-1.20.1-0.2.0.jar`
-- `createphotomovement-neoforge-1.21.1-0.2.0.jar`
-- `createphotomovement-fabric-1.20.1-0.2.0.jar`
-
-## Block Types (68 total):
-1. **Solar Generator** (base + 16 colors) = 17 blocks
-2. **Horizontal Solar Generator** (base + 16 colors) = 17 blocks  
-3. **Advanced Solar Generator** (base + 16 colors) = 17 blocks
-4. **Horizontal Advanced Solar Generator** (base + 16 colors) = 17 blocks
-
-## Build Command:
+## Build Command
 ```powershell
 cd tools
 .\build_mod.ps1
 ```
 
 This will:
-1. Build all 4 mod versions
-2. Copy JARs to `tools/builds/`
-3. Copy JARs to game mods folders (if they exist)
+1. Run the headless tests
+2. Build all three targets
+3. Copy JARs to `tools/builds/`
+4. Copy JARs to game mods folders (if they exist)
 
 ---
 
-## Version 0.3.0 - IN DEVELOPMENT
+# History
+
+Everything below is kept as written at the time. Version numbers, file locations and
+the list of targets in these notes may no longer match the current state above.
+
+## Version 0.2.0 (2026-01-18)
+
+Released for NeoForge 1.21.1, NeoForge 1.20.1, Forge 1.20.1 and Fabric 1.20.1, each with
+all 68 blocks, recipes, tags, loot tables and German and Spanish translations.
+
+### Block Types in 0.2.0 (68 total):
+1. **Solar Generator** (base + 16 colors) = 17 blocks
+2. **Horizontal Solar Generator** (base + 16 colors) = 17 blocks  
+3. **Advanced Solar Generator** (base + 16 colors) = 17 blocks
+4. **Horizontal Advanced Solar Generator** (base + 16 colors) = 17 blocks
+
+---
+
+## Version 0.3.0 - development notes
 
 ### New Features:
 - Solar Sail (16 color variants) - **VERIFIED**
@@ -67,7 +69,7 @@ The sails now use the plain `*_solar_sail` models (parent `solar_sail_base`) wit
 
 ---
 
-### FIXED: Solar Windmill Bearing SU Doubling Bug ✅ (2026-02-04)
+### FIXED: Solar Windmill Bearing SU Doubling Bug (2026-02-04)
 **Status:** FIXED - 5 day debugging marathon complete!
 
 **Problem:**
@@ -91,9 +93,9 @@ Create's `KineticNetwork` capacity tracking double-counts capacity:
 - `SolarBearingContraption.java`
 
 **Testing:**
-- ✅ Fresh assembly: Shows correct 3072 SU
-- ✅ After world reload: Shows correct 3072 SU
-- ✅ Sail counts persist correctly (16 solar + 16 regular)
+- Fresh assembly: Shows correct 3072 SU
+- After world reload: Shows correct 3072 SU
+- Sail counts persist correctly (16 solar + 16 regular)
 
 **Porting Status:**
 - [x] 1.21.1 NeoForge - **FIXED**
@@ -174,7 +176,7 @@ Create's `KineticNetwork` capacity tracking double-counts capacity:
 - Shows Tags in tooltips when holding key (usually `Shift` or `Control`).
 
 
-## Knowledge Base 🧠
+## Knowledge Base
 
 ### Create Mod Contraption Assembly: Connecting Custom Blocks (Sail Logic)
 **Problem:** Custom blocks (like `SolarSailBlock`) do not automatically connect to Chassis or Stick together like regular Sails, even if tagged correctly.
@@ -216,7 +218,7 @@ com.simibubi.create.api.contraption.BlockMovementChecks.registerAttachedCheck((s
 - Needs investigation next session (likely clean build required).
 
 ### Porting SolarSail Logic to 1.20.1 (2026-02-07)
-- **Status:** VERIFIED ✅ (Build Success)
+- **Status:** VERIFIED (Build Success)
 - **Changes:**
   - Ported `SolarSailBlock.java` logic from 1.21.1 to 1.20.1.
   - Implemented manual VoxelShapes because `AllShapes.SAIL` is likely missing in 1.20 API.

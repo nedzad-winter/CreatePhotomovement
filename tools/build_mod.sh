@@ -18,7 +18,6 @@ GAME_PROFILES_DIR="$HOME/.minecraft/profiles"
 
 # Mapping of project path to game profile folder name
 declare -A GAME_PROFILE_MAPPING=(
-    ["forge/1201"]="Dev-CreatePM-Forge-1201"
     ["neoforge/1201"]="Dev-CreatePM-NeoForge-1201"
     ["neoforge/1211"]="Dev-CreatePM-NeoForge-1211"
     ["fabric/1201"]="Dev-CreatePM-Fabric-1201"
@@ -71,9 +70,6 @@ build_project() {
         fi
     done
 }
-
-# Build Forge 1.20.1
-build_project "Forge 1.20.1" "forge/1201" ":forge:1201:build"
 
 # Build NeoForge 1.20.1
 build_project "NeoForge 1.20.1" "neoforge/1201" ":neoforge:1201:build"

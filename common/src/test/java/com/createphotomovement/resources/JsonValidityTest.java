@@ -35,7 +35,7 @@ class JsonValidityTest {
             try (Reader reader = Files.newBufferedReader(file, StandardCharsets.UTF_8)) {
                 JsonParser.parseReader(reader);
             } catch (Exception e) {
-                broken.add(target.repoRoot().relativize(file) + " -- " + e.getMessage());
+                broken.add(target.source(file) + " -- " + e.getMessage());
             }
         }
 

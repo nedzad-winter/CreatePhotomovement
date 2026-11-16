@@ -3,6 +3,7 @@ package com.createphotomovement.resources;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Stream;
@@ -15,6 +16,15 @@ import java.util.stream.Stream;
  * {@code loot_tables} and {@code recipes} data folders to their singular forms.
  * This type hides that so the tests can talk about "the loot tables of this
  * target" without repeating the version check.
+ *
+ * <p>
+ * A target's resources come from two places: the files every target shares
+ * ({@code common/src/main/resources}) and the target's own
+ * ({@code <target>/src/main/resources}). Gradle lays the two on top of each
+ * other when it builds the jar. {@link #resources()} does the same into a
+ * scratch folder, so the tests see exactly the set of files the jar will
+ * contain. {@link #source(Path)} turns a path in that scratch folder back into
+ * the real file, for failure messages.
  */
 public final class Target {
 
@@ -29,6 +39,9 @@ public final class Target {
 
     private final String path;
     private final String minecraftVersion;
+
+    /** The merged copy of common + own resources; built on first use. */
+    private Path merged;
 
     private Target(String path, String minecraftVersion) {
         this.path = path;
@@ -74,8 +87,67 @@ public final class Target {
         return isMc1211() ? "id" : "item";
     }
 
-    public Path resources() {
+    /** The resources shared by every target. */
+    public static Path commonResources() {
+        return REPO_ROOT.resolve("common/src/main/resources");
+    }
+
+    /** The resources only this target has. */
+    public Path ownResources() {
         return REPO_ROOT.resolve(path).resolve("src/main/resources");
+    }
+
+    /**
+     * Everything this target ships: the shared resources with the target's own laid
+     * over them, copied into {@code common/build/merged-resources/<target>}.
+     */
+    public synchronized Path resources() {
+        if (merged == null) {
+            Path into = REPO_ROOT.resolve("common/build/merged-resources").resolve(path);
+            deleteTree(into);
+            copyTree(commonResources(), into);
+            copyTree(ownResources(), into);
+            merged = into;
+        }
+        return merged;
+    }
+
+    /**
+     * The real file behind a path under {@link #resources()}, relative to the
+     * repository root -- so a failure names the file to edit, not its copy.
+     */
+    public Path source(Path file) {
+        Path relative = resources().relativize(file.toAbsolutePath());
+        Path own = ownResources().resolve(relative);
+        Path real = Files.exists(own) ? own : commonResources().resolve(relative);
+        return REPO_ROOT.relativize(real);
+    }
+
+    private static void copyTree(Path from, Path into) {
+        if (!Files.isDirectory(from))
+            return;
+        try (Stream<Path> stream = Files.walk(from)) {
+            for (Path source : (Iterable<Path>) stream::iterator) {
+                Path destination = into.resolve(from.relativize(source).toString());
+                if (Files.isDirectory(source))
+                    Files.createDirectories(destination);
+                else
+                    Files.copy(source, destination, StandardCopyOption.REPLACE_EXISTING);
+            }
+        } catch (Exception e) {
+            throw new IllegalStateException("Could not copy " + from + " to " + into, e);
+        }
+    }
+
+    private static void deleteTree(Path root) {
+        if (!Files.exists(root))
+            return;
+        try (Stream<Path> stream = Files.walk(root)) {
+            for (Path path : stream.sorted(java.util.Comparator.reverseOrder()).toList())
+                Files.delete(path);
+        } catch (Exception e) {
+            throw new IllegalStateException("Could not clear " + root, e);
+        }
     }
 
     public Path assets() {

@@ -20,6 +20,10 @@ build_output.txt
 build_log.txt
 compile_errors.txt
 
+# Python caches (tools/showcase)
+__pycache__/
+*.pyc
+
 # OS files
 .DS_Store
 Thumbs.db
