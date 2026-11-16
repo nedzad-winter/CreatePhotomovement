@@ -218,6 +218,8 @@ Contributions are welcome! Feel free to:
 - Submit pull requests with improvements
 - Help with translations
 
+How the repository is laid out, and why, is described in [docs/architecture/arc42.md](docs/architecture/arc42.md) (in German).
+
 ## Credits
 
 - **Create Mod Team** for the amazing Create mod and its API

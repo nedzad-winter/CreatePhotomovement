@@ -1,4 +1,5 @@
-$files = Get-ChildItem "src/main/resources/assets/createphotomovement/models/block/*_solar_sail.json"
+# The sail models are the same on every target and live in common/ (run this from neoforge/1211).
+$files = Get-ChildItem "../../common/src/main/resources/assets/createphotomovement/models/block/*_solar_sail.json"
 foreach ($file in $files) {
     if ($file.Name -eq "solar_sail_base.json") { continue }
     $content = Get-Content $file.FullName -Raw
