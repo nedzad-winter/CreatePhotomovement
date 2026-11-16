@@ -53,7 +53,8 @@ COLORS = base.COLORS
 RAINBOW = ["red", "orange", "yellow", "lime", "green", "cyan", "light_blue", "blue", "purple",
            "magenta", "pink"]
 MANUAL_DELAY = 3.0     # a shot played on its own waits this long before its action
-BLACK = 2.0            # seconds of black screen before and after the film
+BLACK = 2.0            # seconds of black screen after the film
+BLACK_START = 4.0      # and before it: longer, the game may need a second to draw the box
 
 # times of day (ticks)
 DAWN, MORNING, NOON, EVENING, SUNSET = 22800, 500, 6000, 11500, 12300
@@ -115,23 +116,23 @@ def basic():
 
 
 def advanced():
-    """The advanced generator in front, the basic one behind and four blocks higher, so
-    both cogwheels are above each other in a portrait frame. The higher one doesn't take
-    the sky from the lower one: it is behind it, not above it."""
+    """The advanced generator in front, the basic one diagonally behind it. Seen from above
+    at an angle, the one behind sits higher in the frame, so both fit a portrait frame and
+    both generators show over their cogwheels."""
     s = Scene(2, "Advanced")
     generator_on_cog(s, 0, 1, 0, "adv_solar_generator", "create:brass_casing")
-    generator_on_cog(s, 0, 5, -4, "solar_generator", "create:andesite_casing")
+    generator_on_cog(s, 1, 1, -4, "solar_generator", "create:andesite_casing")
     return s
 
 
 def east_west():
-    """An east- and a west-facing horizontal generator, each with a stress gauge and three
-    fans as the load (6 SU per RPM).
+    """An east- and a west-facing horizontal generator, each with a stress gauge and two
+    fans as the load (4 SU per RPM).
 
     A panel gives between 8 and about 64 SU per RPM depending on the sun, so the needle,
     which shows how much of the capacity is used, sits low while the panel faces the sun
-    and climbs to three quarters when it doesn't. Through one day the east one starts low
-    and climbs, the west one does the opposite.
+    and climbs to half when it doesn't. Through one day the east one starts low and
+    climbs, the west one does the opposite.
 
     The west unit stands behind the east one and three blocks higher, on a ledge, so both
     gauges are above each other in a portrait frame. Nothing stands within 10 blocks in
@@ -144,24 +145,22 @@ def east_west():
     s.block(-1, 0, 0, "create:gearbox", "axis=y")
     s.block(-2, 0, 0, "create:encased_fan", "facing=west")
     s.block(-1, 0, -1, "create:encased_fan", "facing=north")
-    s.block(-1, 0, 1, "create:encased_fan", "facing=south")
     s.label(0.5, 1.15, 0.5, "Facing east", "best in the morning")
     # west-facing, on a ledge: the chain runs east from the panel
-    y, z = 3, -4
-    for x, dz in ((-1, 0), (0, 0), (1, 0), (2, 0), (1, -1), (1, 1)):
+    y, z = WEST_GEN[1], WEST_GEN[2]
+    for x, dz in ((-1, 0), (0, 0), (1, 0), (2, 0), (1, -1)):
         s.block(x, y - 1, z + dz, "minecraft:smooth_stone")
     s.block(-1, y, z, f"{MOD}:horizontal_solar_generator", "facing=west")
     s.block(0, y, z, "create:stressometer", "facing=south,axis_along_first=true")
     s.block(1, y, z, "create:gearbox", "axis=y")
     s.block(2, y, z, "create:encased_fan", "facing=east")
     s.block(1, y, z - 1, "create:encased_fan", "facing=north")
-    s.block(1, y, z + 1, "create:encased_fan", "facing=south")
     s.label(0.5, y + 1.15, z + 0.5, "Facing west", "best in the evening")
     return s
 
 
 EAST_GEN = (1, 0, 0)
-WEST_GEN = (-1, 3, -4)
+WEST_GEN = (-1, 3, -3)
 
 
 def colours():
@@ -232,11 +231,11 @@ class Shot:
 SHOTS = [
     # looks across the field towards the east, where the sun comes up, and glides along
     Shot(1, "Field at sunrise", 0, (-3, 4.6, 1, -110, 22), DAWN, "act_sunrise", 1.0, 12,
-         glide=(0.0235, 0, -0.0086, 0, 0)),
+         glide=(0.0141, 0, -0.0051, 0, 0)),
     # looks down from high enough to see the generator over the cogwheel
     Shot(2, "Solar Generator", 1, (1.4, 3.7, 3.2, 165, 30), NOON, "act_place_basic", 1.5, 7),
-    Shot(3, "Advanced vs basic", 2, (0.5, 3.5, 5.0, 180, 5), NOON, None, 0, 7),
-    Shot(4, "East and west", 3, (0.5, 3.0, 6.0, 180, 7), MORNING, "act_east_west", 1.0, 96),
+    Shot(3, "Advanced vs basic", 2, (2.8, 5.95, 3.95, 163, 38), NOON, None, 0, 7),
+    Shot(4, "East and west", 3, (0.0, 2.8, 5.5, 180, 8), MORNING, "act_east_west", 1.0, 96),
     Shot(5, "Colours", 4, (0.5, 2.8, 3.2, 180, 18), NOON, "act_colours", 1.0, 12),
     Shot(6, "Windmill", 5, (0.5, 1.6, 21, 180, -18), NOON, None, 0, 10,
          glide=(0, 0, -0.02, 0, -0.02)),
@@ -496,7 +495,9 @@ def windmill_functions(ox, oy, oz):
             "gamemode creative @a\n"
             f"time set {NOON}\n"
             + setblock(px, py, pz, "minecraft:glass") + "\n"
-            f"tp @a {px + 0.5} {py + 1} {pz + 0.5} -90 20\n"
+            # aims at the lower corner of the bearing's side: the middle of the side is the
+            # "Rotation Direction" setting, where a right-click changes that instead
+            f"tp @a {px + 0.5} {py + 1} {pz + 0.5} -98 29\n"
             'tellraw @a {"text":"Right-click the bearing in front of you with an empty hand. '
             'Then click [FILM] or [6] Windmill in the menu.","color":"aqua"}\n',
     }
@@ -511,7 +512,7 @@ def film_functions(ox, oy, oz):
     bx, by, bz = black_box(ox, oy, oz)
     wx, wy, wz = bearing_pos(ox, oy, oz)
     timeline, total = film_timeline()
-    start = ticks(BLACK)
+    start = ticks(BLACK_START)
     steps = []                 # (tick, commands) relative to the film function
     for shot, t in timeline:
         steps.append((start + ticks(t), [f"function {NS}:setup_{shot.number}"]))
@@ -537,7 +538,7 @@ def film_functions(ox, oy, oz):
     files["film.mcfunction"] = "\n".join(film) + "\n"
     files["film_done.mcfunction"] = (
         "execute as @a run spectate\n"
-        f'tellraw @a {{"text":"Film done ({round(total + 2 * BLACK)} s). Stop the recording.","color":"gold"}}\n'
+        f'tellraw @a {{"text":"Film done ({round(total + BLACK_START + BLACK)} s). Stop the recording.","color":"gold"}}\n'
         f"function {NS}:menu\n")
     return files
 
@@ -552,7 +553,7 @@ def menu_function():
              click("[Start the windmill]\n", "green", f"/function {NS}:windmill_start"),
              {"text": "2. Start recording, then ", "color": "gray"},
              click(f"[FILM]", "green", f"/function {NS}:film"),
-             {"text": f" plays every shot ({round(total + 2 * BLACK)} s). Click into the game, "
+             {"text": f" plays every shot ({round(total + BLACK_START + BLACK)} s). Click into the game, "
                       "press F1, hands off.\n", "color": "gray"},
              {"text": "Single shots: ", "color": "gray"}]
     for shot in SHOTS:
@@ -573,15 +574,22 @@ def tour_functions(ox, oy, oz):
              'tellraw @a {"text":"TOUR start","color":"gold"}',
              f"function {NS}:stop", "gamemode spectator @a"]
     first += camera_commands(*[c + 0.5 for c in black_box(ox, oy, oz)], 0, 0)
+    # every step gets its own function, like the film's: a shot's setup clears the
+    # actions scheduled by name, which would also clear the next shot's action
     t = ticks(BLACK)
+    check_at = {5: 5.0}                        # the colour cycle is checked while it runs
+    steps = []
     for shot in SHOTS:
         length = min(shot.length, 14)          # the long time-lapse is checked part way
-        first.append(f"schedule function {NS}:setup_{shot.number} {t}t append")
+        steps.append((t, f"function {NS}:setup_{shot.number}"))
         if shot.action:
-            first.append(f"schedule function {NS}:{shot.action} {t + ticks(shot.lead)}t append")
-        first.append(f"schedule function {NS}:check_{shot.number} {t + ticks(length) - 10}t append")
+            steps.append((t + ticks(shot.lead), f"function {NS}:{shot.action}"))
+        steps.append((t + ticks(check_at.get(shot.number, length - 0.5)), f"function {NS}:check_{shot.number}"))
         t += ticks(length)
-    first.append(f"schedule function {NS}:tour_done {t}t append")
+    steps.append((t, f"function {NS}:tour_done"))
+    for n, (tick, command) in enumerate(steps):
+        files[f"tour_{n}.mcfunction"] = command + "\n"
+        first.append(f"schedule function {NS}:tour_{n} {tick}t append")
     files["tour.mcfunction"] = "\n".join(first) + "\n"
     files["tour_done.mcfunction"] = (f"function {NS}:stop\n"
                                      'tellraw @a {"text":"TOUR done","color":"gold"}\n'
@@ -605,7 +613,7 @@ def tour_functions(ox, oy, oz):
     files["check_2.mcfunction"] = check("basic: generator placed", block_at(1, 0, 1, -2, f"{MOD}:solar_generator"))
     files["check_3.mcfunction"] = (
         check("advanced: brass generator in front", block_at(2, 0, 1, -2, f"{MOD}:adv_solar_generator"))
-        + check("advanced: basic generator behind", block_at(2, 0, 5, -6, f"{MOD}:solar_generator")))
+        + check("advanced: basic generator behind", block_at(2, 1, 1, -6, f"{MOD}:solar_generator")))
     ex, ey, ez = EAST_GEN
     wx, wy, wz = WEST_GEN
     files["check_4.mcfunction"] = (
@@ -697,7 +705,7 @@ def main():
     _, total = film_timeline()
     print(f"Wrote {world}")
     print(f"  {len(scenes)} scenes, {sum(len(s.blocks) for s in scenes)} blocks, {len(SHOTS)} shots, "
-          f"film {total + 2 * BLACK:.0f} s, {count} functions" + (", with self-test tour" if args.tour else ""))
+          f"film {total + BLACK_START + BLACK:.0f} s, {count} functions" + (", with self-test tour" if args.tour else ""))
 
 
 if __name__ == "__main__":
