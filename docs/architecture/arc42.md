@@ -159,7 +159,7 @@ Solarsegel und normalen Segel (`SolarBearingContraption`).
 | Bauen aller Ziele | `./gradlew build` im Hauptordner, oder `tools/build_mod.ps1` (kopiert die Jars zusätzlich nach `tools/builds/`). |
 | Ergebnis | `<ziel>/build/libs/createphotomovement-<loader>-<mc-version>-<mod-version>.jar` |
 | CI bei jedem Push | `.github/workflows/build.yml`: erst die schnellen Tests, dann alle drei Ziele bauen. |
-| CI bei Pull Requests | `.github/workflows/gametest.yml`: startet pro Ziel einen echten Minecraft-Server und lässt die In-Game-Tests laufen. |
+| CI bei Pull Requests | `.github/workflows/gametest.yml`: startet pro Ziel einen echten Minecraft-Server und lässt die In-Game-Tests laufen. Unter Fabric laufen dabei auch Creates eigene Tests mit, von denen einige scheitern; dort zählt deshalb nur, ob die Tests dieses Mods bestehen (`.github/scripts/fabric_gametest_gate.py`). |
 | Versionsnummer | Steht genau einmal, in der `gradle.properties` im Hauptordner. `tools/bump_version.ps1` ändert sie. |
 
 Es gibt keinen eigenen Forge-Build ([ADR-003](adr/003-kein-eigener-forge-build.md)).

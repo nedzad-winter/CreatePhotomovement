@@ -31,6 +31,10 @@ jobs:
             task: ':neoforge:1201:runGameTestServer'
           - name: Fabric 1.20.1
             task: ':fabric:1201:runGametest'
+            # Fabric also runs Create's own tests, a few of which fail in a bare
+            # test server. The run is judged by this report instead of the exit
+            # code -- see .github/scripts/fabric_gametest_gate.py.
+            report: 'fabric/1201/build/gametest-report.xml'
 
     steps:
       - name: Check out
@@ -57,7 +61,12 @@ jobs:
           cache-read-only: true
 
       - name: Run game tests
+        continue-on-error: ${{ matrix.report != '' }}
         run: ./gradlew ${{ matrix.task }} --stacktrace
+
+      - name: Judge the run by this mod's own tests
+        if: ${{ matrix.report != '' }}
+        run: python3 .github/scripts/fabric_gametest_gate.py ${{ matrix.report }}
 
       - name: Upload server logs
         if: always()
