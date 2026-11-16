@@ -3,6 +3,8 @@
 ## [Unreleased]
 
 ### Internal
+- **Short film set plays by itself**: the `Create Photomovement Short` world (`tools/showcase/make_short_world.py`) has a [FILM] button that plays all seven shots in one take (about 2.5 minutes), with black screens before and after. The camera is an invisible entity, so the mouse can't shift the picture, and three shots glide. New shot: an east- and a west-facing horizontal generator through a whole day, their stress gauges following the sun. The advanced shot now shows both generators over their cogwheels.
+- **Cutting the Short**: `tools/showcase/cut_short.py` turns a recording of the [FILM] run into the finished 1080x1920 Short with captions. It finds the film's start by the black screen, so no cut points have to be set by hand. Needs ffmpeg.
 - **Repository tidy-up**: one changelog (this file; the 0.1.2 entry was missing here and is now included) and one bug list (`docs/bugs.md`). `mic/` is now `media/`. New architecture documentation after arc42 in `docs/architecture/`, an index in `docs/README.md` and a guide to the scripts in `tools/README.md`. `docs/Current-Dev-Status.md` shows the current targets and version again. `tools/build_mod.sh` no longer tries to build the removed Forge target. The CI no longer writes into the repository's `gradle.properties`.
 - **Shared resources**: the 300 resource files that were byte-for-byte the same on all three targets (all blockstates, most models and textures, the German and Spanish translations, most Ponder schematics) now exist once, in `common/src/main/resources`, instead of three times. The jars contain the same files as before. A new headless test (`CommonResourcesTest`) fails if a file exists both in `common/` and in a target.
 

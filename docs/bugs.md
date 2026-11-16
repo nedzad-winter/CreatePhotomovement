@@ -41,9 +41,9 @@ Removed the unused "S" key from the recipe file.
 
 ### Description
 `compileJava` failed with errors in `AllBlocks.java`:
-- `Symbol nicht gefunden` for `.initialProperties`
-- `Package com.createphotomovement.AllTags.AllBlockTags ist nicht vorhanden`
-- `Inkompatible Typen` for lambda argument in `.withCanvas`
+- `cannot find symbol` for `.initialProperties`
+- `package com.createphotomovement.AllTags.AllBlockTags does not exist`
+- `incompatible types` for lambda argument in `.withCanvas`
 
 ### Cause
 I mistakenly used `CreateRegistrate` builder pattern methods (`.initialProperties()`, `.properties()`, `.tag()`) on a standard `DeferredRegister` object. `DeferredRegister` does not support these methods. The `SOLAR_SAIL` registration was malformed.

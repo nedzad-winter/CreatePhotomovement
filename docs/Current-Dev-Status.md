@@ -17,7 +17,7 @@ fixed bugs are in [bugs.md](bugs.md); released changes are in [../CHANGELOG.md](
 | Fabric 1.20.1 | `fabric/1201` | 6.0.8.1+build.1744 | 17 |
 
 - **No separate Forge build.** `forge/1201` was removed on 2026-02-07 (see the migration
-  analysis at the end of this file and `architecture/adr/003-kein-eigener-forge-build.md`).
+  analysis at the end of this file and `architecture/adr/003-no-separate-forge-build.md`).
 - **Shared code and shared resources** live in `common/` and go into every target.
   A model, texture or blockstate is in `common/src/main/resources` if it is the same on
   all targets; look there first before editing one.
